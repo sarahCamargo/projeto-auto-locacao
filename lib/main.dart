@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:projeto_auto_locacao/cadastro_pessoa.dart';
 import 'package:projeto_auto_locacao/gerenciar_veiculo.dart';
-import 'firebase_options.dart';
+import 'services/firebase_options.dart';
 import 'cadastro_veiculo.dart';
 
 void main() async {
