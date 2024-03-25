@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_fisica.dart';
 
 class DetalhesPessoaScreen extends StatelessWidget {
   final Map<String, dynamic> pessoa;
@@ -23,7 +24,11 @@ class DetalhesPessoaScreen extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Implemente a lógica para editar a pessoa
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CadastroPessoaFisica(pessoa: pessoa)),
+                );
               },
               child: Text('Editar'),
             ),

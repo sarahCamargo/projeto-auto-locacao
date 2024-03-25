@@ -60,7 +60,7 @@ void _mostrarOpcoesPessoa(BuildContext context) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CadastroPessoaFisica()),
+                      builder: (context) => CadastroPessoaFisica(pessoa: {},)),
                 );
               },
               child: Text('Pessoa Física'),

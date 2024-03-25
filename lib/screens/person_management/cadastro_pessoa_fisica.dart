@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
+import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
 import 'package:uuid/uuid.dart';
 
 class CadastroPessoaFisica extends StatefulWidget {
-  const CadastroPessoaFisica({super.key});
-
   @override
-  _CadastroPessoaFisicaState createState() {
-    return _CadastroPessoaFisicaState();
-  }
+  _CadastroPessoaFisicaState createState() => _CadastroPessoaFisicaState();
+
+  final Map<String, dynamic> pessoa;
+
+  CadastroPessoaFisica({required this.pessoa});
 }
 
 class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
@@ -22,6 +23,22 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   final TextEditingController _sexoController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _dtNascimentoController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.pessoa["id"] != null) {
+      _nomeController.text = widget.pessoa["nome"];
+      _cpfController.text = widget.pessoa["cpf"].toString();
+      _emailController.text = widget.pessoa["email"];
+      _enderecoController.text = widget.pessoa["endereco"];
+      _estadoCivilController.text = widget.pessoa["estado_civil"];
+      _profissaoController.text = widget.pessoa["profissao"];
+      _sexoController.text = widget.pessoa["sexo"];
+      _telefoneController.text = widget.pessoa["telefone"].toString();
+      _dtNascimentoController.text = widget.pessoa["dtNascimento"];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,30 +118,59 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   }
 
   void salvarDados() {
-    PessoaFisica pessoaFisica = PessoaFisica(
-        id: const Uuid().v1(),
-        nome: _nomeController.text,
-        cpf: _cpfController.text,
-        email: _emailController.text,
-        endereco: _enderecoController.text,
-        estadoCivil: _estadoCivilController.text,
-        profissao: _profissaoController.text,
-        sexo: _sexoController.text,
-        telefone: _telefoneController.text,
-        dtNascimento: _dtNascimentoController.text);
-    FirebaseFirestore.instance
-        .collection('pessoa_fisica')
-        .doc(pessoaFisica.id)
-        .set(pessoaFisica.toMap())
-        .then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dados salvos com sucesso')),
-      );
-      Navigator.pop(context);
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar dados: $error')),
-      );
-    });
+    if (widget.pessoa["id"] == null) {
+      PessoaFisica pessoaFisica = PessoaFisica(
+          id: const Uuid().v1(),
+          nome: _nomeController.text,
+          cpf: _cpfController.text,
+          email: _emailController.text,
+          endereco: _enderecoController.text,
+          estadoCivil: _estadoCivilController.text,
+          profissao: _profissaoController.text,
+          sexo: _sexoController.text,
+          telefone: _telefoneController.text,
+          dtNascimento: _dtNascimentoController.text);
+      FirebaseFirestore.instance
+          .collection('pessoa_fisica')
+          .doc(pessoaFisica.id)
+          .set(pessoaFisica.toMap())
+          .then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Dados salvos com sucesso')),
+        );
+        Navigator.pop(context);
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao salvar dados: $error')),
+        );
+      });
+    } else {
+      FirebaseFirestore.instance
+          .collection('pessoa_fisica')
+          .doc(widget.pessoa["id"])
+          .update({
+        "nome": _nomeController.text,
+        "cpf": _cpfController.text,
+        "email": _emailController.text,
+        "endereco": _enderecoController.text,
+        "estadoCivil": _estadoCivilController.text,
+        "profissao": _profissaoController.text,
+        "sexo": _sexoController.text,
+        "telefone": _telefoneController.text,
+        "dtNascimento": _dtNascimentoController.text
+      }).then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Dados salvos com sucesso')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ListaPessoas()),
+        );
+      }).catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao salvar dados: $error')),
+        );
+      });
+    }
   }
 }
