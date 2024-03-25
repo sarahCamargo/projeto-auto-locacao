@@ -40,6 +40,7 @@ class _ListarVeiculos extends State<ListarVeiculos> {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return CircularProgressIndicator();
+
                 }
 
                 var items = snapshot.data!.docs.where((element) => element['placa'].toString().toLowerCase().contains(searchString));
