@@ -15,6 +15,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   String profissao = '';
   String sexo = '';
   String telefone = '';
+  String dtNascimento = '';
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +36,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: 'Nome'),
+            keyboardType: TextInputType.name,
             onChanged: (value) {
               setState(() {
                 nome = value;
@@ -44,6 +46,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           SizedBox(height: 16.0),
           TextFormField(
             decoration: InputDecoration(labelText: 'CPF'),
+            keyboardType: TextInputType.number,
             onChanged: (value) {
               setState(() {
                 cpf = value;
@@ -53,6 +56,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           SizedBox(height: 16.0),
           TextFormField(
             decoration: InputDecoration(labelText: 'E-mail'),
+            keyboardType: TextInputType.emailAddress,
             onChanged: (value) {
               setState(() {
                 email = value;
@@ -98,9 +102,20 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           SizedBox(height: 16.0),
           TextFormField(
             decoration: InputDecoration(labelText: 'Telefone'),
+            keyboardType: TextInputType.phone,
             onChanged: (value) {
               setState(() {
                 telefone = value;
+              });
+            },
+          ),
+          SizedBox(height: 16.0),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Data de Nascimento'),
+            keyboardType: TextInputType.datetime,
+            onChanged: (value) {
+              setState(() {
+                dtNascimento = value;
               });
             },
           ),
@@ -125,7 +140,8 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
       'estado_civil': estado_civil,
       'profissao': profissao,
       'sexo': sexo,
-      'telefone': telefone
+      'telefone': telefone,
+      'dt_nascimento': dtNascimento
     }).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Dados salvos com sucesso')),
