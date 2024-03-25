@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'detalhes_pessoas.dart'; // Importe a tela de detalhes da pessoa
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListaPessoas extends StatefulWidget {
@@ -47,11 +48,22 @@ class _ListaPessoasState extends State<ListaPessoas> {
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    var pessoa = items.elementAt(index);
-                    return ListTile(
-                      title: Text(pessoa['nome']),
-                      subtitle: Text('CPF: ${pessoa['cpf'].toString()}'),
-                      // Mais detalhes ou ações para exibir aqui
+                    var pessoa = items.elementAt(index).data(); // Acesse os dados do documento
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetalhesPessoaScreen(pessoa: pessoa),
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        title: Text(pessoa['nome']),
+                        subtitle: Text('CPF: ${pessoa['cpf'].toString()}'),
+                        // Mais detalhes ou ações para exibir aqui
+                      ),
                     );
                   },
                 );
