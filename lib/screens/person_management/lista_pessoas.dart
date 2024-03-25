@@ -48,7 +48,7 @@ class _ListaPessoasState extends State<ListaPessoas> {
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    var pessoa = items.elementAt(index).data(); // Acesse os dados do documento
+                    var pessoa = items.elementAt(index).data();
 
                     return GestureDetector(
                       onTap: () {
@@ -62,7 +62,6 @@ class _ListaPessoasState extends State<ListaPessoas> {
                       child: ListTile(
                         title: Text(pessoa['nome']),
                         subtitle: Text('CPF: ${pessoa['cpf'].toString()}'),
-                        // Mais detalhes ou ações para exibir aqui
                       ),
                     );
                   },

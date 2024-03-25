@@ -33,13 +33,23 @@ class MyHomePage extends StatelessWidget {
         title: Text('Página Inicial'),
       ),
       body: Center(
-        child: Column (
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GerenciarVeiculo(),
-            SizedBox(width: 20), // Espaçamento entre os botões
-            PersonManagement(), // Botão para cadastrar pessoa
-          ],
+        child: SingleChildScrollView(
+          child: Column (
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GerenciarVeiculo(),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PersonManagement()),
+                  );
+                },
+                child: Text('Gerenciar Pessoas'),
+              ),
+            ],
+          ),
         ),
       ),
     );

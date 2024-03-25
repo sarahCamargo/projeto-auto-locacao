@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_juridica.dart';
+import 'package:projeto_auto_locacao/screens/person_management/lista_pessoas.dart';
 
 class PersonManagement extends StatefulWidget {
   @override
@@ -10,47 +11,74 @@ class PersonManagement extends StatefulWidget {
 class _PersonManagementState extends State<PersonManagement> {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        _mostrarOpcoesPessoa(context);
-      },
-      child: Text('Gerenciar Pessoas'),
-    );
-  }
-
-  void _mostrarOpcoesPessoa(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Escolha o tipo de pessoa'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Gerenciar Pessoas'),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CadastroPessoaFisica()),
-                  );
+                  _mostrarOpcoesPessoa(context);
                 },
-                child: Text('Pessoa Física'),
+                child: Text('Cadastrar Pessoa'),
               ),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CadastroPessoaJuridica()),
+                    MaterialPageRoute(builder: (context) => ListaPessoas()),
                   );
                 },
-                child: Text('Pessoa Jurídica'),
+                child: Text('Ver Pessoas'),
               ),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
+}
+
+void _mostrarOpcoesPessoa(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Escolha o tipo de pessoa'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CadastroPessoaFisica()),
+                );
+              },
+              child: Text('Pessoa Física'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CadastroPessoaJuridica()),
+                );
+              },
+              child: Text('Pessoa Jurídica'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
