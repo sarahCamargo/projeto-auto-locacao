@@ -105,4 +105,8 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
       );
     });
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master
