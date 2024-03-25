@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:projeto_auto_locacao/cadastro_pessoa.dart';
+import 'package:projeto_auto_locacao/visualizar_pessoas.dart';
 import 'firebase_options.dart';
 import 'cadastro_veiculo.dart';
 
@@ -47,6 +48,15 @@ class MyHomePage extends StatelessWidget {
             ),
             SizedBox(width: 20), // Espaçamento entre os botões
             CadastroPessoa(), // Botão para cadastrar pessoa
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ListaPessoas()),
+                );
+              },
+              child: Text('Ver Pessoas'),
+            ),
           ],
         ),
       ),
