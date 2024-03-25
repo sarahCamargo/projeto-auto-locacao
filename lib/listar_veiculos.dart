@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:projeto_auto_locacao/detalhes_veiculo.dart';
 
 class ListarVeiculos extends StatefulWidget {
   @override
@@ -48,11 +49,22 @@ class _ListarVeiculos extends State<ListarVeiculos> {
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    var veiculos = items.elementAt(index);
-                    return ListTile(
-                      title: Text('Placa: ${veiculos['placa'].toString()}'),
-                      subtitle: Text('Modelo: ${veiculos['modelo'].toString()}'),
-                      // Mais detalhes ou ações para exibir aqui
+                    var veiculo = items.elementAt(index).data(); // Acesse os dados do documento
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetalhesVeiculoScreen(veiculo: veiculo),
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        title: Text('Placa: ${veiculo['placa'].toString()}'),
+                        subtitle: Text('Modelo: ${veiculo['modelo'].toString()}'),
+                        // Mais detalhes ou ações para exibir aqui
+                      ),
                     );
                   },
                 );
