@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:projeto_auto_locacao/cadastro_pessoa.dart';
-import 'package:projeto_auto_locacao/gerenciar_veiculo.dart';
+import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/gerenciar_veiculo.dart';
 import 'services/firebase_options.dart';
-import 'cadastro_veiculo.dart';
+import 'screens/vehicle_management/cadastro_veiculo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

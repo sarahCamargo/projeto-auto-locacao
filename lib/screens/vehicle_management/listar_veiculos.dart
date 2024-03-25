@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:projeto_auto_locacao/detalhes_veiculo.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/detalhes_veiculo.dart';
 
 class ListarVeiculos extends StatefulWidget {
   @override
