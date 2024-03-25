@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/listar_veiculos.dart';
 
-import '../person_management/cadastro_pessoa.dart';
 import 'cadastro_veiculo.dart';
 
 class GerenciarVeiculo extends StatefulWidget {
@@ -51,7 +50,7 @@ class _GerenciarVeiculo extends State<GerenciarVeiculo> {
           },
         );
       },
-      child: Text('Gerenciar Veículo'),
+      child: Text('Gerenciar Veículos'),
     );
   }
 }

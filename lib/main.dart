@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa.dart';
+import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/gerenciar_veiculo.dart';
 import 'services/firebase_options.dart';
-import 'screens/vehicle_management/cadastro_veiculo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +38,7 @@ class MyHomePage extends StatelessWidget {
           children: [
             GerenciarVeiculo(),
             SizedBox(width: 20), // Espaçamento entre os botões
-            CadastroPessoa(), // Botão para cadastrar pessoa
+            PersonManagement(), // Botão para cadastrar pessoa
           ],
         ),
       ),

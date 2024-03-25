@@ -2,21 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_juridica.dart';
 
-class CadastroPessoa extends StatefulWidget {
+class PersonManagement extends StatefulWidget {
   @override
-  _CadastroPessoaState createState() => _CadastroPessoaState();
+  _PersonManagementState createState() => _PersonManagementState();
 }
 
-class _CadastroPessoaState extends State<CadastroPessoa> {
-  String tipoPessoaSelecionada = '';
-
+class _PersonManagementState extends State<PersonManagement> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         _mostrarOpcoesPessoa(context);
       },
-      child: Text('Cadastrar Pessoa'),
+      child: Text('Gerenciar Pessoas'),
     );
   }
 
