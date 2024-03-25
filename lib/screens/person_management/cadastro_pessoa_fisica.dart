@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
+import 'package:uuid/uuid.dart';
 
 class CadastroPessoaFisica extends StatefulWidget {
+  const CadastroPessoaFisica({super.key});
+
   @override
-  _CadastroPessoaFisicaState createState() => _CadastroPessoaFisicaState();
+  _CadastroPessoaFisicaState createState() {
+    return _CadastroPessoaFisicaState();
+  }
 }
 
 class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
-  String nome = '';
-  String cpf = '';
-  String email = '';
-  String endereco = '';
-  String estado_civil = '';
-  String profissao = '';
-  String sexo = '';
-  String telefone = '';
-  String dtNascimento = '';
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _cpfController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _enderecoController = TextEditingController();
+  final TextEditingController _estadoCivilController = TextEditingController();
+  final TextEditingController _profissaoController = TextEditingController();
+  final TextEditingController _sexoController = TextEditingController();
+  final TextEditingController _telefoneController = TextEditingController();
+  final TextEditingController _dtNascimentoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastro de Pessoa Física'),
+        title: const Text('Cadastrar Pessoa Física'),
       ),
       body: _buildForm(),
     );
@@ -30,101 +36,64 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   Widget _buildForm() {
     return SingleChildScrollView(
         child: Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
-            decoration: InputDecoration(labelText: 'Nome'),
-            keyboardType: TextInputType.name,
-            onChanged: (value) {
-              setState(() {
-                nome = value;
-              });
-            },
+            controller: _nomeController,
+            decoration: const InputDecoration(labelText: 'Nome'),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextFormField(
-            decoration: InputDecoration(labelText: 'CPF'),
+            controller: _cpfController,
+            decoration: const InputDecoration(labelText: 'CPF'),
             keyboardType: TextInputType.number,
-            onChanged: (value) {
-              setState(() {
-                cpf = value;
-              });
-            },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextFormField(
-            decoration: InputDecoration(labelText: 'E-mail'),
+            controller: _emailController,
+            decoration: const InputDecoration(labelText: 'E-mail'),
             keyboardType: TextInputType.emailAddress,
-            onChanged: (value) {
-              setState(() {
-                email = value;
-              });
-            },
+          ),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            controller: _enderecoController,
+            decoration: const InputDecoration(labelText: 'Endereço'),
+          ),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            controller: _estadoCivilController,
+            decoration: const InputDecoration(labelText: 'Estado Civil'),
+          ),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            controller: _profissaoController,
+            decoration: const InputDecoration(labelText: 'Profissão'),
           ),
           SizedBox(height: 16.0),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Endereço'),
-            onChanged: (value) {
-              setState(() {
-                endereco = value;
-              });
-            },
+            controller: _sexoController,
+            decoration: const InputDecoration(labelText: 'Sexo'),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Estado Civil'),
-            onChanged: (value) {
-              setState(() {
-                estado_civil = value;
-              });
-            },
-          ),
-          SizedBox(height: 16.0),
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Profissão'),
-            onChanged: (value) {
-              setState(() {
-                profissao = value;
-              });
-            },
-          ),
-          SizedBox(height: 16.0),
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Sexo'),
-            onChanged: (value) {
-              setState(() {
-                sexo = value;
-              });
-            },
-          ),
-          SizedBox(height: 16.0),
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Telefone'),
+            controller: _telefoneController,
+            decoration: const InputDecoration(labelText: 'Telefone'),
             keyboardType: TextInputType.phone,
-            onChanged: (value) {
-              setState(() {
-                telefone = value;
-              });
-            },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Data de Nascimento'),
+            controller: _dtNascimentoController,
+            decoration: const InputDecoration(labelText: 'Data de Nascimento'),
             keyboardType: TextInputType.datetime,
-            onChanged: (value) {
-              setState(() {
-                dtNascimento = value;
-              });
-            },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () {
               salvarDados();
             },
-            child: Text('Salvar'),
+            child: const Text('Salvar'),
           ),
         ],
       ),
@@ -132,19 +101,24 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   }
 
   void salvarDados() {
-    FirebaseFirestore.instance.collection('pessoa_fisica').add({
-      'nome': nome,
-      'cpf': cpf,
-      'email': email,
-      'endereco': endereco,
-      'estado_civil': estado_civil,
-      'profissao': profissao,
-      'sexo': sexo,
-      'telefone': telefone,
-      'dt_nascimento': dtNascimento
-    }).then((value) {
+    PessoaFisica pessoaFisica = PessoaFisica(
+        id: const Uuid().v1(),
+        nome: _nomeController.text,
+        cpf: _cpfController.text,
+        email: _emailController.text,
+        endereco: _enderecoController.text,
+        estadoCivil: _estadoCivilController.text,
+        profissao: _profissaoController.text,
+        sexo: _sexoController.text,
+        telefone: _telefoneController.text,
+        dtNascimento: _dtNascimentoController.text);
+    FirebaseFirestore.instance
+        .collection('pessoa_fisica')
+        .doc(pessoaFisica.id)
+        .set(pessoaFisica.toMap())
+        .then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Dados salvos com sucesso')),
+        const SnackBar(content: Text('Dados salvos com sucesso')),
       );
       Navigator.pop(context);
     }).catchError((error) {

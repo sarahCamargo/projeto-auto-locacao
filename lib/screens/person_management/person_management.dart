@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_juridica.dart';
-import 'package:projeto_auto_locacao/screens/person_management/lista_pessoas.dart';
+import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
 
 class PersonManagement extends StatefulWidget {
   @override

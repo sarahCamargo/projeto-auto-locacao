@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'detalhes_pessoas.dart'; // Importe a tela de detalhes da pessoa
+import 'detalhes_pessoa.dart'; // Importe a tela de detalhes da pessoa
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListaPessoas extends StatefulWidget {

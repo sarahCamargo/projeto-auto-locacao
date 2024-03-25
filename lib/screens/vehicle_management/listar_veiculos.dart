@@ -41,7 +41,6 @@ class _ListarVeiculos extends State<ListarVeiculos> {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return CircularProgressIndicator();
-
                 }
 
                 var items = snapshot.data!.docs.where((element) => element['placa'].toString().toLowerCase().contains(searchString));
@@ -49,7 +48,7 @@ class _ListarVeiculos extends State<ListarVeiculos> {
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    var veiculo = items.elementAt(index).data(); // Acesse os dados do documento
+                    var veiculo = items.elementAt(index).data();
 
                     return GestureDetector(
                       onTap: () {
@@ -63,7 +62,6 @@ class _ListarVeiculos extends State<ListarVeiculos> {
                       child: ListTile(
                         title: Text('Placa: ${veiculo['placa'].toString()}'),
                         subtitle: Text('Modelo: ${veiculo['modelo'].toString()}'),
-                        // Mais detalhes ou ações para exibir aqui
                       ),
                     );
                   },

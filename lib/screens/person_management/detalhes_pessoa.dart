@@ -29,6 +29,16 @@ class DetalhesPessoaScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                FirebaseFirestore.instance.collection("pessoa_fisica").doc(pessoa['id']).delete().then((value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Pessoa deletada com sucesso')),
+                  );
+                  Navigator.pop(context);
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Erro ao deletar pessoa: $error')),
+                  );
+                });
                 // Implemente a lógica para excluir a pessoa
               },
               child: Text('Excluir'),
