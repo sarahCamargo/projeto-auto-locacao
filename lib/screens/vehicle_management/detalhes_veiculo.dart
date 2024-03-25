@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'cadastro_veiculo.dart';
+
 class DetalhesVeiculoScreen extends StatelessWidget {
   final Map<String, dynamic> veiculo;
   
@@ -27,6 +29,11 @@ class DetalhesVeiculoScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Implemente a lógica para editar a pessoa
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CadastroVeiculo(veiculo: veiculo)),
+                );
               },
               child: Text('Editar'),
             ),
@@ -42,7 +49,6 @@ class DetalhesVeiculoScreen extends StatelessWidget {
                     SnackBar(content: Text('Erro ao deletar veiculo: $error')),
                   );
                 });
-                // Implemente a lógica para excluir a pessoa
               },
               child: Text('Excluir'),
             ),

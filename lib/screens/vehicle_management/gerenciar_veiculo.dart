@@ -28,7 +28,7 @@ class _GerenciarVeiculo extends State<GerenciarVeiculo> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CadastroVeiculo()),
+                            builder: (context) => CadastroVeiculo(veiculo: {})),
                       );
                     },
                     child: Text('Cadastrar veículo'),
