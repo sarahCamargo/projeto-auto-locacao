@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:projeto_auto_locacao/cadastro_pessoa.dart';
+import 'package:projeto_auto_locacao/gerenciar_veiculo.dart';
 import 'firebase_options.dart';
 import 'cadastro_veiculo.dart';
 
@@ -36,15 +37,7 @@ class MyHomePage extends StatelessWidget {
         child: Column (
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CadastroVeiculo()),
-                );
-              },
-              child: Text('Cadastrar Veículo'),
-            ),
+            GerenciarVeiculo(),
             SizedBox(width: 20), // Espaçamento entre os botões
             CadastroPessoa(), // Botão para cadastrar pessoa
           ],

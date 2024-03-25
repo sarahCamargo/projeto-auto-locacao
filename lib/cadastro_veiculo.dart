@@ -68,40 +68,13 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
         marca: _marcaController.text,
         ano_fabricacao: int.parse(_anoFabricacaoController.text));
     FirebaseFirestore.instance.collection('veiculos').doc(veiculo.id).set(veiculo.toMap()).then((value) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Sucesso'),
-            content: Text('Dados salvos com sucesso!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Dados salvos com sucesso')),
       );
+      Navigator.pop(context);
     }).catchError((error) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Erro'),
-            content: Text('Ocorreu um erro ao salvar os dados.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar dados: $error')),
       );
     });
   }
