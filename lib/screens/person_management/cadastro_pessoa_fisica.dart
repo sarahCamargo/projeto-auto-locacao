@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
+import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 
 class CadastroPessoaFisica extends StatefulWidget {
   @override
@@ -10,19 +13,23 @@ class CadastroPessoaFisica extends StatefulWidget {
 
   final Map<String, dynamic> pessoa;
 
-  CadastroPessoaFisica({required this.pessoa});
+  const CadastroPessoaFisica({super.key, required this.pessoa});
 }
 
 class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _cpfController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
   final TextEditingController _estadoCivilController = TextEditingController();
   final TextEditingController _profissaoController = TextEditingController();
-  final TextEditingController _sexoController = TextEditingController();
-  final TextEditingController _telefoneController = TextEditingController();
-  final TextEditingController _dtNascimentoController = TextEditingController();
+  String _sexoController = '';
+
+  final MaskedTextController _dtNascimentoController =
+      MaskedTextController(mask: '00/00/0000');
+  final MaskedTextController _cpfController =
+      MaskedTextController(mask: '000.000.000-00');
+  final MaskedTextController _telefoneController =
+      MaskedTextController(mask: '(00) 00000-0000');
 
   @override
   void initState() {
@@ -34,7 +41,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
       _enderecoController.text = widget.pessoa["endereco"];
       _estadoCivilController.text = widget.pessoa["estado_civil"];
       _profissaoController.text = widget.pessoa["profissao"];
-      _sexoController.text = widget.pessoa["sexo"];
+      _sexoController = widget.pessoa["sexo"];
       _telefoneController.text = widget.pessoa["telefone"].toString();
       _dtNascimentoController.text = widget.pessoa["dtNascimento"];
     }
@@ -57,42 +64,82 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextFormField(
-            controller: _nomeController,
-            decoration: const InputDecoration(labelText: 'Nome'),
+          const Text(
+            'Dados Pessoais',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          const SizedBox(height: 18.0),
+          const CustomTextLabel(label: 'Nome'),
+          const SizedBox(height: 10.0),
+          CustomTextField(
+              controller: _nomeController, keyboardType: TextInputType.name),
           const SizedBox(height: 16.0),
           TextFormField(
             controller: _cpfController,
-            decoration: const InputDecoration(labelText: 'CPF'),
+            decoration: const InputDecoration(
+                labelText: 'CPF', hintText: '000.000.000-00'),
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: 16.0),
           TextFormField(
+            controller: _dtNascimentoController,
+            decoration: const InputDecoration(
+              labelText: 'Data de Nascimento',
+              hintText: 'dd/mm/aaaa',
+            ),
+            keyboardType: TextInputType.datetime,
+            onChanged: (value) {
+              if (value.isEmpty) {
+                _dtNascimentoController.updateText('dd/mm/aaaa');
+              }
+            },
+          ),
+          const SizedBox(height: 20.0),
+          const CustomTextLabel(label: 'Sexo'),
+          Row(
+            children: [
+              Radio(
+                value: 'Feminino',
+                groupValue: _sexoController,
+                onChanged: (value) {
+                  setState(() {
+                    _sexoController = value.toString();
+                  });
+                },
+              ),
+              Text('Feminino'),
+              SizedBox(width: 20.0),
+              Radio(
+                value: 'Masculino',
+                groupValue: _sexoController,
+                onChanged: (value) {
+                  setState(() {
+                    _sexoController = value.toString();
+                  });
+                },
+              ),
+              Text('Masculino'),
+            ],
+          ),
+          const SizedBox(height: 16.0),
+          const CustomTextLabel(label: 'E-mail'),
+          CustomTextField(
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'E-mail'),
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _enderecoController,
-            decoration: const InputDecoration(labelText: 'Endereço'),
-          ),
+          const CustomTextLabel(label: 'Estado Civil'),
+          CustomTextField(
+              controller: _estadoCivilController,
+              keyboardType: TextInputType.text),
           const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _estadoCivilController,
-            decoration: const InputDecoration(labelText: 'Estado Civil'),
-          ),
-          const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _profissaoController,
-            decoration: const InputDecoration(labelText: 'Profissão'),
-          ),
-          SizedBox(height: 16.0),
-          TextFormField(
-            controller: _sexoController,
-            decoration: const InputDecoration(labelText: 'Sexo'),
-          ),
+          const CustomTextLabel(label: 'Profissão'),
+          CustomTextField(
+              controller: _profissaoController,
+              keyboardType: TextInputType.text),
           const SizedBox(height: 16.0),
           TextFormField(
             controller: _telefoneController,
@@ -101,9 +148,8 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           ),
           const SizedBox(height: 16.0),
           TextFormField(
-            controller: _dtNascimentoController,
-            decoration: const InputDecoration(labelText: 'Data de Nascimento'),
-            keyboardType: TextInputType.datetime,
+            controller: _enderecoController,
+            decoration: const InputDecoration(labelText: 'Endereço'),
           ),
           const SizedBox(height: 16.0),
           ElevatedButton(
@@ -127,7 +173,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           endereco: _enderecoController.text,
           estadoCivil: _estadoCivilController.text,
           profissao: _profissaoController.text,
-          sexo: _sexoController.text,
+          sexo: _sexoController,
           telefone: _telefoneController.text,
           dtNascimento: _dtNascimentoController.text);
       FirebaseFirestore.instance
@@ -155,7 +201,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
         "endereco": _enderecoController.text,
         "estadoCivil": _estadoCivilController.text,
         "profissao": _profissaoController.text,
-        "sexo": _sexoController.text,
+        "sexo": _sexoController,
         "telefone": _telefoneController.text,
         "dtNascimento": _dtNascimentoController.text
       }).then((value) {
