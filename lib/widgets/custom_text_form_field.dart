@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? hintText;
   final String? errorText;
+  final bool? readOnly;
 
   const CustomTextField(
       {super.key,
@@ -14,7 +15,8 @@ class CustomTextField extends StatelessWidget {
       this.maskedController,
       this.keyboardType,
       this.hintText,
-      this.errorText});
+      this.errorText,
+      this.readOnly});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         controller: controller ?? maskedController,
         keyboardType: keyboardType,
+        readOnly: readOnly ?? false,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hintText,

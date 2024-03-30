@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
@@ -7,6 +9,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
+import 'package:http/http.dart' as http;
 
 class CadastroPessoaFisica extends StatefulWidget {
   @override
@@ -21,6 +24,11 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   String? _cpfError;
   String _sexoController = '';
   String? _selectedCivilStatus;
+  final TextEditingController _streetController = TextEditingController();
+  final TextEditingController _neighborhoodController = TextEditingController();
+  final TextEditingController _stateController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
+  bool _isAddressEditable = false;
   final List<String?> _civilStatusList = [
     'Solteiro',
     'Casado',
@@ -31,10 +39,11 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
 
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _enderecoController = TextEditingController();
+
   final TextEditingController _estadoCivilController = TextEditingController();
   final TextEditingController _profissaoController = TextEditingController();
 
+  final MaskedTextController _cepController = MaskedTextController(mask: '00000-000');
   final MaskedTextController _dtNascimentoController =
       MaskedTextController(mask: '00/00/0000');
   final MaskedTextController _cpfController =
@@ -49,7 +58,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
       _nomeController.text = widget.pessoa["nome"];
       _cpfController.text = widget.pessoa["cpf"].toString();
       _emailController.text = widget.pessoa["email"];
-      _enderecoController.text = widget.pessoa["endereco"];
+      _cepController.text = widget.pessoa["endereco"];
       _estadoCivilController.text = widget.pessoa["estado_civil"];
       _profissaoController.text = widget.pessoa["profissao"];
       _sexoController = widget.pessoa["sexo"];
@@ -167,7 +176,9 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
               items: _civilStatusList.map((status) {
                 return DropdownMenuItem<String>(
                   value: status,
-                  child: status == null ? Text('Não informar') : Text(status),
+                  child: status == null
+                      ? const Text('Não informar')
+                      : Text(status),
                 );
               }).toList(),
               onChanged: (value) {
@@ -188,8 +199,50 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
               maskedController: _telefoneController,
               keyboardType: TextInputType.phone),
           const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'Endereço'),
-          CustomTextField(controller: _enderecoController),
+          TextFormField(
+            controller: _cepController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: 'CEP',
+            ),
+            onChanged: (value) {
+              _fetchAddress(value);
+            },
+          ),
+          SizedBox(height: 20.0),
+          CustomTextLabel(label: 'Rua'),
+          CustomTextField(
+              controller: _streetController, readOnly: !_isAddressEditable),
+          //readOnly,
+          SizedBox(height: 20.0),
+          CustomTextLabel(label: 'Bairro'),
+          CustomTextField(
+              controller: _neighborhoodController,
+              readOnly: !_isAddressEditable),
+          SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: CustomTextField(
+                    controller: _stateController,
+                    readOnly: true,
+                    hintText: 'Estado',
+                  ),
+                ),
+                SizedBox(width: 20.0),
+                Expanded(
+                  flex: 2,
+                    child: CustomTextField(
+                  controller: _cityController,
+                  readOnly: true,
+                  hintText: 'Cidade',
+                )),
+              ],
+            ),
+          ),
           const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () {
@@ -209,7 +262,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           nome: _nomeController.text,
           cpf: _cpfController.text,
           email: _emailController.text,
-          endereco: _enderecoController.text,
+          endereco: _cepController.text,
           estadoCivil: _estadoCivilController.text,
           profissao: _profissaoController.text,
           sexo: _sexoController,
@@ -237,7 +290,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
         "nome": _nomeController.text,
         "cpf": _cpfController.text,
         "email": _emailController.text,
-        "endereco": _enderecoController.text,
+        "endereco": _cepController.text,
         "estadoCivil": _estadoCivilController.text,
         "profissao": _profissaoController.text,
         "sexo": _sexoController,
@@ -256,6 +309,30 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           SnackBar(content: Text('Erro ao salvar dados: $error')),
         );
       });
+    }
+  }
+
+  Future<void> _fetchAddress(String cep) async {
+    cep = cep.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cep.length == 8) {
+      final url = Uri.parse('https://viacep.com.br/ws/$cep/json/');
+      try {
+        final response = await http.get(url);
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          setState(() {
+            _streetController.text = data['logradouro'];
+            _neighborhoodController.text = data['bairro'];
+            _stateController.text = data['uf'];
+            _cityController.text = data['localidade'];
+            _isAddressEditable = true;
+          });
+        } else {
+          throw Exception('Failed to fetch address');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
     }
   }
 }
