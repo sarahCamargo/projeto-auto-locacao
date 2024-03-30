@@ -29,6 +29,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   bool _isAddressEditable = false;
+  bool isSaveButtonEnabled = false;
   final List<String?> _civilStatusList = [
     'Solteiro',
     'Casado',
@@ -43,7 +44,8 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   final TextEditingController _estadoCivilController = TextEditingController();
   final TextEditingController _profissaoController = TextEditingController();
 
-  final MaskedTextController _cepController = MaskedTextController(mask: '00000-000');
+  final MaskedTextController _cepController =
+      MaskedTextController(mask: '00000-000');
   final MaskedTextController _dtNascimentoController =
       MaskedTextController(mask: '00/00/0000');
   final MaskedTextController _cpfController =
@@ -112,21 +114,34 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           const CustomTextLabel(label: 'Nome'),
           const SizedBox(height: 10.0),
           CustomTextField(
-              controller: _nomeController, keyboardType: TextInputType.name),
+            controller: _nomeController,
+            keyboardType: TextInputType.name,
+            onChange: (value) {
+              checkRequiredFields(_nomeController);
+            },
+            isRequired: true,
+          ),
           const SizedBox(height: 16.0),
           const CustomTextLabel(label: 'CPF'),
           CustomTextField(
-            maskedController: _cpfController,
-            keyboardType: TextInputType.number,
-            hintText: '000.000.000-00',
-            errorText: _cpfError,
-          ),
+              maskedController: _cpfController,
+              keyboardType: TextInputType.number,
+              hintText: '000.000.000-00',
+              errorText: _cpfError,
+              onChange: (value) {
+                checkRequiredFields(_cpfController);
+              },
+              isRequired: true),
           const SizedBox(height: 16.0),
           const CustomTextLabel(label: 'Data de Nascimento'),
           CustomTextField(
               maskedController: _dtNascimentoController,
               keyboardType: TextInputType.datetime,
-              hintText: 'dd/mm/aaaa'),
+              hintText: 'dd/mm/aaaa',
+              onChange: (value) {
+                checkRequiredFields(_dtNascimentoController);
+              },
+              isRequired: true),
           const SizedBox(height: 20.0),
           const CustomTextLabel(label: 'Sexo'),
           Row(
@@ -197,7 +212,11 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           const CustomTextLabel(label: 'Telefone'),
           CustomTextField(
               maskedController: _telefoneController,
-              keyboardType: TextInputType.phone),
+              keyboardType: TextInputType.phone,
+              onChange: (value) {
+                checkRequiredFields(_telefoneController);
+              },
+              isRequired: true),
           const SizedBox(height: 16.0),
           TextFormField(
             controller: _cepController,
@@ -234,20 +253,22 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
                 ),
                 SizedBox(width: 20.0),
                 Expanded(
-                  flex: 2,
+                    flex: 2,
                     child: CustomTextField(
-                  controller: _cityController,
-                  readOnly: true,
-                  hintText: 'Cidade',
-                )),
+                      controller: _cityController,
+                      readOnly: true,
+                      hintText: 'Cidade',
+                    )),
               ],
             ),
           ),
           const SizedBox(height: 16.0),
           ElevatedButton(
-            onPressed: () {
-              salvarDados();
-            },
+            onPressed: isSaveButtonEnabled
+                ? () {
+                    salvarDados();
+                  }
+                : null,
             child: const Text('Salvar'),
           ),
         ],
@@ -334,5 +355,17 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
         print('Error: $e');
       }
     }
+  }
+
+  void checkRequiredFields(TextEditingController textControllers) {
+    bool isAllFieldsFilled = true;
+
+    if (textControllers.text.isEmpty) {
+      isAllFieldsFilled = false;
+    }
+
+    setState(() {
+      isSaveButtonEnabled = isAllFieldsFilled;
+    });
   }
 }
