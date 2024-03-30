@@ -20,6 +20,8 @@ class CadastroPessoaFisica extends StatefulWidget {
 class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   String? _cpfError;
   String _sexoController = '';
+  String? _selectedCivilStatus;
+  final List<String?> _civilStatusList = ['Solteiro', 'Casado', 'Divorciado', 'Viúvo', null];
 
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -144,10 +146,23 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
             keyboardType: TextInputType.emailAddress,
           ),
           const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'Estado Civil'),
-          CustomTextField(
-              controller: _estadoCivilController,
-              keyboardType: TextInputType.text),
+          DropdownButtonFormField<String>(
+            value: _selectedCivilStatus,
+            decoration: const InputDecoration(
+              labelText: 'Estado Civil',
+            ),
+            items: _civilStatusList.map((status) {
+              return DropdownMenuItem<String>(
+                value: status,
+                child: status == null ? Text('Não informar') : Text(status),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedCivilStatus = value;
+              });
+            },
+          ),
           const SizedBox(height: 16.0),
           const CustomTextLabel(label: 'Profissão'),
           CustomTextField(
