@@ -6,6 +6,7 @@ import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
+import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
 class CadastroPessoaFisica extends StatefulWidget {
   @override
@@ -17,12 +18,14 @@ class CadastroPessoaFisica extends StatefulWidget {
 }
 
 class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
+  String? _cpfError;
+  String _sexoController = '';
+
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
   final TextEditingController _estadoCivilController = TextEditingController();
   final TextEditingController _profissaoController = TextEditingController();
-  String _sexoController = '';
 
   final MaskedTextController _dtNascimentoController =
       MaskedTextController(mask: '00/00/0000');
@@ -45,6 +48,23 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
       _telefoneController.text = widget.pessoa["telefone"].toString();
       _dtNascimentoController.text = widget.pessoa["dtNascimento"];
     }
+    _cpfController.addListener(_validateCPF);
+  }
+
+  @override
+  void dispose() {
+    _cpfController.removeListener(_validateCPF);
+    _cpfController.dispose();
+    super.dispose();
+  }
+
+  void _validateCPF() {
+    setState(() {
+      _cpfError = _cpfController.text.isNotEmpty &&
+              !CPFValidator.isValid(_cpfController.text)
+          ? 'CPF inválido'
+          : null;
+    });
   }
 
   @override
@@ -77,26 +97,19 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           CustomTextField(
               controller: _nomeController, keyboardType: TextInputType.name),
           const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _cpfController,
-            decoration: const InputDecoration(
-                labelText: 'CPF', hintText: '000.000.000-00'),
+          const CustomTextLabel(label: 'CPF'),
+          CustomTextField(
+            maskedController: _cpfController,
             keyboardType: TextInputType.number,
+            hintText: '000.000.000-00',
+            errorText: _cpfError,
           ),
           const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _dtNascimentoController,
-            decoration: const InputDecoration(
-              labelText: 'Data de Nascimento',
-              hintText: 'dd/mm/aaaa',
-            ),
-            keyboardType: TextInputType.datetime,
-            onChanged: (value) {
-              if (value.isEmpty) {
-                _dtNascimentoController.updateText('dd/mm/aaaa');
-              }
-            },
-          ),
+          const CustomTextLabel(label: 'Data de Nascimento'),
+          CustomTextField(
+              maskedController: _dtNascimentoController,
+              keyboardType: TextInputType.datetime,
+              hintText: 'dd/mm/aaaa'),
           const SizedBox(height: 20.0),
           const CustomTextLabel(label: 'Sexo'),
           Row(
@@ -141,16 +154,13 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
               controller: _profissaoController,
               keyboardType: TextInputType.text),
           const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _telefoneController,
-            decoration: const InputDecoration(labelText: 'Telefone'),
-            keyboardType: TextInputType.phone,
-          ),
+          const CustomTextLabel(label: 'Telefone'),
+          CustomTextField(
+              maskedController: _telefoneController,
+              keyboardType: TextInputType.phone),
           const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _enderecoController,
-            decoration: const InputDecoration(labelText: 'Endereço'),
-          ),
+          const CustomTextLabel(label: 'Endereço'),
+          CustomTextField(controller: _enderecoController),
           const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () {
@@ -206,7 +216,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
         "dtNascimento": _dtNascimentoController.text
       }).then((value) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Dados salvos com sucesso')),
+          const SnackBar(content: Text('Dados salvos com sucesso')),
         );
         Navigator.push(
           context,

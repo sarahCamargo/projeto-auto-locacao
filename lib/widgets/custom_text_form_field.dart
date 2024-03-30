@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class CustomTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final TextInputType keyboardType;
+  final TextEditingController? controller;
+  final MaskedTextController? maskedController;
+  final TextInputType? keyboardType;
+  final String? hintText;
+  final String? errorText;
 
-  const CustomTextField({super.key, required this.controller, required this.keyboardType});
+  const CustomTextField(
+      {super.key,
+      this.controller,
+      this.maskedController,
+      this.keyboardType,
+      this.hintText,
+      this.errorText});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +25,12 @@ class CustomTextField extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: TextFormField(
-        controller: controller,
+        controller: controller ?? maskedController,
         keyboardType: keyboardType,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           border: InputBorder.none,
+          hintText: hintText,
+          errorText: errorText,
         ),
       ),
     );
