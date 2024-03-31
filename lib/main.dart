@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/gerenciar_veiculo.dart';
 import 'services/firebase_options.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
       title: 'Formulário Firebase',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.montserratTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
       home: MyHomePage(),
     );

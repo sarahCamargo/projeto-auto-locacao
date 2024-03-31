@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
+import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
@@ -89,9 +91,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cadastrar Pessoa Física'),
-      ),
+      appBar: const CustomAppBar(title: 'Cadastro Pessoa Física'),
       body: _buildForm(),
     );
   }
