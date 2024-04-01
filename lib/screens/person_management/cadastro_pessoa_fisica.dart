@@ -1,29 +1,26 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
 import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
+import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
-import 'package:http/http.dart' as http;
 
 class CadastroPessoaFisica extends StatefulWidget {
-
   @override
-  _CadastroPessoaFisicaState createState() => _CadastroPessoaFisicaState();
+  CadastroPessoaFisicaState createState() => CadastroPessoaFisicaState();
 
   final Map<String, dynamic> pessoa;
 
   const CadastroPessoaFisica({super.key, required this.pessoa});
 }
 
-class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
+class CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   String? _cpfError;
   String? _selectedCivilStatus;
   String _sexController = '';
@@ -31,22 +28,27 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   bool _isSaveButtonEnabled = false;
 
   final TextEditingController _streetController = TextEditingController();
-  final TextEditingController _neighborhoodController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
+  final TextEditingController _neighborhoodController = TextEditingController();
+  final TextEditingController _addressNumberController =
+      TextEditingController();
+  final TextEditingController _addressComplementController =
+      TextEditingController();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _civilStateController = TextEditingController();
   final TextEditingController _careerController = TextEditingController();
 
   final MaskedTextController _cepController =
-  MaskedTextController(mask: PersonConstants.cepMask);
+      MaskedTextController(mask: PersonConstants.cepMask);
   final MaskedTextController _birthDateController =
-  MaskedTextController(mask: PersonConstants.birthDateMask);
+      MaskedTextController(mask: PersonConstants.birthDateMask);
   final MaskedTextController _cpfController =
-  MaskedTextController(mask: PersonConstants.cpfMask);
+      MaskedTextController(mask: PersonConstants.cpfMask);
   final MaskedTextController _cellPhoneController =
-  MaskedTextController(mask: PersonConstants.cellPhoneMask);
+      MaskedTextController(mask: PersonConstants.cellPhoneMask);
 
   @override
   void initState() {
@@ -56,12 +58,13 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
       _nameController.text = widget.pessoa["nome"];
       _cpfController.text = widget.pessoa["cpf"].toString();
       _emailController.text = widget.pessoa["email"];
-      _cepController.text = widget.pessoa["endereco"];
       _civilStateController.text = widget.pessoa["estado_civil"];
       _careerController.text = widget.pessoa["profissao"];
       _sexController = widget.pessoa["sexo"];
       _cellPhoneController.text = widget.pessoa["telefone"].toString();
       _birthDateController.text = widget.pessoa["dtNascimento"];
+
+      _cepController.text = widget.pessoa["cep"];
     }
   }
 
@@ -75,7 +78,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   void _validateCPF() {
     setState(() {
       _cpfError = _cpfController.text.isNotEmpty &&
-          !CPFValidator.isValid(_cpfController.text)
+              !CPFValidator.isValid(_cpfController.text)
           ? PersonConstants.cpfErrorMessage
           : null;
     });
@@ -91,15 +94,24 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
 
   Widget _buildForm() {
     return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              const CustomTextLabel(label: PersonConstants.personalData,
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                label: PersonConstants.personalData,
+                fontWeight: FontWeight.bold,
                 fontSize: 18.0,
-                fontWeight: FontWeight.bold),
-              const SizedBox(height: 18.0),
+              ),
+              const SizedBox(height: 16.0),
               const CustomTextLabel(label: PersonConstants.nameLabel),
               CustomTextField(
                 controller: _nameController,
@@ -205,27 +217,21 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
                     checkRequiredFields(_cellPhoneController);
                   },
                   isRequired: true),
+              const SizedBox(height: 20.0),
+              const CustomTextLabel(
+                  label: PersonConstants.addressData,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _cepController,
+              const CustomTextLabel(label: PersonConstants.cepLabel),
+              CustomTextField(
+                maskedController: _cepController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: PersonConstants.cepLabel,
-                ),
-                onChanged: (value) {
+                hintText: PersonConstants.cepMask,
+                onChange: (value) {
                   _fetchAddress(value);
                 },
               ),
-              const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.streetLabel),
-              CustomTextField(
-                  controller: _streetController, readOnly: !_isAddressEditable),
-              //readOnly,
-              const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.neighborhoodLabel),
-              CustomTextField(
-                  controller: _neighborhoodController,
-                  readOnly: !_isAddressEditable),
               const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
@@ -250,33 +256,76 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
                   ],
                 ),
               ),
+              const CustomTextLabel(label: PersonConstants.streetLabel),
+              CustomTextField(
+                  controller: _streetController, readOnly: !_isAddressEditable),
+              //readOnly,
               const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.neighborhoodLabel),
+              CustomTextField(
+                  controller: _neighborhoodController,
+                  readOnly: !_isAddressEditable),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: CustomTextField(
+                        controller: _addressNumberController,
+                        readOnly: !_isAddressEditable,
+                        hintText: PersonConstants.addressNumber,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    const SizedBox(width: 20.0),
+                    Expanded(
+                        flex: 2,
+                        child: CustomTextField(
+                          controller: _addressComplementController,
+                          readOnly: !_isAddressEditable,
+                          hintText: PersonConstants.addressComplement,
+                        )),
+                  ],
+                ),
+              ),
               ElevatedButton(
                 onPressed: _isSaveButtonEnabled
                     ? () {
-                  saveData();
-                }
+                        saveData();
+                      }
                     : null,
                 child: const Text(PersonConstants.saveButton),
               ),
+              const SizedBox(height: 16.0),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   void saveData() {
     if (widget.pessoa["id"] == null) {
       PessoaFisica pessoaFisica = PessoaFisica(
-          id: const Uuid().v1(),
-          nome: _nameController.text,
-          cpf: _cpfController.text,
-          email: _emailController.text,
-          endereco: _cepController.text,
-          estadoCivil: _civilStateController.text,
-          profissao: _careerController.text,
-          sexo: _sexController,
-          telefone: _cellPhoneController.text,
-          dtNascimento: _birthDateController.text);
+        id: const Uuid().v1(),
+        nome: _nameController.text,
+        cpf: _cpfController.text,
+        email: _emailController.text,
+        estadoCivil: _civilStateController.text,
+        profissao: _careerController.text,
+        sexo: _sexController,
+        telefone: _cellPhoneController.text,
+        dtNascimento: _birthDateController.text,
+        cep: _cepController.text,
+        street: _streetController.text,
+        state: _stateController.text,
+        city: _cityController.text,
+        neighborhood: _neighborhoodController.text,
+        addressNumber: int.parse(_addressNumberController.text),
+        addressComplement: _addressComplementController.text,
+      );
       FirebaseFirestore.instance
           .collection('pessoa_fisica')
           .doc(pessoaFisica.id)
@@ -299,12 +348,18 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
         "nome": _nameController.text,
         "cpf": _cpfController.text,
         "email": _emailController.text,
-        "endereco": _cepController.text,
         "estadoCivil": _civilStateController.text,
         "profissao": _careerController.text,
         "sexo": _sexController,
         "telefone": _cellPhoneController.text,
-        "dtNascimento": _birthDateController.text
+        "dtNascimento": _birthDateController.text,
+        "cep": _cepController.text,
+        "street": _streetController.text,
+        "state": _stateController.text,
+        "city": _cityController.text,
+        "neighborhood": _neighborhoodController.text,
+        "addressNumber": int.parse(_addressNumberController.text),
+        "addressComplement": _addressComplementController.text
       }).then((value) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Dados salvos com sucesso')),
@@ -322,26 +377,15 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   }
 
   Future<void> _fetchAddress(String cep) async {
-    cep = cep.replaceAll(RegExp(r'[^0-9]'), '');
-    if (cep.length == 8) {
-      final url = Uri.parse('https://viacep.com.br/ws/$cep/json/');
-      try {
-        final response = await http.get(url);
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          setState(() {
-            _streetController.text = data['logradouro'];
-            _neighborhoodController.text = data['bairro'];
-            _stateController.text = data['uf'];
-            _cityController.text = data['localidade'];
-            _isAddressEditable = true;
-          });
-        } else {
-          throw Exception('Failed to fetch address');
-        }
-      } catch (e) {
-        print('Error: $e');
-      }
+    final data = await FetchAddressService().fetchAddress(cep);
+    if (data != null) {
+      setState(() {
+        _streetController.text = data['logradouro'];
+        _neighborhoodController.text = data['bairro'];
+        _stateController.text = data['uf'];
+        _cityController.text = data['localidade'];
+        _isAddressEditable = true;
+      });
     }
   }
 

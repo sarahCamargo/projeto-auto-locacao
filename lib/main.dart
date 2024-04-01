@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Formulário Firebase',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFE8E8E8),
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.montserratTextTheme(
           Theme.of(context).textTheme,

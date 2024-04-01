@@ -31,11 +31,14 @@ class PersonConstants {
   static const String neighborhoodLabel = 'Bairro';
   static const String stateLabel = 'Estado';
   static const String cityLabel = 'Cidade';
+  static const String addressNumber = 'Número';
+  static const String addressComplement = 'Complemento';
 
   static const String female = 'Feminino';
   static const String male = 'Masculino';
 
   static const String personalData = 'Dados Pessoais';
+  static const String addressData = 'Endereço';
 
   static const String saveButton = 'Salvar';
 

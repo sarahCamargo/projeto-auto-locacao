@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
-typedef void OnChangeCallback(String value);
+typedef OnChangeCallback = void Function(String value);
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final MaskedTextController? maskedController;
-  final TextInputType? keyboardType;
+  final TextInputType keyboardType;
   final String? hintText;
   final String? errorText;
-  final bool? readOnly;
+  final bool readOnly;
   final OnChangeCallback? onChange;
   final bool isRequired;
+  final String? labelText;
 
   const CustomTextField(
       {super.key,
       this.controller,
       this.maskedController,
-      this.keyboardType,
+      this.keyboardType = TextInputType.text,
       this.hintText,
       this.errorText,
-      this.readOnly,
+      this.readOnly = false,
       this.onChange,
-      this.isRequired = false});
+      this.isRequired = false,
+      this.labelText});
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  CustomTextFieldState createState() => CustomTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class CustomTextFieldState extends State<CustomTextField> {
   late Color _borderColor;
 
   @override
@@ -49,7 +51,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       child: TextFormField(
         controller: widget.controller ?? widget.maskedController,
         keyboardType: widget.keyboardType,
-        readOnly: widget.readOnly ?? false,
+        readOnly: widget.readOnly,
         onChanged: (value) {
           widget.onChange?.call(value);
           _updateBorderColor();
@@ -57,6 +59,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: widget.hintText,
+          hintStyle: const TextStyle(color: Color(0xFFA6A6A6)),
           errorText: widget.errorText,
         ),
       ),
