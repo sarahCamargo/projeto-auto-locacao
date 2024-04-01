@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
 import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
 import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
@@ -14,6 +14,7 @@ import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:http/http.dart' as http;
 
 class CadastroPessoaFisica extends StatefulWidget {
+
   @override
   _CadastroPessoaFisicaState createState() => _CadastroPessoaFisicaState();
 
@@ -24,52 +25,44 @@ class CadastroPessoaFisica extends StatefulWidget {
 
 class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   String? _cpfError;
-  String _sexoController = '';
   String? _selectedCivilStatus;
+  String _sexController = '';
+  bool _isAddressEditable = false;
+  bool _isSaveButtonEnabled = false;
+
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _neighborhoodController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  bool _isAddressEditable = false;
-  bool isSaveButtonEnabled = false;
-  final List<String?> _civilStatusList = [
-    'Solteiro',
-    'Casado',
-    'Divorciado',
-    'Viúvo',
-    null
-  ];
-
-  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-
-  final TextEditingController _estadoCivilController = TextEditingController();
-  final TextEditingController _profissaoController = TextEditingController();
+  final TextEditingController _civilStateController = TextEditingController();
+  final TextEditingController _careerController = TextEditingController();
 
   final MaskedTextController _cepController =
-      MaskedTextController(mask: '00000-000');
-  final MaskedTextController _dtNascimentoController =
-      MaskedTextController(mask: '00/00/0000');
+  MaskedTextController(mask: PersonConstants.cepMask);
+  final MaskedTextController _birthDateController =
+  MaskedTextController(mask: PersonConstants.birthDateMask);
   final MaskedTextController _cpfController =
-      MaskedTextController(mask: '000.000.000-00');
-  final MaskedTextController _telefoneController =
-      MaskedTextController(mask: '(00) 00000-0000');
+  MaskedTextController(mask: PersonConstants.cpfMask);
+  final MaskedTextController _cellPhoneController =
+  MaskedTextController(mask: PersonConstants.cellPhoneMask);
 
   @override
   void initState() {
     super.initState();
+    _cpfController.addListener(_validateCPF);
     if (widget.pessoa["id"] != null) {
-      _nomeController.text = widget.pessoa["nome"];
+      _nameController.text = widget.pessoa["nome"];
       _cpfController.text = widget.pessoa["cpf"].toString();
       _emailController.text = widget.pessoa["email"];
       _cepController.text = widget.pessoa["endereco"];
-      _estadoCivilController.text = widget.pessoa["estado_civil"];
-      _profissaoController.text = widget.pessoa["profissao"];
-      _sexoController = widget.pessoa["sexo"];
-      _telefoneController.text = widget.pessoa["telefone"].toString();
-      _dtNascimentoController.text = widget.pessoa["dtNascimento"];
+      _civilStateController.text = widget.pessoa["estado_civil"];
+      _careerController.text = widget.pessoa["profissao"];
+      _sexController = widget.pessoa["sexo"];
+      _cellPhoneController.text = widget.pessoa["telefone"].toString();
+      _birthDateController.text = widget.pessoa["dtNascimento"];
     }
-    _cpfController.addListener(_validateCPF);
   }
 
   @override
@@ -82,8 +75,8 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   void _validateCPF() {
     setState(() {
       _cpfError = _cpfController.text.isNotEmpty &&
-              !CPFValidator.isValid(_cpfController.text)
-          ? 'CPF inválido'
+          !CPFValidator.isValid(_cpfController.text)
+          ? PersonConstants.cpfErrorMessage
           : null;
     });
   }
@@ -91,7 +84,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Cadastro Pessoa Física'),
+      appBar: const CustomAppBar(title: PersonConstants.appBarTitle),
       body: _buildForm(),
     );
   }
@@ -99,196 +92,191 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   Widget _buildForm() {
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Dados Pessoais',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 18.0),
-          const CustomTextLabel(label: 'Nome'),
-          const SizedBox(height: 10.0),
-          CustomTextField(
-            controller: _nomeController,
-            keyboardType: TextInputType.name,
-            onChange: (value) {
-              checkRequiredFields(_nomeController);
-            },
-            isRequired: true,
-          ),
-          const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'CPF'),
-          CustomTextField(
-              maskedController: _cpfController,
-              keyboardType: TextInputType.number,
-              hintText: '000.000.000-00',
-              errorText: _cpfError,
-              onChange: (value) {
-                checkRequiredFields(_cpfController);
-              },
-              isRequired: true),
-          const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'Data de Nascimento'),
-          CustomTextField(
-              maskedController: _dtNascimentoController,
-              keyboardType: TextInputType.datetime,
-              hintText: 'dd/mm/aaaa',
-              onChange: (value) {
-                checkRequiredFields(_dtNascimentoController);
-              },
-              isRequired: true),
-          const SizedBox(height: 20.0),
-          const CustomTextLabel(label: 'Sexo'),
-          Row(
-            children: [
-              Radio(
-                value: 'Feminino',
-                groupValue: _sexoController,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const CustomTextLabel(label: PersonConstants.personalData,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold),
+              const SizedBox(height: 18.0),
+              const CustomTextLabel(label: PersonConstants.nameLabel),
+              CustomTextField(
+                controller: _nameController,
+                keyboardType: TextInputType.name,
+                onChange: (value) {
+                  checkRequiredFields(_nameController);
+                },
+                isRequired: true,
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.cpfLabel),
+              CustomTextField(
+                  maskedController: _cpfController,
+                  keyboardType: TextInputType.number,
+                  hintText: PersonConstants.cpfMask,
+                  errorText: _cpfError,
+                  onChange: (value) {
+                    checkRequiredFields(_cpfController);
+                  },
+                  isRequired: true),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.birthDateLabel),
+              CustomTextField(
+                  maskedController: _birthDateController,
+                  keyboardType: TextInputType.datetime,
+                  hintText: PersonConstants.birthDateHint,
+                  onChange: (value) {
+                    checkRequiredFields(_birthDateController);
+                  },
+                  isRequired: true),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.sexLabel),
+              Row(
+                children: [
+                  Radio(
+                    value: PersonConstants.female,
+                    groupValue: _sexController,
+                    onChanged: (value) {
+                      setState(() {
+                        _sexController = value.toString();
+                      });
+                    },
+                  ),
+                  const Text(PersonConstants.female),
+                  const SizedBox(width: 20.0),
+                  Radio(
+                    value: PersonConstants.male,
+                    groupValue: _sexController,
+                    onChanged: (value) {
+                      setState(() {
+                        _sexController = value.toString();
+                      });
+                    },
+                  ),
+                  const Text(PersonConstants.male),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.emailLabel),
+              CustomTextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.civilStatusLabel),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: DropdownButtonFormField<String>(
+                  value: _selectedCivilStatus,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                  items: PersonConstants.civilStatus.map((status) {
+                    return DropdownMenuItem<String>(
+                      value: status,
+                      child: status == null
+                          ? const Text(PersonConstants.doNotInform)
+                          : Text(status),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCivilStatus = value;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.careerLabel),
+              CustomTextField(
+                  controller: _careerController,
+                  keyboardType: TextInputType.text),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.cellPhoneLabel),
+              CustomTextField(
+                  maskedController: _cellPhoneController,
+                  keyboardType: TextInputType.phone,
+                  onChange: (value) {
+                    checkRequiredFields(_cellPhoneController);
+                  },
+                  isRequired: true),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _cepController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: PersonConstants.cepLabel,
+                ),
                 onChanged: (value) {
-                  setState(() {
-                    _sexoController = value.toString();
-                  });
+                  _fetchAddress(value);
                 },
               ),
-              Text('Feminino'),
-              SizedBox(width: 20.0),
-              Radio(
-                value: 'Masculino',
-                groupValue: _sexoController,
-                onChanged: (value) {
-                  setState(() {
-                    _sexoController = value.toString();
-                  });
-                },
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.streetLabel),
+              CustomTextField(
+                  controller: _streetController, readOnly: !_isAddressEditable),
+              //readOnly,
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: PersonConstants.neighborhoodLabel),
+              CustomTextField(
+                  controller: _neighborhoodController,
+                  readOnly: !_isAddressEditable),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: CustomTextField(
+                        controller: _stateController,
+                        readOnly: true,
+                        hintText: PersonConstants.stateLabel,
+                      ),
+                    ),
+                    const SizedBox(width: 20.0),
+                    Expanded(
+                        flex: 2,
+                        child: CustomTextField(
+                          controller: _cityController,
+                          readOnly: true,
+                          hintText: PersonConstants.cityLabel,
+                        )),
+                  ],
+                ),
               ),
-              Text('Masculino'),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _isSaveButtonEnabled
+                    ? () {
+                  saveData();
+                }
+                    : null,
+                child: const Text(PersonConstants.saveButton),
+              ),
             ],
           ),
-          const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'E-mail'),
-          CustomTextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(height: 16.0),
-          CustomTextLabel(label: 'Estado Civil'),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: DropdownButtonFormField<String>(
-              value: _selectedCivilStatus,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
-              items: _civilStatusList.map((status) {
-                return DropdownMenuItem<String>(
-                  value: status,
-                  child: status == null
-                      ? const Text('Não informar')
-                      : Text(status),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCivilStatus = value;
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'Profissão'),
-          CustomTextField(
-              controller: _profissaoController,
-              keyboardType: TextInputType.text),
-          const SizedBox(height: 16.0),
-          const CustomTextLabel(label: 'Telefone'),
-          CustomTextField(
-              maskedController: _telefoneController,
-              keyboardType: TextInputType.phone,
-              onChange: (value) {
-                checkRequiredFields(_telefoneController);
-              },
-              isRequired: true),
-          const SizedBox(height: 16.0),
-          TextFormField(
-            controller: _cepController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'CEP',
-            ),
-            onChanged: (value) {
-              _fetchAddress(value);
-            },
-          ),
-          SizedBox(height: 20.0),
-          CustomTextLabel(label: 'Rua'),
-          CustomTextField(
-              controller: _streetController, readOnly: !_isAddressEditable),
-          //readOnly,
-          SizedBox(height: 20.0),
-          CustomTextLabel(label: 'Bairro'),
-          CustomTextField(
-              controller: _neighborhoodController,
-              readOnly: !_isAddressEditable),
-          SizedBox(height: 20.0),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Row(
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: CustomTextField(
-                    controller: _stateController,
-                    readOnly: true,
-                    hintText: 'Estado',
-                  ),
-                ),
-                SizedBox(width: 20.0),
-                Expanded(
-                    flex: 2,
-                    child: CustomTextField(
-                      controller: _cityController,
-                      readOnly: true,
-                      hintText: 'Cidade',
-                    )),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: isSaveButtonEnabled
-                ? () {
-                    salvarDados();
-                  }
-                : null,
-            child: const Text('Salvar'),
-          ),
-        ],
-      ),
-    ));
+        ));
   }
 
-  void salvarDados() {
+  void saveData() {
     if (widget.pessoa["id"] == null) {
       PessoaFisica pessoaFisica = PessoaFisica(
           id: const Uuid().v1(),
-          nome: _nomeController.text,
+          nome: _nameController.text,
           cpf: _cpfController.text,
           email: _emailController.text,
           endereco: _cepController.text,
-          estadoCivil: _estadoCivilController.text,
-          profissao: _profissaoController.text,
-          sexo: _sexoController,
-          telefone: _telefoneController.text,
-          dtNascimento: _dtNascimentoController.text);
+          estadoCivil: _civilStateController.text,
+          profissao: _careerController.text,
+          sexo: _sexController,
+          telefone: _cellPhoneController.text,
+          dtNascimento: _birthDateController.text);
       FirebaseFirestore.instance
           .collection('pessoa_fisica')
           .doc(pessoaFisica.id)
@@ -308,15 +296,15 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
           .collection('pessoa_fisica')
           .doc(widget.pessoa["id"])
           .update({
-        "nome": _nomeController.text,
+        "nome": _nameController.text,
         "cpf": _cpfController.text,
         "email": _emailController.text,
         "endereco": _cepController.text,
-        "estadoCivil": _estadoCivilController.text,
-        "profissao": _profissaoController.text,
-        "sexo": _sexoController,
-        "telefone": _telefoneController.text,
-        "dtNascimento": _dtNascimentoController.text
+        "estadoCivil": _civilStateController.text,
+        "profissao": _careerController.text,
+        "sexo": _sexController,
+        "telefone": _cellPhoneController.text,
+        "dtNascimento": _birthDateController.text
       }).then((value) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Dados salvos com sucesso')),
@@ -365,7 +353,7 @@ class _CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
     }
 
     setState(() {
-      isSaveButtonEnabled = isAllFieldsFilled;
+      _isSaveButtonEnabled = isAllFieldsFilled;
     });
   }
 }
