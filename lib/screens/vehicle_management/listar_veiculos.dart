@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/detalhes_veiculo.dart';
 
+import '../../widgets/custom_card_vehicle.dart';
+
 class ListarVeiculos extends StatefulWidget {
   @override
   _ListarVeiculos createState() => _ListarVeiculos();
@@ -59,10 +61,14 @@ class _ListarVeiculos extends State<ListarVeiculos> {
                           ),
                         );
                       },
+                      /*
                       child: ListTile(
                         title: Text('Placa: ${veiculo['placa'].toString()}'),
                         subtitle: Text('Modelo: ${veiculo['modelo'].toString()}'),
                       ),
+
+                       */
+                      child: CustomCardVehicle(veiculo['modelo'], int.parse(veiculo['ano_fabricacao']) , veiculo['placa']),
                     );
                   },
                 );

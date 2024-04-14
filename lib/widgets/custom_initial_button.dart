@@ -16,7 +16,7 @@ class CustomInitialButton extends StatelessWidget {
       child: Container(
         width: 150,
         height: 100,
-        color: Colors.white60,
+        color: Colors.white,
         child: Column(
           children: [
             Icon(icon, size: 70,),
