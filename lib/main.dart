@@ -45,8 +45,8 @@ class MyHomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CustomInitialButton("Pessoas", ListaPessoas(), Icons.person),
-                CustomInitialButton("Veículos", ListarVeiculos(), Icons.car_crash),
+                CustomInitialButton("Pessoas", ListaPessoas(), Icons.people),
+                CustomInitialButton("Veículos", ListarVeiculos(), Icons.directions_car),
               ],
             ),
           ],
