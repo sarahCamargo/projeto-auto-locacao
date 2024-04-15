@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
+import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/listar_veiculos.dart';
 import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
 import 'services/firebase_options.dart';
@@ -45,7 +45,7 @@ class MyHomePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CustomInitialButton("Pessoas", ListaPessoas(), Icons.people),
+                CustomInitialButton("Pessoas", PersonManagement(), Icons.people),
                 CustomInitialButton("Veículos", ListarVeiculos(), Icons.directions_car),
               ],
             ),

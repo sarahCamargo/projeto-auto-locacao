@@ -3,9 +3,33 @@ class Veiculo {
   String placa;
   String modelo;
   String marca;
-  int ano_fabricacao;
+  int anoFabricacao;
+  int renavan;
+  String cor;
+  int quilometragem;
+  String tipoCombustivel;
+  int numeroPortas;
+  String tipoTransmissao;
+  String condicao;
+  int numeroAssentos;
+  String descricao;
 
-  Veiculo({required this.id, required this.placa, required this.modelo, required this.marca, required this.ano_fabricacao});
+  Veiculo(
+      {this.id = "",
+      this.placa = "",
+      this.modelo = "",
+      this.marca = "",
+      this.anoFabricacao = 0,
+      this.renavan = 0,
+      this.cor = "",
+      this.quilometragem = 0,
+      this.tipoCombustivel = "",
+      this.numeroPortas = 0,
+      this.tipoTransmissao = "",
+      this.condicao = "",
+      this.numeroAssentos = 0,
+      this.descricao = ""
+      });
 
   Map<String, dynamic> toMap() {
     return {
@@ -13,7 +37,16 @@ class Veiculo {
       "placa": placa,
       "modelo": modelo,
       "marca": marca,
-      "ano_fabricacao": ano_fabricacao
+      "anoFabricacao": anoFabricacao,
+      "renavan": renavan,
+      "cor": cor,
+      "quilometragem": quilometragem,
+      "tipoCombustivel": tipoCombustivel,
+      "numeroPortas": numeroPortas,
+      "tipoTransmissao": tipoTransmissao,
+      "condicao": condicao,
+      "numeroAssentos": numeroAssentos,
+      "descricao": descricao
     };
   }
 }
