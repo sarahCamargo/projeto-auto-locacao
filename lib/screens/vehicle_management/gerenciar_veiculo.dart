@@ -1,56 +1,112 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/listar_veiculos.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/cadastro_veiculo.dart';
 
-import 'cadastro_veiculo.dart';
+import '../../widgets/custom_card_vehicle.dart';
 
-class GerenciarVeiculo extends StatefulWidget {
+class VehiclesManagementHandler extends StatefulWidget {
+
+  const VehiclesManagementHandler({super.key});
+
   @override
-  _GerenciarVeiculo createState() => _GerenciarVeiculo();
+  VehiclesManagement createState() => VehiclesManagement();
 }
 
-class _GerenciarVeiculo extends State<GerenciarVeiculo> {
+class VehiclesManagement extends State<VehiclesManagementHandler> {
+  String searchString = '';
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Escolha a ação'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CadastroVeiculo(veiculo: {})),
-                      );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Gerenciar veículos'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchString = value.toLowerCase();
+                      });
                     },
-                    child: Text('Cadastrar veículo'),
+                    decoration: InputDecoration(
+                      labelText: 'Pesquisar por placa',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ListarVeiculosHandler()),
-                      );
-                    },
-                    child: Text('Listar veículo'),
+                ),
+                SizedBox(
+                  width: 16,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.add_circle_rounded,
+                    size: 50,
                   ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-      child: Text('Gerenciar Veículos'),
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CadastroVeiculo(
+                          veiculo: {},
+                        ),
+                      ),
+                    ),
+                  },
+                )
+              ],
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder(
+              stream:
+              FirebaseFirestore.instance.collection('veiculos').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+
+                var items = snapshot.data!.docs.where((element) =>
+                    element['placa']
+                        .toString()
+                        .toLowerCase()
+                        .contains(searchString));
+                return ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    var veiculo = items.elementAt(index).data();
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CadastroVeiculo(veiculo: veiculo),
+                          ),
+                        );
+                      },
+                      child: CustomCardVehicle(
+                          veiculo['modelo'],
+                          veiculo['anoFabricacao'],
+                          veiculo['placa'],
+                          veiculo['id']),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

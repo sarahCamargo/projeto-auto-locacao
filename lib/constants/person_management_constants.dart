@@ -1,6 +1,8 @@
 class PersonConstants {
   static const String appBarTitle = 'Cadastro Pessoa Física';
 
+  static const String personManagementTitle = "Gerenciar Pessoas";
+
   static const List<String?> civilStatus = [
     'Solteiro',
     'Casado',

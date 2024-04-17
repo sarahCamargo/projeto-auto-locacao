@@ -4,10 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/gerenciar_veiculo.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/listar_veiculos.dart';
 import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
 import 'services/firebase_options.dart';
 
@@ -52,20 +52,20 @@ class MyHomePage extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(10.0),
           ),
-          child: Column(
+          child: const Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 2,
-                    child: CustomInitialButton(HomePageConstants.personFeature, PersonManagement(),
+                    child: CustomInitialButton(HomePageConstants.personFeature, PersonManagementHandler(),
                         FontAwesomeIcons.userGroup),
                   ),
-                  const Expanded(
+                  Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.vehicleFeature,
-                        ListarVeiculosHandler(), FontAwesomeIcons.car),
+                        VehiclesManagementHandler(), FontAwesomeIcons.car),
                   ),
                 ],
               ),
