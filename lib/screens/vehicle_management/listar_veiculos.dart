@@ -1,17 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/cadastro_veiculo.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/detalhes_veiculo.dart';
 
 import '../../widgets/custom_card_vehicle.dart';
 
-class ListarVeiculos extends StatefulWidget {
+class ListarVeiculosHandler extends StatefulWidget {
+
+  const ListarVeiculosHandler({super.key});
+
   @override
-  _ListarVeiculos createState() => _ListarVeiculos();
+  ListarVeiculos createState() => ListarVeiculos();
 }
 
-class _ListarVeiculos extends State<ListarVeiculos> {
+class ListarVeiculos extends State<ListarVeiculosHandler> {
   String searchString = '';
 
   @override
@@ -42,16 +43,23 @@ class _ListarVeiculos extends State<ListarVeiculos> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16,),
+                SizedBox(
+                  width: 16,
+                ),
                 IconButton(
-                    icon: Icon(Icons.add_circle_rounded, size: 50,),
-                  onPressed: () => {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                  builder: (context) => CadastroVeiculo(veiculo: {},),
+                  icon: Icon(
+                    Icons.add_circle_rounded,
+                    size: 50,
                   ),
-                  )
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CadastroVeiculo(
+                          veiculo: {},
+                        ),
+                      ),
+                    ),
                   },
                 )
               ],
@@ -59,13 +67,18 @@ class _ListarVeiculos extends State<ListarVeiculos> {
           ),
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('veiculos').snapshots(),
+              stream:
+                  FirebaseFirestore.instance.collection('veiculos').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return CircularProgressIndicator();
                 }
 
-                var items = snapshot.data!.docs.where((element) => element['placa'].toString().toLowerCase().contains(searchString));
+                var items = snapshot.data!.docs.where((element) =>
+                    element['placa']
+                        .toString()
+                        .toLowerCase()
+                        .contains(searchString));
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
@@ -76,11 +89,16 @@ class _ListarVeiculos extends State<ListarVeiculos> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CadastroVeiculo(veiculo: veiculo),
+                            builder: (context) =>
+                                CadastroVeiculo(veiculo: veiculo),
                           ),
                         );
                       },
-                      child: CustomCardVehicle(veiculo['modelo'], veiculo['anoFabricacao'] , veiculo['placa'], veiculo['id']),
+                      child: CustomCardVehicle(
+                          veiculo['modelo'],
+                          veiculo['anoFabricacao'],
+                          veiculo['placa'],
+                          veiculo['id']),
                     );
                   },
                 );

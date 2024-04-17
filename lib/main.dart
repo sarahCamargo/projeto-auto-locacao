@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projeto_auto_locacao/constants/colors_constants.dart';
+import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
+import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
+import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/listar_veiculos.dart';
 import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
@@ -11,45 +16,61 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Formulário Firebase',
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFE8E8E8),
+        scaffoldBackgroundColor: ColorsConstants.backgroundColor,
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.montserratTextTheme(
           Theme.of(context).textTheme,
         ),
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Página Inicial'),
-      ),
-      body: Container(
-        child: Column (
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                CustomInitialButton("Pessoas", PersonManagement(), Icons.people),
-                CustomInitialButton("Veículos", ListarVeiculos(), Icons.directions_car),
-              ],
-            ),
-          ],
+      appBar: const MenuNavigation(title: HomePageConstants.homePage,),
+      drawer: const DrawerNavigator(),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: CustomInitialButton(HomePageConstants.personFeature, PersonManagement(),
+                        FontAwesomeIcons.userGroup),
+                  ),
+                  const Expanded(
+                    flex: 2,
+                    child: CustomInitialButton(HomePageConstants.vehicleFeature,
+                        ListarVeiculosHandler(), FontAwesomeIcons.car),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

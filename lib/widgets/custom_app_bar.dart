@@ -3,8 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool hasReturnScreen;
 
-  const CustomAppBar({super.key, required this.title});
+  const CustomAppBar(
+      {super.key, required this.title, this.hasReturnScreen = true});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +20,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             fontWeight: FontWeight.bold,
             color: Color(0xFF737373)),
       ),
-      leading: IconButton(
-        icon: const Icon(FontAwesomeIcons.angleLeft, color: Color(0xFF737373)),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+      leading: hasReturnScreen
+          ? IconButton(
+              icon: const Icon(FontAwesomeIcons.angleLeft,
+                  color: Color(0xFF737373)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          : null,
     );
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

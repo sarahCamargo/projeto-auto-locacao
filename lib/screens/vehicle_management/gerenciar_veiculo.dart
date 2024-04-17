@@ -39,7 +39,7 @@ class _GerenciarVeiculo extends State<GerenciarVeiculo> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ListarVeiculos()),
+                            builder: (context) => ListarVeiculosHandler()),
                       );
                     },
                     child: Text('Listar veículo'),
