@@ -7,6 +7,10 @@ import 'package:projeto_auto_locacao/screens/person_management/natural_person_re
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/person_card.dart';
 
+import '../../constants/general_constants.dart';
+import '../../utils/confirmation_dialog.dart';
+import '../../widgets/custom_text_label.dart';
+
 class PersonManagement extends StatefulWidget {
   const PersonManagement({super.key});
 
@@ -22,7 +26,7 @@ class PersonManagementState extends State<PersonManagement> {
     return Scaffold(
       appBar: const CustomAppBar(
         title: PersonConstants.personManagementTitle,
-        hasReturnScreen: false,
+        hasReturnScreen: true,
       ),
       body: Column(
         children: [
@@ -76,45 +80,72 @@ class PersonManagementState extends State<PersonManagement> {
             ),
           ),
           Expanded(
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('pessoa_fisica')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const CircularProgressIndicator();
-                }
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('pessoa_fisica')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
 
-                var items = snapshot.data!.docs.where((element) =>
-                    element['nome']
-                        .toString()
-                        .toLowerCase()
-                        .contains(searchString));
-                return ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    var person = items.elementAt(index).data();
+                    var items = snapshot.data!.docs.where((element) =>
+                        element['nome']
+                            .toString()
+                            .toLowerCase()
+                            .contains(searchString));
+                    return ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        var person = items.elementAt(index).data();
 
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                NaturalPersonRegister(person: person),
-                          ),
+                        return GestureDetector(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ConfirmationDialog(
+                                    content: GeneralConstants.confirmEdit,
+                                    confirmationWidget:
+                                        confirmationAction(context, person)
+                                  );
+                                });
+                          },
+                          child: PersonCard(person['nome'], person['cpf'],
+                              person['telefone'], person['id']),
                         );
                       },
-                      child: PersonCard(person['nome'], person['cpf'],
-                          person['telefone'], person['id']),
                     );
                   },
-                );
-              },
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget confirmationAction(BuildContext context, var person) {
+    return TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NaturalPersonRegister(person: person),
+            ),
+          );
+        },
+        child: const CustomTextLabel(
+          label: GeneralConstants.ok,
+        ));
   }
 }

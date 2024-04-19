@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_auto_locacao/constants/colors_constants.dart';
+import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
 import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
@@ -37,7 +39,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _civilStateController = TextEditingController();
   final TextEditingController _careerController = TextEditingController();
 
   final MaskedTextController _cepController =
@@ -57,7 +58,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
       _nameController.text = widget.person["nome"];
       _cpfController.text = widget.person["cpf"].toString();
       _emailController.text = widget.person["email"];
-      _civilStateController.text = widget.person["estado_civil"];
+      _selectedCivilStatus = widget.person["estado_civil"];
       _careerController.text = widget.person["profissao"];
       _sexController = widget.person["sexo"];
       _cellPhoneController.text = widget.person["telefone"].toString();
@@ -211,6 +212,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
               CustomTextField(
                   maskedController: _cellPhoneController,
                   keyboardType: TextInputType.phone,
+                  hintText: PersonConstants.cellPhoneHint,
                   onChange: (value) {
                     checkRequiredFields(_cellPhoneController);
                   },
@@ -289,13 +291,18 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                 ),
               ),
               ElevatedButton(
-                onPressed: _isSaveButtonEnabled
-                    ? () {
-                        saveData();
-                      }
-                    : null,
-                child: const Text(PersonConstants.saveButton),
-              ),
+                  onPressed: _isSaveButtonEnabled
+                      ? () {
+                          saveData();
+                          Navigator.of(context).pop();
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorsConstants.backgroundColor),
+                  child: const CustomTextLabel(
+                    label: PersonConstants.saveButton,
+                    fontWeight: FontWeight.bold,
+                  )),
               const SizedBox(height: 16.0),
             ],
           ),
@@ -312,7 +319,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     person.name = _nameController.text;
     person.cpf = _cpfController.text;
     person.email = _emailController.text;
-    person.civilState = _civilStateController.text;
+    person.civilState = _selectedCivilStatus;
     person.career = _careerController.text;
     person.sex = _sexController;
     person.cellPhone = _cellPhoneController.text;
@@ -331,7 +338,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
 
     daoService.save(person).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dados salvos com sucesso')),
+        const SnackBar(content: Text(GeneralConstants.dataSaved)),
       );
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(

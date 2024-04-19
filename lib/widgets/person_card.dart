@@ -16,35 +16,38 @@ class PersonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: CustomTextLabel(
-          label: name,
-          fontWeight: FontWeight.bold,
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomTextLabel(label: "CPF: $cpf"),
-            CustomTextLabel(label: "Telefone: $cellPhone"),
-          ],
-        ),
-        trailing: IconButton(
-          icon: const Icon(
-            FontAwesomeIcons.trash,
-            color: ColorsConstants.iconColor,
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Card(
+        color: Colors.white,
+        child: ListTile(
+          title: CustomTextLabel(
+            label: name,
+            fontWeight: FontWeight.bold,
           ),
-          onPressed: () => {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return ConfirmationDialog(
-                    content: GeneralConstants.confirmDelete,
-                    action: deletePerson,
-                    message: GeneralConstants.registerDeleted,
-                  );
-                }),
-          },
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextLabel(label: "CPF: $cpf"),
+              CustomTextLabel(label: "Telefone: $cellPhone"),
+            ],
+          ),
+          trailing: IconButton(
+            icon: const Icon(
+              FontAwesomeIcons.trash,
+              color: ColorsConstants.iconColor,
+            ),
+            onPressed: () => {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ConfirmationDialog(
+                      content: GeneralConstants.confirmDelete,
+                      confirmationWidget: confirmationAction(context)
+                    );
+                  }),
+            },
+          ),
         ),
       ),
     );
@@ -53,5 +56,25 @@ class PersonCard extends StatelessWidget {
   Future<void> deletePerson() {
     DaoService daoService = DaoService(collectionName: "pessoa_fisica");
     return daoService.delete(id);
+  }
+
+  Widget confirmationAction(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          deletePerson().then((value) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(GeneralConstants.registerDeleted)),
+            );
+            Navigator.of(context).pop();
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Erro ao realizar ação: $error')),
+            );
+            Navigator.of(context).pop();
+          });
+        },
+        child: const CustomTextLabel(
+          label: GeneralConstants.ok,
+        ));
   }
 }

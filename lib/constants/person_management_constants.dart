@@ -14,6 +14,7 @@ class PersonConstants {
   static const String doNotInform = 'Não Informar';
 
   static const String birthDateHint = 'dd/mm/yyyy';
+  static const String cellPhoneHint = '(XX) XXXXX - XXXXX';
 
   static const String cepMask = '00000-000';
   static const String birthDateMask = '00/00/0000';
