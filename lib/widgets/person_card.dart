@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
+import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/services/dao_service.dart';
+import 'package:projeto_auto_locacao/utils/confirmation_dialog.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 
 class PersonCard extends StatelessWidget {
@@ -33,15 +35,15 @@ class PersonCard extends StatelessWidget {
             color: ColorsConstants.iconColor,
           ),
           onPressed: () => {
-            deletePerson().then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Pessoa deletada com sucesso')),
-              );
-            }).catchError((error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Erro ao deletar pessoa: $error')),
-              );
-            })
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ConfirmationDialog(
+                    content: GeneralConstants.confirmDelete,
+                    action: deletePerson,
+                    message: GeneralConstants.registerDeleted,
+                  );
+                }),
           },
         ),
       ),
