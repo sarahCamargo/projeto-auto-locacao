@@ -59,13 +59,13 @@ class MyHomePage extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: CustomInitialButton(HomePageConstants.personFeature, PersonManagementHandler(),
+                    child: CustomInitialButton(HomePageConstants.personFeature, PersonManagement(),
                         FontAwesomeIcons.userGroup),
                   ),
                   Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.vehicleFeature,
-                        VehiclesManagementHandler(), FontAwesomeIcons.car),
+                        VehiclesManagement(), FontAwesomeIcons.car),
                   ),
                 ],
               ),

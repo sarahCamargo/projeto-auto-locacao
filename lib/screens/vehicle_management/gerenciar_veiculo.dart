@@ -4,15 +4,15 @@ import 'package:projeto_auto_locacao/screens/vehicle_management/cadastro_veiculo
 
 import '../../widgets/custom_card_vehicle.dart';
 
-class VehiclesManagementHandler extends StatefulWidget {
+class VehiclesManagement extends StatefulWidget {
 
-  const VehiclesManagementHandler({super.key});
+  const VehiclesManagement({super.key});
 
   @override
-  VehiclesManagement createState() => VehiclesManagement();
+  VehiclesManagementState createState() => VehiclesManagementState();
 }
 
-class VehiclesManagement extends State<VehiclesManagementHandler> {
+class VehiclesManagementState extends State<VehiclesManagement> {
   String searchString = '';
 
   @override

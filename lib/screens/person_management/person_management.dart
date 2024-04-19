@@ -3,21 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
-import 'package:projeto_auto_locacao/screens/person_management/cadastro_pessoa_fisica.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/cadastro_veiculo.dart';
+import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/person_card.dart';
 
-import '../../widgets/custom_card_vehicle.dart';
-
-class PersonManagementHandler extends StatefulWidget {
-  const PersonManagementHandler({super.key});
+class PersonManagement extends StatefulWidget {
+  const PersonManagement({super.key});
 
   @override
-  PersonManagement createState() => PersonManagement();
+  PersonManagementState createState() => PersonManagementState();
 }
 
-class PersonManagement extends State<PersonManagementHandler> {
+class PersonManagementState extends State<PersonManagement> {
   String searchString = '';
 
   @override
@@ -68,8 +65,8 @@ class PersonManagement extends State<PersonManagementHandler> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const CadastroPessoaFisica(
-                          pessoa: {},
+                        builder: (context) => const NaturalPersonRegister(
+                          person: {},
                         ),
                       ),
                     ),
@@ -96,7 +93,7 @@ class PersonManagement extends State<PersonManagementHandler> {
                 return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
-                    var pessoa = items.elementAt(index).data();
+                    var person = items.elementAt(index).data();
 
                     return GestureDetector(
                       onTap: () {
@@ -104,12 +101,12 @@ class PersonManagement extends State<PersonManagementHandler> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                CadastroPessoaFisica(pessoa: pessoa),
+                                NaturalPersonRegister(person: person),
                           ),
                         );
                       },
-                      child: PersonCard(pessoa['nome'], pessoa['cpf'],
-                          pessoa['telefone'], pessoa['id']),
+                      child: PersonCard(person['nome'], person['cpf'],
+                          person['telefone'], person['id']),
                     );
                   },
                 );

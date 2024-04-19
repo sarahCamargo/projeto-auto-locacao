@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
-import 'package:projeto_auto_locacao/models/pessoa_fisica.dart';
-import 'package:projeto_auto_locacao/screens/person_management/listar_pessoas.dart';
+import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
-class CadastroPessoaFisica extends StatefulWidget {
+import '../../services/dao_service.dart';
+
+class NaturalPersonRegister extends StatefulWidget {
   @override
-  CadastroPessoaFisicaState createState() => CadastroPessoaFisicaState();
+  NaturalPersonRegisterState createState() => NaturalPersonRegisterState();
 
-  final Map<String, dynamic> pessoa;
+  final Map<String, dynamic> person;
 
-  const CadastroPessoaFisica({super.key, required this.pessoa});
+  const NaturalPersonRegister({super.key, required this.person});
 }
 
-class CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
+class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   String? _cpfError;
   String? _selectedCivilStatus;
   String _sexController = '';
@@ -54,17 +53,16 @@ class CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   void initState() {
     super.initState();
     _cpfController.addListener(_validateCPF);
-    if (widget.pessoa["id"] != null) {
-      _nameController.text = widget.pessoa["nome"];
-      _cpfController.text = widget.pessoa["cpf"].toString();
-      _emailController.text = widget.pessoa["email"];
-      _civilStateController.text = widget.pessoa["estado_civil"];
-      _careerController.text = widget.pessoa["profissao"];
-      _sexController = widget.pessoa["sexo"];
-      _cellPhoneController.text = widget.pessoa["telefone"].toString();
-      _birthDateController.text = widget.pessoa["dtNascimento"];
-
-      _cepController.text = widget.pessoa["cep"];
+    if (widget.person["id"] != null) {
+      _nameController.text = widget.person["nome"];
+      _cpfController.text = widget.person["cpf"].toString();
+      _emailController.text = widget.person["email"];
+      _civilStateController.text = widget.person["estado_civil"];
+      _careerController.text = widget.person["profissao"];
+      _sexController = widget.person["sexo"];
+      _cellPhoneController.text = widget.person["telefone"].toString();
+      _birthDateController.text = widget.person["dtNascimento"];
+      _cepController.text = widget.person["cep"];
     }
   }
 
@@ -307,73 +305,39 @@ class CadastroPessoaFisicaState extends State<CadastroPessoaFisica> {
   }
 
   void saveData() {
-    if (widget.pessoa["id"] == null) {
-      PessoaFisica pessoaFisica = PessoaFisica(
-        id: const Uuid().v1(),
-        nome: _nameController.text,
-        cpf: _cpfController.text,
-        email: _emailController.text,
-        estadoCivil: _civilStateController.text,
-        profissao: _careerController.text,
-        sexo: _sexController,
-        telefone: _cellPhoneController.text,
-        dtNascimento: _birthDateController.text,
-        cep: _cepController.text,
-        street: _streetController.text,
-        state: _stateController.text,
-        city: _cityController.text,
-        neighborhood: _neighborhoodController.text,
-        addressNumber: int.parse(_addressNumberController.text),
-        addressComplement: _addressComplementController.text,
-      );
-      FirebaseFirestore.instance
-          .collection('pessoa_fisica')
-          .doc(pessoaFisica.id)
-          .set(pessoaFisica.toMap())
-          .then((value) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dados salvos com sucesso')),
-        );
-        Navigator.pop(context);
-      }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar dados: $error')),
-        );
-      });
-    } else {
-      FirebaseFirestore.instance
-          .collection('pessoa_fisica')
-          .doc(widget.pessoa["id"])
-          .update({
-        "nome": _nameController.text,
-        "cpf": _cpfController.text,
-        "email": _emailController.text,
-        "estadoCivil": _civilStateController.text,
-        "profissao": _careerController.text,
-        "sexo": _sexController,
-        "telefone": _cellPhoneController.text,
-        "dtNascimento": _birthDateController.text,
-        "cep": _cepController.text,
-        "street": _streetController.text,
-        "state": _stateController.text,
-        "city": _cityController.text,
-        "neighborhood": _neighborhoodController.text,
-        "addressNumber": int.parse(_addressNumberController.text),
-        "addressComplement": _addressComplementController.text
-      }).then((value) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dados salvos com sucesso')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ListaPessoas()),
-        );
-      }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar dados: $error')),
-        );
-      });
+    NaturalPerson person = NaturalPerson();
+    if (widget.person["id"] != null) {
+      person.id = widget.person["id"];
     }
+    person.name = _nameController.text;
+    person.cpf = _cpfController.text;
+    person.email = _emailController.text;
+    person.civilState = _civilStateController.text;
+    person.career = _careerController.text;
+    person.sex = _sexController;
+    person.cellPhone = _cellPhoneController.text;
+    person.birthDate = _birthDateController.text;
+    person.cep = _cepController.text;
+    person.street = _streetController.text;
+    person.state = _stateController.text;
+    person.city = _cityController.text;
+    person.neighborhood = _neighborhoodController.text;
+    if (_addressNumberController.text.isNotEmpty) {
+      person.addressNumber = int.parse(_addressNumberController.text);
+    }
+    person.addressComplement = _addressComplementController.text;
+
+    DaoService daoService = DaoService(collectionName: "pessoa_fisica");
+
+    daoService.save(person).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Dados salvos com sucesso')),
+      );
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar dados: $error')),
+      );
+    });
   }
 
   Future<void> _fetchAddress(String cep) async {

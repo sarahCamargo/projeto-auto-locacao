@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/models/veiculo.dart';
-import 'package:projeto_auto_locacao/services/veiculo_service.dart';
+import 'package:projeto_auto_locacao/services/dao_service.dart';
 
 import '../../widgets/custom_text_form_field.dart';
 import '../../widgets/custom_text_label.dart';
@@ -330,7 +330,9 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     }
     veiculo.descricao = _descricaoController.text;
 
-    VeiculoService.salvaVeiculo(veiculo).then((value) {
+    DaoService daoService = DaoService(collectionName: "veiculos");
+
+    daoService.save(veiculo).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Dados salvos com sucesso')),
       );
