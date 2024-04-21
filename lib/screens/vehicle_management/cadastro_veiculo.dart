@@ -401,7 +401,9 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     veiculo.placa = _placaController.text;
     veiculo.modelo = _modeloController.text;
     veiculo.marca = _marcaController.text;
-    veiculo.anoFabricacao = int.parse(_anoFabricacaoController.text);
+    if (_anoFabricacaoController.text.isNotEmpty) {
+      veiculo.anoFabricacao = int.parse(_anoFabricacaoController.text);
+    }
     if (_renavanController.text.isNotEmpty) {
       veiculo.renavan = int.parse(_renavanController.text);
     }
@@ -410,7 +412,6 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
       veiculo.quilometragem = int.parse(_quilometragemController.text);
     }
     veiculo.tipoCombustivel = _selectedTipoCombustivel;
-
     if (_numeroPortasController.text.isNotEmpty) {
       veiculo.numeroPortas = int.parse(_numeroPortasController.text);
     }
