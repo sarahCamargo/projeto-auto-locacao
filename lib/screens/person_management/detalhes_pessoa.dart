@@ -18,7 +18,7 @@ class DetalhesPessoaScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nome: ${pessoa['nome']}'),
+            Text('Nome: ${pessoa['name']}'),
             Text('CPF: ${pessoa['cpf']}'),
             // Adicione outros campos conforme necessário
             SizedBox(height: 20),

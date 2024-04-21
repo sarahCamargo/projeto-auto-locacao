@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
@@ -15,7 +16,6 @@ import '../../services/dao_service.dart';
 class NaturalPersonRegister extends StatefulWidget {
   @override
   NaturalPersonRegisterState createState() => NaturalPersonRegisterState();
-
   final Map<String, dynamic> person;
 
   const NaturalPersonRegister({super.key, required this.person});
@@ -23,10 +23,12 @@ class NaturalPersonRegister extends StatefulWidget {
 
 class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   String? _cpfError;
+  String? _birthDateError;
   String? _selectedCivilStatus;
   String _sexController = '';
   bool _isAddressEditable = false;
   bool _isSaveButtonEnabled = false;
+  final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
@@ -54,33 +56,33 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   void initState() {
     super.initState();
     _cpfController.addListener(_validateCPF);
+    _birthDateController.addListener(_validateDate);
     if (widget.person["id"] != null) {
-      _nameController.text = widget.person["nome"];
+      _nameController.text = widget.person["name"];
       _cpfController.text = widget.person["cpf"].toString();
       _emailController.text = widget.person["email"];
-      _selectedCivilStatus = widget.person["estado_civil"];
-      _careerController.text = widget.person["profissao"];
-      _sexController = widget.person["sexo"];
-      _cellPhoneController.text = widget.person["telefone"].toString();
-      _birthDateController.text = widget.person["dtNascimento"];
+      _selectedCivilStatus = widget.person["civilState"];
+      _careerController.text = widget.person["career"];
+      _sexController = widget.person["sex"];
+      _cellPhoneController.text = widget.person["cellPhone"].toString();
+      _birthDateController.text = widget.person["birthDate"];
       _cepController.text = widget.person["cep"];
     }
+
+    _nameController.addListener(_checkButtonStatus);
+    _cpfController.addListener(_checkButtonStatus);
+    _emailController.addListener(_checkButtonStatus);
+    _birthDateController.addListener(_checkButtonStatus);
+    _cellPhoneController.addListener(_checkButtonStatus);
+    _checkButtonStatus();
   }
 
   @override
   void dispose() {
     _cpfController.removeListener(_validateCPF);
+    _birthDateController.removeListener(_validateDate);
     _cpfController.dispose();
     super.dispose();
-  }
-
-  void _validateCPF() {
-    setState(() {
-      _cpfError = _cpfController.text.isNotEmpty &&
-              !CPFValidator.isValid(_cpfController.text)
-          ? PersonConstants.cpfErrorMessage
-          : null;
-    });
   }
 
   @override
@@ -116,7 +118,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                 controller: _nameController,
                 keyboardType: TextInputType.name,
                 onChange: (value) {
-                  checkRequiredFields(_nameController);
+                  _updateSaveButtonState(_nameController);
                 },
                 isRequired: true,
               ),
@@ -128,7 +130,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                   hintText: PersonConstants.cpfMask,
                   errorText: _cpfError,
                   onChange: (value) {
-                    checkRequiredFields(_cpfController);
+                    _updateSaveButtonState(_cpfController);
                   },
                   isRequired: true),
               const SizedBox(height: 16.0),
@@ -136,9 +138,10 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
               CustomTextField(
                   maskedController: _birthDateController,
                   keyboardType: TextInputType.datetime,
+                  errorText: _birthDateError,
                   hintText: PersonConstants.birthDateHint,
                   onChange: (value) {
-                    checkRequiredFields(_birthDateController);
+                    _updateSaveButtonState(_birthDateController);
                   },
                   isRequired: true),
               const SizedBox(height: 16.0),
@@ -214,7 +217,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                   keyboardType: TextInputType.phone,
                   hintText: PersonConstants.cellPhoneHint,
                   onChange: (value) {
-                    checkRequiredFields(_cellPhoneController);
+                    _updateSaveButtonState(_cellPhoneController);
                   },
                   isRequired: true),
               const SizedBox(height: 20.0),
@@ -360,15 +363,66 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     }
   }
 
-  void checkRequiredFields(TextEditingController textControllers) {
+  void checkRequiredFields(TextEditingController? textControllers) {
     bool isAllFieldsFilled = true;
 
-    if (textControllers.text.isEmpty) {
+    if (textControllers!.text.isEmpty) {
       isAllFieldsFilled = false;
     }
 
     setState(() {
       _isSaveButtonEnabled = isAllFieldsFilled;
+    });
+  }
+
+  void _checkButtonStatus() {
+    setState(() {
+      _isSaveButtonEnabled = _nameController.text.isNotEmpty &&
+          _cpfController.text.isNotEmpty &&
+          _birthDateController.text.isNotEmpty &&
+          _cellPhoneController.text.isNotEmpty &&
+          _cpfError == null &&
+          _birthDateError == null;
+    });
+  }
+
+  void _updateSaveButtonState(TextEditingController textEditingController) {
+    setState(() {
+      _isSaveButtonEnabled = textEditingController.text.isNotEmpty &&
+          _cpfError == null &&
+          _birthDateError == null;
+    });
+  }
+
+  void _validateDate() {
+    String birthDate = _birthDateController.text;
+    if (birthDate.isNotEmpty) {
+      String numericDate = birthDate.replaceAll(RegExp(r'[^0-9]'), '');
+      setState(() {
+        try {
+          DateTime parsedDate = DateTime.parse(
+            '${numericDate.substring(4, 8)}-${numericDate.substring(2, 4)}-${numericDate.substring(0, 2)}',
+          );
+          if (_dateFormat.format(parsedDate) == birthDate) {
+            _birthDateError = null;
+          }
+        } catch (e) {
+          _birthDateError = 'Data inválida. Use o formato dd/mm/aaaa.';
+          _isSaveButtonEnabled = false;
+        }
+      });
+    }
+  }
+
+  void _validateCPF() {
+    setState(() {
+      if (_cpfController.text.isNotEmpty &&
+          !CPFValidator.isValid(_cpfController.text)) {
+        _cpfError = PersonConstants.cpfErrorMessage;
+        _isSaveButtonEnabled = false;
+      } else {
+        _cpfError = null;
+      }
     });
   }
 }

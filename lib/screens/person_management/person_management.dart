@@ -97,7 +97,7 @@ class PersonManagementState extends State<PersonManagement> {
                     }
 
                     var items = snapshot.data!.docs.where((element) =>
-                        element['nome']
+                        element['name']
                             .toString()
                             .toLowerCase()
                             .contains(searchString));
@@ -118,8 +118,8 @@ class PersonManagementState extends State<PersonManagement> {
                                   );
                                 });
                           },
-                          child: PersonCard(person['nome'], person['cpf'],
-                              person['telefone'], person['id']),
+                          child: PersonCard(person['name'], person['cpf'],
+                              person['cellPhone'], person['id']),
                         );
                       },
                     );
