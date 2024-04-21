@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
-import 'package:projeto_auto_locacao/constants/vehicle_management_coonstants.dart';
+import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/models/veiculo.dart';
 import 'package:projeto_auto_locacao/services/dao_service.dart';
 
@@ -19,6 +19,10 @@ class CadastroVeiculo extends StatefulWidget {
 }
 
 class _CadastroVeiculoState extends State<CadastroVeiculo> {
+  String? _selectedTipoCombustivel;
+  String? _selectedTipoTransmissao;
+  String? _selectedCondicao;
+
   final TextEditingController _marcaController = TextEditingController();
   final TextEditingController _modeloController = TextEditingController();
   final TextEditingController _placaController = TextEditingController();
@@ -26,10 +30,7 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
   final TextEditingController _anoFabricacaoController = TextEditingController();
   final TextEditingController _corController = TextEditingController();
   final TextEditingController _quilometragemController = TextEditingController();
-  final TextEditingController _tipoCombustivelController = TextEditingController();
   final TextEditingController _numeroPortasController = TextEditingController();
-  final TextEditingController _tipoTransmissaoController = TextEditingController();
-  final TextEditingController _condicaoController = TextEditingController();
   final TextEditingController _numeroAssentosController = TextEditingController();
   final TextEditingController _descricaoController = TextEditingController();
 
@@ -44,14 +45,14 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
      _modeloController.text = widget.veiculo["modelo"];
      _placaController.text = widget.veiculo["placa"];
      _anoFabricacaoController.text = widget.veiculo["anoFabricacao"].toString();
-     _renavanController.text = widget.veiculo["renavan"].toString();
+     _renavanController.text = widget.veiculo["renavan"] != null ? widget.veiculo["renavan"].toString() : "";
      _corController.text = widget.veiculo["cor"];
-     _quilometragemController.text = widget.veiculo["quilometragem"].toString();
-     _tipoCombustivelController.text = widget.veiculo["tipoCombustivel"];
-     _numeroPortasController.text = widget.veiculo["numeroPortas"].toString();
-     _tipoTransmissaoController.text = widget.veiculo["tipoTransmissao"];
-     _condicaoController.text = widget.veiculo["condicao"];
-     _numeroAssentosController.text = widget.veiculo["numeroAssentos"].toString();
+     _quilometragemController.text = widget.veiculo["quilometragem"] != null ? widget.veiculo["quilometragem"].toString() : "";
+     _selectedTipoCombustivel = widget.veiculo["tipoCombustivel"];
+     _numeroPortasController.text = widget.veiculo["numeroPortas"] != null ? widget.veiculo["numeroPortas"].toString() : "";
+     _selectedTipoTransmissao = widget.veiculo["tipoTransmissao"];
+     _selectedCondicao = widget.veiculo["condicao"];
+     _numeroAssentosController.text = widget.veiculo["numeroAssentos"] != null ? widget.veiculo["numeroAssentos"].toString() : "";
      _descricaoController.text = widget.veiculo["descricao"];
    }
   }
@@ -208,19 +209,6 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
                           ],
                         )
                     ),
-                    const SizedBox(width: 10,),
-                    Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomTextLabel(label: VehicleConstants.typeOfFuelLabel,),
-                            CustomTextField(
-                              controller: _tipoCombustivelController,
-                              keyboardType: TextInputType.name,
-                            ),
-                          ],
-                        )
-                    )
                   ],
                 ),
               ),
@@ -245,10 +233,92 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const CustomTextLabel(label: VehicleConstants.transmissionLabel,),
+                            const CustomTextLabel(label: VehicleConstants.numberOfSeatsLabel,),
                             CustomTextField(
-                              controller: _tipoTransmissaoController,
-                              keyboardType: TextInputType.name,
+                              controller: _numeroAssentosController,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ],
+                        )
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.typeOfFuelLabel,),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedTipoCombustivel,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: VehicleConstants.typeOfFuel.map((status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: status == null
+                                        ? const Text(GeneralConstants.doNotInform)
+                                        : Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedTipoCombustivel = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.transmissionLabel,),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedTipoTransmissao,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: VehicleConstants.transmission.map((status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: status == null
+                                        ? const Text(GeneralConstants.doNotInform)
+                                        : Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedTipoTransmissao = value;
+                                  });
+                                },
+                              ),
                             ),
                           ],
                         )
@@ -265,22 +335,31 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const CustomTextLabel(label: VehicleConstants.conditionLabel,),
-                            CustomTextField(
-                                controller: _condicaoController,
-                                keyboardType: TextInputType.name
-                            )
-                          ],
-                        )
-                    ),
-                    const SizedBox(width: 10,),
-                    Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomTextLabel(label: VehicleConstants.numberOfSeatsLabel,),
-                            CustomTextField(
-                              controller: _numeroAssentosController,
-                              keyboardType: TextInputType.number,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedCondicao,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: VehicleConstants.condition.map((status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: status == null
+                                        ? const Text(GeneralConstants.doNotInform)
+                                        : Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedCondicao = value;
+                                  });
+                                },
+                              ),
                             ),
                           ],
                         )
@@ -330,12 +409,13 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     if (_quilometragemController.text.isNotEmpty) {
       veiculo.quilometragem = int.parse(_quilometragemController.text);
     }
-    veiculo.tipoCombustivel = _tipoCombustivelController.text;
+    veiculo.tipoCombustivel = _selectedTipoCombustivel;
+
     if (_numeroPortasController.text.isNotEmpty) {
       veiculo.numeroPortas = int.parse(_numeroPortasController.text);
     }
-    veiculo.tipoTransmissao = _tipoTransmissaoController.text;
-    veiculo.condicao = _condicaoController.text;
+    veiculo.tipoTransmissao = _selectedTipoTransmissao;
+    veiculo.condicao = _selectedCondicao;
     if (_numeroAssentosController.text.isNotEmpty) {
       veiculo.numeroAssentos = int.parse(_numeroAssentosController.text);
     }

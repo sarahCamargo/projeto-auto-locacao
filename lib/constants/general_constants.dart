@@ -8,4 +8,5 @@ class GeneralConstants {
   static const String dataSaved = "Dados salvos com sucesso.";
   static const String confirmEdit = "Confirma edição do registro?";
   static const String saveButton = 'Salvar';
+  static const String doNotInform = 'Não Informar';
 }

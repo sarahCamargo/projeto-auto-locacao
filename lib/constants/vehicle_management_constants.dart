@@ -18,4 +18,24 @@ class VehicleConstants {
   static const String conditionLabel = 'Condição';
   static const String numberOfSeatsLabel = 'N° assentos';
   static const String descriptionLabel = 'Descrição';
+
+  static const List<String?> typeOfFuel = [
+    'Gasolina',
+    'Etanol',
+    'Diesel',
+    'Gás Natural Veicular',
+    null
+  ];
+
+  static const List<String?> transmission = [
+    'Manual',
+    'Automático',
+    null
+  ];
+
+  static const List<String?> condition = [
+    'Novo',
+    'Usado',
+    null
+  ];
 }
