@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/services/dao_service.dart';
+
+import '../constants/colors_constants.dart';
+import '../constants/general_constants.dart';
+import '../utils/confirmation_dialog.dart';
+import 'custom_text_label.dart';
 
 class CustomCardVehicle extends StatelessWidget {
   final String modelo;
@@ -12,33 +18,42 @@ class CustomCardVehicle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(
-          modelo,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text("Ano: " + ano.toString()), Text("Placa: " + placa)],
-        ),
-        leading: Icon(
-          Icons.image_not_supported_outlined,
-          size: 50,
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.delete),
-          onPressed: () => {
-            deleteVehicle().then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Veiculo deletado com sucesso')),
-              );
-            }).catchError((error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Erro ao deletar veiculo: $error')),
-              );
-            })
-          },
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Card(
+        color: Colors.white,
+        child: ListTile(
+          title: CustomTextLabel(
+            label: modelo,
+            fontWeight: FontWeight.bold,
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextLabel(label: "Ano: $ano"),
+              CustomTextLabel(label: "Placa: $placa"),
+            ],
+          ),
+          leading: Icon(
+            Icons.image_not_supported_outlined,
+            size: 50,
+          ),
+          trailing: IconButton(
+            icon: const Icon(
+              FontAwesomeIcons.trash,
+              color: ColorsConstants.iconColor,
+            ),
+            onPressed: () => {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ConfirmationDialog(
+                        content: GeneralConstants.confirmDelete,
+                        confirmationWidget: confirmationAction(context)
+                    );
+                  }),
+            },
+          ),
         ),
       ),
     );
@@ -48,4 +63,25 @@ class CustomCardVehicle extends StatelessWidget {
     DaoService daoService = DaoService(collectionName: "veiculos");
     return daoService.delete(id);
   }
+
+  Widget confirmationAction(BuildContext context) {
+    return TextButton(
+        onPressed: () {
+          deleteVehicle().then((value) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text(GeneralConstants.registerDeleted)),
+            );
+            Navigator.of(context).pop();
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Erro ao realizar ação: $error')),
+            );
+            Navigator.of(context).pop();
+          });
+        },
+        child: const CustomTextLabel(
+          label: GeneralConstants.ok,
+        ));
+  }
+
 }

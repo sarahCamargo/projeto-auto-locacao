@@ -7,5 +7,5 @@ class GeneralConstants {
   static const String registerDeleted = "Registro deletado com sucesso.";
   static const String dataSaved = "Dados salvos com sucesso.";
   static const String confirmEdit = "Confirma edição do registro?";
-
+  static const String saveButton = 'Salvar';
 }

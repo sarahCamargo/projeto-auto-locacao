@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:projeto_auto_locacao/constants/vehicle_management_coonstants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/cadastro_veiculo.dart';
 
+import '../../constants/colors_constants.dart';
+import '../../constants/general_constants.dart';
+import '../../utils/confirmation_dialog.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_card_vehicle.dart';
+import '../../widgets/custom_text_label.dart';
 
 class VehiclesManagement extends StatefulWidget {
 
@@ -18,38 +25,46 @@ class VehiclesManagementState extends State<VehiclesManagement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gerenciar veículos'),
+      appBar: const CustomAppBar(
+        title: VehicleConstants.vehicleManagementTitle,
+        hasReturnScreen: true,
       ),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        searchString = value.toLowerCase();
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Pesquisar por placa',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchString = value.toLowerCase();
+                        });
+                      },
+                      decoration: const InputDecoration(
+                          labelText: 'Pesquisar',
+                          prefixIcon: Icon(
+                            FontAwesomeIcons.magnifyingGlass,
+                            color: ColorsConstants.iconColor,
+                          ),
+                          border: InputBorder.none),
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 IconButton(
-                  icon: Icon(
-                    Icons.add_circle_rounded,
-                    size: 50,
+                  icon: const Icon(
+                    FontAwesomeIcons.plus,
+                    color: ColorsConstants.iconColor,
+                    size: 40,
                   ),
                   onPressed: () => {
                     Navigator.push(
@@ -86,13 +101,15 @@ class VehiclesManagementState extends State<VehiclesManagement> {
 
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CadastroVeiculo(veiculo: veiculo),
-                          ),
-                        );
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ConfirmationDialog(
+                                  content: GeneralConstants.confirmEdit,
+                                  confirmationWidget:
+                                  confirmationAction(context, veiculo)
+                              );
+                            });
                       },
                       child: CustomCardVehicle(
                           veiculo['modelo'],
@@ -108,5 +125,21 @@ class VehiclesManagementState extends State<VehiclesManagement> {
         ],
       ),
     );
+  }
+
+  Widget confirmationAction(BuildContext context, var veiculo) {
+    return TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CadastroVeiculo(veiculo: veiculo),
+            ),
+          );
+        },
+        child: const CustomTextLabel(
+          label: GeneralConstants.ok,
+        ));
   }
 }

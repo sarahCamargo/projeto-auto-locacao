@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_auto_locacao/constants/general_constants.dart';
+import 'package:projeto_auto_locacao/constants/vehicle_management_coonstants.dart';
 import 'package:projeto_auto_locacao/models/veiculo.dart';
 import 'package:projeto_auto_locacao/services/dao_service.dart';
 
+import '../../constants/colors_constants.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_text_form_field.dart';
 import '../../widgets/custom_text_label.dart';
 
@@ -55,248 +59,255 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Cadastrar Veículo'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                const SizedBox(height: 16.0),
-                const CustomTextLabel(
-                  label: "Dados do veículo",
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                    onPressed: () => {
+      appBar: const CustomAppBar(title: VehicleConstants.appBarTitle),
+      body: _buildForm(),
+    );
+  }
 
-                    },
-                    child: Text("Enviar imagem")
+  Widget _buildForm() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                label: VehicleConstants.vehicleData,
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                  onPressed: () => {
+
+                  },
+                  child: Text("Enviar imagem")
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.brandLabel,),
+                            CustomTextField(
+                                controller: _marcaController,
+                                keyboardType: TextInputType.name
+                            )
+                          ],
+                        )
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.modelLabel,),
+                            CustomTextField(
+                              controller: _modeloController,
+                              keyboardType: TextInputType.name,
+                              onChange: (value) {
+                                checkRequiredFields(_modeloController);
+                              },
+                            ),
+                          ],
+                        )
+                    )
+                  ],
                 ),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Marca",),
-                              CustomTextField(
-                                  controller: _marcaController,
-                                  keyboardType: TextInputType.name
-                              )
-                            ],
-                          )
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Modelo",),
-                              CustomTextField(
-                                controller: _modeloController,
-                                keyboardType: TextInputType.name,
-                                onChange: (value) {
-                                  checkRequiredFields(_modeloController);
-                                },
-                              ),
-                            ],
-                          )
-                      )
-                    ],
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.licensePlateLabel,),
+                            CustomTextField(
+                                controller: _placaController,
+                                keyboardType: TextInputType.name
+                            )
+                          ],
+                        )
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.renavamLabel,),
+                            CustomTextField(
+                              controller: _renavanController,
+                              keyboardType: TextInputType.number,
+                              onChange: (value) {
+                                checkRequiredFields(_renavanController);
+                              },
+                            ),
+                          ],
+                        )
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Placa",),
-                              CustomTextField(
-                                  controller: _placaController,
-                                  keyboardType: TextInputType.name
-                              )
-                            ],
-                          )
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Renavan",),
-                              CustomTextField(
-                                controller: _renavanController,
-                                keyboardType: TextInputType.number,
-                                onChange: (value) {
-                                  checkRequiredFields(_renavanController);
-                                },
-                              ),
-                            ],
-                          )
-                      )
-                    ],
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.yearLabel,),
+                            CustomTextField(
+                                controller: _anoFabricacaoController,
+                                keyboardType: TextInputType.number
+                            )
+                          ],
+                        )
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.colorLabel,),
+                            CustomTextField(
+                              controller: _corController,
+                              keyboardType: TextInputType.name,
+                            ),
+                          ],
+                        )
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Ano",),
-                              CustomTextField(
-                                  controller: _anoFabricacaoController,
-                                  keyboardType: TextInputType.number
-                              )
-                            ],
-                          )
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Cor",),
-                              CustomTextField(
-                                controller: _corController,
-                                keyboardType: TextInputType.name,
-                              ),
-                            ],
-                          )
-                      )
-                    ],
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.mileageLabel,),
+                            CustomTextField(
+                                controller: _quilometragemController,
+                                keyboardType: TextInputType.number
+                            )
+                          ],
+                        )
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.typeOfFuelLabel,),
+                            CustomTextField(
+                              controller: _tipoCombustivelController,
+                              keyboardType: TextInputType.name,
+                            ),
+                          ],
+                        )
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Quilometragem",),
-                              CustomTextField(
-                                  controller: _quilometragemController,
-                                  keyboardType: TextInputType.number
-                              )
-                            ],
-                          )
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Tipo combustível",),
-                              CustomTextField(
-                                controller: _tipoCombustivelController,
-                                keyboardType: TextInputType.name,
-                              ),
-                            ],
-                          )
-                      )
-                    ],
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.numberOfDoorsLabel,),
+                            CustomTextField(
+                                controller: _numeroPortasController,
+                                keyboardType: TextInputType.number
+                            )
+                          ],
+                        )
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.transmissionLabel,),
+                            CustomTextField(
+                              controller: _tipoTransmissaoController,
+                              keyboardType: TextInputType.name,
+                            ),
+                          ],
+                        )
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Nº Portas",),
-                              CustomTextField(
-                                  controller: _numeroPortasController,
-                                  keyboardType: TextInputType.number
-                              )
-                            ],
-                          )
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Transmissão",),
-                              CustomTextField(
-                                controller: _tipoTransmissaoController,
-                                keyboardType: TextInputType.name,
-                              ),
-                            ],
-                          )
-                      )
-                    ],
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.conditionLabel,),
+                            CustomTextField(
+                                controller: _condicaoController,
+                                keyboardType: TextInputType.name
+                            )
+                          ],
+                        )
+                    ),
+                    const SizedBox(width: 10,),
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(label: VehicleConstants.numberOfSeatsLabel,),
+                            CustomTextField(
+                              controller: _numeroAssentosController,
+                              keyboardType: TextInputType.number,
+                            ),
+                          ],
+                        )
+                    )
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Condição",),
-                              CustomTextField(
-                                  controller: _condicaoController,
-                                  keyboardType: TextInputType.name
-                              )
-                            ],
-                          )
-                      ),
-                      const SizedBox(width: 10,),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const CustomTextLabel(label: "Nº Assentos",),
-                              CustomTextField(
-                                controller: _numeroAssentosController,
-                                keyboardType: TextInputType.number,
-                              ),
-                            ],
-                          )
-                      )
-                    ],
-                  ),
-                ),
-                const CustomTextLabel(label: "Descrição",),
-                CustomTextField(
-                  controller: _descricaoController,
-                  keyboardType: TextInputType.name,
-                ),
-                SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: _isSaveButtonEnabled
-                      ? () {
-                    salvarDados();
-                  }
-                      : null,
-                  child: const Text("Salvar"),
-                ),
-              ],
-            ),
+              ),
+              const CustomTextLabel(label: VehicleConstants.descriptionLabel,),
+              CustomTextField(
+                controller: _descricaoController,
+                keyboardType: TextInputType.name,
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _isSaveButtonEnabled
+                    ? () {
+                  salvarDados();
+                  Navigator.of(context).pop();
+                }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorsConstants.backgroundColor),
+                child: const CustomTextLabel(
+                  label: GeneralConstants.saveButton,
+                  fontWeight: FontWeight.bold,
+                )),
+            ],
           ),
         ),
       ),
