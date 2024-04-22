@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/screens/person_management/natural_person/natural_person_register.dart';
-import 'package:projeto_auto_locacao/screens/person_management/natural_person/natural_person_card.dart';
+import 'package:projeto_auto_locacao/screens/person_management/legal_person/legal_person_card.dart';
+import 'package:projeto_auto_locacao/screens/person_management/legal_person/legal_person_register.dart';
 
 import '../../../constants/general_constants.dart';
 import '../../../utils/confirmation_dialog.dart';
 import '../../../widgets/custom_text_label.dart';
 
-class NaturalPersonManagement extends StatefulWidget {
-  const NaturalPersonManagement({super.key});
+class LegalPersonManagement extends StatefulWidget {
+  const LegalPersonManagement({super.key});
 
   @override
-  NaturalPersonManagementState createState() => NaturalPersonManagementState();
+  LegalPersonManagementState createState() => LegalPersonManagementState();
 }
 
-class NaturalPersonManagementState extends State<NaturalPersonManagement> {
+class LegalPersonManagementState extends State<LegalPersonManagement> {
   String searchString = '';
 
   @override
@@ -62,8 +62,8 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const NaturalPersonRegister(
-                        person: {},
+                      builder: (context) => const LegalPersonRegister(
+                        legalPerson: {},
                       ),
                     ),
                   ),
@@ -82,7 +82,7 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
               ),
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection('pessoa_fisica')
+                    .collection('pessoa_juridica')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -90,14 +90,14 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                   }
 
                   var items = snapshot.data!.docs.where((element) =>
-                      element['name']
+                      element['company_name']
                           .toString()
                           .toLowerCase()
                           .contains(searchString));
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      var person = items.elementAt(index).data();
+                      var legalPerson = items.elementAt(index).data();
 
                       return GestureDetector(
                         onTap: () {
@@ -106,12 +106,16 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                               builder: (BuildContext context) {
                                 return ConfirmationDialog(
                                     content: GeneralConstants.confirmEdit,
-                                    confirmationWidget:
-                                        confirmationAction(context, person));
+                                    confirmationWidget: confirmationAction(
+                                        context, legalPerson));
                               });
                         },
-                        child: PersonCard(person['name'], person['cpf'],
-                            person['cellPhone'], person['id']),
+                        child: LegalPersonCard(
+                            legalPerson['company_name'],
+                            legalPerson['cnpj'],
+                            legalPerson['cell_phone'],
+                            legalPerson['trading_name'],
+                            legalPerson['id']),
                       );
                     },
                   );
@@ -124,14 +128,15 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
     );
   }
 
-  Widget confirmationAction(BuildContext context, var person) {
+  Widget confirmationAction(BuildContext context, var legalPerson) {
     return TextButton(
         onPressed: () {
           Navigator.of(context).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NaturalPersonRegister(person: person),
+              builder: (context) =>
+                  LegalPersonRegister(legalPerson: legalPerson),
             ),
           );
         },

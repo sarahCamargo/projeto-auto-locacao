@@ -1,36 +1,43 @@
+import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
-import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
-import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
-import 'package:cpf_cnpj_validator/cpf_validator.dart';
+import 'package:cpf_cnpj_validator/cnpj_validator.dart';
 
-import '../../services/dao_service.dart';
-import '../../services/validation_service.dart';
+import '../../../constants/legal_person_constants.dart';
+import '../../../constants/person_management_constants.dart';
+import '../../../models/legal_person.dart';
+import '../../../services/dao_service.dart';
+import '../../../services/validation_service.dart';
 
-class NaturalPersonRegister extends StatefulWidget {
+class LegalPersonRegister extends StatefulWidget {
   @override
-  NaturalPersonRegisterState createState() => NaturalPersonRegisterState();
-  final Map<String, dynamic> person;
+  LegalPersonRegisterState createState() => LegalPersonRegisterState();
+  final Map<String, dynamic> legalPerson;
 
-  const NaturalPersonRegister({super.key, required this.person});
+  const LegalPersonRegister({super.key, required this.legalPerson});
 }
 
-class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
+class LegalPersonRegisterState extends State<LegalPersonRegister> {
+  String? _cnpjError;
   String? _cpfError;
-  String? _birthDateError;
-  String? _selectedCivilStatus;
-  String _sexController = '';
   bool _isAddressEditable = false;
   bool _isSaveButtonEnabled = false;
-  final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
 
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _tradingNameController = TextEditingController();
+  final TextEditingController _companyNameController = TextEditingController();
+  final TextEditingController _legalResponsibleController =
+      TextEditingController();
+  final TextEditingController _legalResponsibleRoleController =
+      TextEditingController();
+  final TextEditingController _stateRegistrationController =
+      TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
@@ -40,49 +47,59 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   final TextEditingController _addressComplementController =
       TextEditingController();
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _careerController = TextEditingController();
-
   final MaskedTextController _cepController =
       MaskedTextController(mask: PersonConstants.cepMask);
-  final MaskedTextController _birthDateController =
-      MaskedTextController(mask: PersonConstants.birthDateMask);
-  final MaskedTextController _cpfController =
-      MaskedTextController(mask: PersonConstants.cpfMask);
+  final MaskedTextController _cnpjController =
+      MaskedTextController(mask: LegalPersonConstants.cnpjMask);
   final MaskedTextController _cellPhoneController =
       MaskedTextController(mask: PersonConstants.cellPhoneMask);
+  final MaskedTextController _legalResponsibleCPFController =
+      MaskedTextController(mask: PersonConstants.cpfMask);
 
   @override
   void initState() {
     super.initState();
-    _cpfController.addListener(_validateCPF);
-    _birthDateController.addListener(_validateDate);
-    if (widget.person["id"] != null) {
-      _nameController.text = widget.person["name"];
-      _cpfController.text = widget.person["cpf"].toString();
-      _emailController.text = widget.person["email"];
-      _selectedCivilStatus = widget.person["civilState"];
-      _careerController.text = widget.person["career"];
-      _sexController = widget.person["sex"];
-      _cellPhoneController.text = widget.person["cellPhone"].toString();
-      _birthDateController.text = widget.person["birthDate"];
-      _cepController.text = widget.person["cep"];
+    _cnpjController.addListener(_validateCNPJ);
+    _legalResponsibleCPFController.addListener(_validateCPF);
+    if (widget.legalPerson["id"] != null) {
+      _companyNameController.text = widget.legalPerson["company_name"];
+      _tradingNameController.text = widget.legalPerson["trading_name"];
+      _cnpjController.text = widget.legalPerson["cnpj"];
+      _stateRegistrationController.text =
+          widget.legalPerson["state_registration"];
+      _emailController.text = widget.legalPerson["email"];
+      _cellPhoneController.text = widget.legalPerson["cell_phone"];
+      _cepController.text = widget.legalPerson["cep"];
+      _stateController.text = widget.legalPerson["state"];
+      _cityController.text = widget.legalPerson["city"];
+      _streetController.text = widget.legalPerson["street"];
+      _neighborhoodController.text = widget.legalPerson["neighborhood"];
+      if (widget.legalPerson["address_number"] != null) {
+        _addressNumberController.text = widget.legalPerson["address_number"];
+      }
+      _addressComplementController.text =
+          widget.legalPerson["address_complement"];
+      _legalResponsibleController.text =
+          widget.legalPerson["legal_responsible"];
+      _legalResponsibleCPFController.text =
+          widget.legalPerson["legal_responsible_cpf"];
+      _legalResponsibleRoleController.text =
+          widget.legalPerson["legal_responsible_role"];
     }
 
-    _nameController.addListener(_checkButtonStatus);
-    _cpfController.addListener(_checkButtonStatus);
-    _emailController.addListener(_checkButtonStatus);
-    _birthDateController.addListener(_checkButtonStatus);
+    _companyNameController.addListener(_checkButtonStatus);
+    _tradingNameController.addListener(_checkButtonStatus);
+    _cnpjController.addListener(_checkButtonStatus);
     _cellPhoneController.addListener(_checkButtonStatus);
+    _legalResponsibleController.addListener(_checkButtonStatus);
+    _legalResponsibleCPFController.addListener(_checkButtonStatus);
     _checkButtonStatus();
   }
 
   @override
   void dispose() {
-    _cpfController.removeListener(_validateCPF);
-    _birthDateController.removeListener(_validateDate);
-    _cpfController.dispose();
+    _cnpjController.removeListener(_validateCNPJ);
+    _cnpjController.dispose();
     super.dispose();
   }
 
@@ -109,68 +126,44 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
             children: <Widget>[
               const SizedBox(height: 16.0),
               const CustomTextLabel(
-                label: PersonConstants.personalData,
+                label: LegalPersonConstants.companyData,
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0,
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.nameLabel),
+              const CustomTextLabel(label: LegalPersonConstants.companyName),
               CustomTextField(
-                controller: _nameController,
-                keyboardType: TextInputType.name,
+                controller: _companyNameController,
                 onChange: (value) {
-                  _updateSaveButtonState(_nameController);
+                  _updateSaveButtonState(_companyNameController);
                 },
                 isRequired: true,
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.cpfLabel),
+              const CustomTextLabel(label: LegalPersonConstants.tradingName),
               CustomTextField(
-                  maskedController: _cpfController,
+                controller: _tradingNameController,
+                onChange: (value) {
+                  _updateSaveButtonState(_tradingNameController);
+                },
+                isRequired: true,
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(label: LegalPersonConstants.cnpjLabel),
+              CustomTextField(
+                  maskedController: _cnpjController,
                   keyboardType: TextInputType.number,
-                  hintText: PersonConstants.cpfMask,
-                  errorText: _cpfError,
+                  hintText: LegalPersonConstants.cnpjMask,
+                  errorText: _cnpjError,
                   onChange: (value) {
-                    _updateSaveButtonState(_cpfController);
+                    _updateSaveButtonState(_cnpjController);
                   },
                   isRequired: true),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.birthDateLabel),
+              const CustomTextLabel(
+                  label: LegalPersonConstants.stateRegistrationLabel),
               CustomTextField(
-                  maskedController: _birthDateController,
-                  keyboardType: TextInputType.datetime,
-                  errorText: _birthDateError,
-                  hintText: PersonConstants.birthDateHint,
-                  onChange: (value) {
-                    _updateSaveButtonState(_birthDateController);
-                  },
-                  isRequired: true),
-              const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.sexLabel),
-              Row(
-                children: [
-                  Radio(
-                    value: PersonConstants.female,
-                    groupValue: _sexController,
-                    onChanged: (value) {
-                      setState(() {
-                        _sexController = value.toString();
-                      });
-                    },
-                  ),
-                  const Text(PersonConstants.female),
-                  const SizedBox(width: 20.0),
-                  Radio(
-                    value: PersonConstants.male,
-                    groupValue: _sexController,
-                    onChanged: (value) {
-                      setState(() {
-                        _sexController = value.toString();
-                      });
-                    },
-                  ),
-                  const Text(PersonConstants.male),
-                ],
+                controller: _stateRegistrationController,
               ),
               const SizedBox(height: 16.0),
               const CustomTextLabel(label: PersonConstants.emailLabel),
@@ -178,39 +171,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.civilStatusLabel),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: DropdownButtonFormField<String>(
-                  value: _selectedCivilStatus,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                  ),
-                  items: PersonConstants.civilStatus.map((status) {
-                    return DropdownMenuItem<String>(
-                      value: status,
-                      child: status == null
-                          ? const Text(PersonConstants.doNotInform)
-                          : Text(status),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCivilStatus = value;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.careerLabel),
-              CustomTextField(
-                  controller: _careerController,
-                  keyboardType: TextInputType.text),
               const SizedBox(height: 16.0),
               const CustomTextLabel(label: PersonConstants.cellPhoneLabel),
               CustomTextField(
@@ -294,15 +254,48 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                   ],
                 ),
               ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                  label: LegalPersonConstants.legalResponsible,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                  label: LegalPersonConstants.legalResponsibleName),
+              CustomTextField(
+                controller: _legalResponsibleController,
+                isRequired: true,
+                onChange: (value) {
+                  _updateSaveButtonState(_legalResponsibleController);
+                },
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                  label: LegalPersonConstants.legalResposibleCPF),
+              CustomTextField(
+                controller: _legalResponsibleCPFController,
+                hintText: PersonConstants.cpfMask,
+                errorText: _cpfError,
+                isRequired: true,
+                onChange: (value) {
+                  _updateSaveButtonState(_legalResponsibleCPFController);
+                },
+              ),
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                  label: LegalPersonConstants.legalResponsibleRole),
+              CustomTextField(
+                controller: _legalResponsibleRoleController,
+              ),
               ElevatedButton(
                   onPressed: _isSaveButtonEnabled
                       ? () {
-                          isCPFRegistered().then((isRegistered) {
+                          isCNPJRegistered().then((isRegistered) {
                             if (isRegistered) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                      'CPF já cadastrado. Não é possível salvar.'),
+                                      'CNPJ já cadastrado. Não é possível salvar.'),
                                   duration: Duration(seconds: 3),
                                 ),
                               );
@@ -327,36 +320,40 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     );
   }
 
-  Future<bool> isCPFRegistered() async {
-    return await isCpfAlreadyRegistered(_cpfController.text);
+  Future<bool> isCNPJRegistered() async {
+    if (widget.legalPerson['id'] == null || widget.legalPerson['cnpj'] != _cnpjController.text) {
+      return await isCnpjAlreadyRegistered(_cnpjController.text);
+    }
+    return false;
   }
 
   void saveData() {
-    NaturalPerson person = NaturalPerson();
-    if (widget.person["id"] != null) {
-      person.id = widget.person["id"];
+    LegalPerson legalPerson = LegalPerson();
+    if (widget.legalPerson["id"] != null) {
+      legalPerson.id = widget.legalPerson["id"];
     }
-    person.name = _nameController.text;
-    person.cpf = _cpfController.text;
-    person.email = _emailController.text;
-    person.civilState = _selectedCivilStatus;
-    person.career = _careerController.text;
-    person.sex = _sexController;
-    person.cellPhone = _cellPhoneController.text;
-    person.birthDate = _birthDateController.text;
-    person.cep = _cepController.text;
-    person.street = _streetController.text;
-    person.state = _stateController.text;
-    person.city = _cityController.text;
-    person.neighborhood = _neighborhoodController.text;
+    legalPerson.cnpj = _cnpjController.text;
+    legalPerson.email = _emailController.text;
+    legalPerson.tradingName = _tradingNameController.text;
+    legalPerson.companyName = _companyNameController.text;
+    legalPerson.stateRegistration = _stateRegistrationController.text;
+    legalPerson.legalResponsible = _legalResponsibleController.text;
+    legalPerson.legalResponsibleCPF = _legalResponsibleCPFController.text;
+    legalPerson.legalResponsibleRole = _legalResponsibleRoleController.text;
+    legalPerson.cellPhone = _cellPhoneController.text;
+    legalPerson.cep = _cepController.text;
+    legalPerson.street = _streetController.text;
+    legalPerson.state = _stateController.text;
+    legalPerson.city = _cityController.text;
+    legalPerson.neighborhood = _neighborhoodController.text;
     if (_addressNumberController.text.isNotEmpty) {
-      person.addressNumber = int.parse(_addressNumberController.text);
+      legalPerson.addressNumber = int.parse(_addressNumberController.text);
     }
-    person.addressComplement = _addressComplementController.text;
+    legalPerson.addressComplement = _addressComplementController.text;
 
-    DaoService daoService = DaoService(collectionName: "pessoa_fisica");
+    DaoService daoService = DaoService(collectionName: "pessoa_juridica");
 
-    daoService.save(person).then((value) {
+    daoService.save(legalPerson).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text(GeneralConstants.dataSaved)),
       );
@@ -404,47 +401,37 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
 
   void _checkButtonStatus() {
     setState(() {
-      _isSaveButtonEnabled = _nameController.text.isNotEmpty &&
-          _cpfController.text.isNotEmpty &&
-          _birthDateController.text.isNotEmpty &&
+      _isSaveButtonEnabled = _cnpjController.text.isNotEmpty &&
           _cellPhoneController.text.isNotEmpty &&
-          _cpfError == null &&
-          _birthDateError == null;
+          _cnpjError == null &&
+          _cpfError == null;
     });
   }
 
   void _updateSaveButtonState(TextEditingController textEditingController) {
     setState(() {
       _isSaveButtonEnabled = textEditingController.text.isNotEmpty &&
-          _cpfError == null &&
-          _birthDateError == null;
+          _cnpjError == null &&
+          _cpfError == null;
     });
   }
 
-  void _validateDate() {
-    String birthDate = _birthDateController.text;
-    if (birthDate.isNotEmpty) {
-      String numericDate = birthDate.replaceAll(RegExp(r'[^0-9]'), '');
-      setState(() {
-        try {
-          DateTime parsedDate = DateTime.parse(
-            '${numericDate.substring(4, 8)}-${numericDate.substring(2, 4)}-${numericDate.substring(0, 2)}',
-          );
-          if (_dateFormat.format(parsedDate) == birthDate) {
-            _birthDateError = null;
-          }
-        } catch (e) {
-          _birthDateError = 'Data inválida. Use o formato dd/mm/aaaa.';
-          _isSaveButtonEnabled = false;
-        }
-      });
-    }
+  void _validateCNPJ() {
+    setState(() {
+      if (_cnpjController.text.isNotEmpty &&
+          !CNPJValidator.isValid(_cnpjController.text)) {
+        _cnpjError = LegalPersonConstants.cnpjErrorMessage;
+        _isSaveButtonEnabled = false;
+      } else {
+        _cnpjError = null;
+      }
+    });
   }
 
   void _validateCPF() {
     setState(() {
-      if (_cpfController.text.isNotEmpty &&
-          !CPFValidator.isValid(_cpfController.text)) {
+      if (_legalResponsibleCPFController.text.isNotEmpty &&
+          !CPFValidator.isValid(_legalResponsibleCPFController.text)) {
         _cpfError = PersonConstants.cpfErrorMessage;
         _isSaveButtonEnabled = false;
       } else {
