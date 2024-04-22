@@ -13,7 +13,6 @@ import '../../widgets/custom_card_vehicle.dart';
 import '../../widgets/custom_text_label.dart';
 
 class VehiclesManagement extends StatefulWidget {
-
   const VehiclesManagement({super.key});
 
   @override
@@ -32,15 +31,20 @@ class VehiclesManagementState extends State<VehiclesManagement> {
           title: VehicleConstants.vehicleManagementTitle,
           hasReturnScreen: true,
         ),
-        body: TabBarView(children: [
-          listaVeiculos(),
-          Container()
-        ]),
-        bottomSheet: const TabBar(tabs: [
-          Tab(icon: Icon(FontAwesomeIcons.car),),
-          Tab(icon: Icon(FontAwesomeIcons.screwdriverWrench),)
-        ]),
-
+        body: TabBarView(children: [listaVeiculos(), Container()]),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          child: const TabBar(tabs: [
+            Tab(
+              icon:
+                  Icon(FontAwesomeIcons.car, color: ColorsConstants.iconColor),
+            ),
+            Tab(
+              icon: Icon(FontAwesomeIcons.screwdriverWrench,
+                  color: ColorsConstants.iconColor),
+            )
+          ]),
+        ),
       ),
     );
   }
@@ -100,7 +104,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
         Expanded(
           child: StreamBuilder(
             stream:
-            FirebaseFirestore.instance.collection('veiculos').snapshots(),
+                FirebaseFirestore.instance.collection('veiculos').snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const CircularProgressIndicator();
@@ -124,8 +128,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                             return ConfirmationDialog(
                                 content: GeneralConstants.confirmEdit,
                                 confirmationWidget:
-                                confirmationAction(context, veiculo)
-                            );
+                                    confirmationAction(context, veiculo));
                           });
                     },
                     child: CustomCardVehicle(
@@ -139,7 +142,6 @@ class VehiclesManagementState extends State<VehiclesManagement> {
             },
           ),
         ),
-        const SizedBox(height: 60,)
       ],
     );
   }
