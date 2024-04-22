@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,106 +25,122 @@ class VehiclesManagementState extends State<VehiclesManagement> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: VehicleConstants.vehicleManagementTitle,
-        hasReturnScreen: true,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: VehicleConstants.vehicleManagementTitle,
+          hasReturnScreen: true,
+        ),
+        body: TabBarView(children: [
+          listaVeiculos(),
+          Container()
+        ]),
+        bottomSheet: const TabBar(tabs: [
+          Tab(icon: Icon(FontAwesomeIcons.car),),
+          Tab(icon: Icon(FontAwesomeIcons.screwdriverWrench),)
+        ]),
+
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          searchString = value.toLowerCase();
-                        });
-                      },
-                      decoration: const InputDecoration(
-                          labelText: 'Pesquisar',
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.magnifyingGlass,
-                            color: ColorsConstants.iconColor,
-                          ),
-                          border: InputBorder.none),
-                    ),
+    );
+  }
+
+  Widget listaVeiculos() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                IconButton(
-                  icon: const Icon(
-                    FontAwesomeIcons.plus,
-                    color: ColorsConstants.iconColor,
-                    size: 40,
-                  ),
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CadastroVeiculo(
-                          veiculo: {},
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchString = value.toLowerCase();
+                      });
+                    },
+                    decoration: const InputDecoration(
+                        labelText: 'Pesquisar',
+                        prefixIcon: Icon(
+                          FontAwesomeIcons.magnifyingGlass,
+                          color: ColorsConstants.iconColor,
                         ),
+                        border: InputBorder.none),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.plus,
+                  color: ColorsConstants.iconColor,
+                  size: 40,
+                ),
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CadastroVeiculo(
+                        veiculo: const {},
                       ),
                     ),
-                  },
-                )
-              ],
-            ),
+                  ),
+                },
+              )
+            ],
           ),
-          Expanded(
-            child: StreamBuilder(
-              stream:
-              FirebaseFirestore.instance.collection('veiculos').snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
+        ),
+        Expanded(
+          child: StreamBuilder(
+            stream:
+            FirebaseFirestore.instance.collection('veiculos').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
 
-                var items = snapshot.data!.docs.where((element) =>
-                    element['placa']
-                        .toString()
-                        .toLowerCase()
-                        .contains(searchString));
-                return ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    var veiculo = items.elementAt(index).data();
+              var items = snapshot.data!.docs.where((element) =>
+                  element['placa']
+                      .toString()
+                      .toLowerCase()
+                      .contains(searchString));
+              return ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  var veiculo = items.elementAt(index).data();
 
-                    return GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return ConfirmationDialog(
-                                  content: GeneralConstants.confirmEdit,
-                                  confirmationWidget:
-                                  confirmationAction(context, veiculo)
-                              );
-                            });
-                      },
-                      child: CustomCardVehicle(
-                          veiculo['modelo'],
-                          veiculo['anoFabricacao'],
-                          veiculo['placa'],
-                          veiculo['id']),
-                    );
-                  },
-                );
-              },
-            ),
+                  return GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ConfirmationDialog(
+                                content: GeneralConstants.confirmEdit,
+                                confirmationWidget:
+                                confirmationAction(context, veiculo)
+                            );
+                          });
+                    },
+                    child: CustomCardVehicle(
+                        veiculo['modelo'],
+                        veiculo['anoFabricacao'],
+                        veiculo['placa'],
+                        veiculo['id']),
+                  );
+                },
+              );
+            },
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 60,)
+      ],
     );
   }
 
