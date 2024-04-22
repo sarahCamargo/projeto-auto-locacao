@@ -296,12 +296,22 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
               ),
               ElevatedButton(
                   onPressed: _isSaveButtonEnabled
-                      ? isCPFRegistered()
-                          ? () {
+                      ? () {
+                          isCPFRegistered().then((isRegistered) {
+                            if (isRegistered) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'CPF já cadastrado. Não é possível salvar.'),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+                            } else {
                               saveData();
                               Navigator.of(context).pop();
                             }
-                          : null
+                          });
+                        }
                       : null,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: ColorsConstants.backgroundColor),
@@ -317,21 +327,8 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     );
   }
 
-  bool isCPFRegistered() {
-    isCpfAlreadyRegistered(_cpfController.text).then((isRegistered) {
-      if (isRegistered) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('CPF já cadastrado. Não é possível salvar.'),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        return true;
-      } else {
-        return false;
-      }
-    });
-    return false;
+  Future<bool> isCPFRegistered() async {
+    return await isCpfAlreadyRegistered(_cpfController.text);
   }
 
   void saveData() {
