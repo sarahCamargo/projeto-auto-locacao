@@ -370,13 +370,23 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   Future<void> _fetchAddress(String cep) async {
     final data = await FetchAddressService().fetchAddress(cep);
     if (data != null) {
-      setState(() {
-        _streetController.text = data['logradouro'];
-        _neighborhoodController.text = data['bairro'];
-        _stateController.text = data['uf'];
-        _cityController.text = data['localidade'];
-        _isAddressEditable = true;
-      });
+      if (data['erro'] != null) {
+        setState(() {
+          _streetController.text = '';
+          _neighborhoodController.text = '';
+          _stateController.text = '';
+          _cityController.text = '';
+          _isAddressEditable = false;
+        });
+      } else {
+        setState(() {
+          _streetController.text = data['logradouro'];
+          _neighborhoodController.text = data['bairro'];
+          _stateController.text = data['uf'];
+          _cityController.text = data['localidade'];
+          _isAddressEditable = true;
+        });
+      }
     }
   }
 
