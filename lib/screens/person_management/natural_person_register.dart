@@ -12,6 +12,7 @@ import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
 import '../../services/dao_service.dart';
+import '../../services/validation_service.dart';
 
 class NaturalPersonRegister extends StatefulWidget {
   @override
@@ -295,10 +296,12 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
               ),
               ElevatedButton(
                   onPressed: _isSaveButtonEnabled
-                      ? () {
-                          saveData();
-                          Navigator.of(context).pop();
-                        }
+                      ? isCPFRegistered()
+                          ? () {
+                              saveData();
+                              Navigator.of(context).pop();
+                            }
+                          : null
                       : null,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: ColorsConstants.backgroundColor),
@@ -312,6 +315,23 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
         ),
       ),
     );
+  }
+
+  bool isCPFRegistered() {
+    isCpfAlreadyRegistered(_cpfController.text).then((isRegistered) {
+      if (isRegistered) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('CPF já cadastrado. Não é possível salvar.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+        return true;
+      } else {
+        return false;
+      }
+    });
+    return false;
   }
 
   void saveData() {
