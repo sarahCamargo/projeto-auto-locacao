@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,113 +24,130 @@ class PersonManagementState extends State<PersonManagement> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: PersonConstants.personManagementTitle,
-        hasReturnScreen: true,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: PersonConstants.personManagementTitle,
+          hasReturnScreen: true,
+        ),
+        body: TabBarView(children: [naturalPerson(), Container()]),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          child: const TabBar(tabs: [
+            Tab(
+              icon: Icon(FontAwesomeIcons.userGroup, color: ColorsConstants.iconColor,),
+            ),
+            Tab(
+              icon: Icon(FontAwesomeIcons.userTie, color: ColorsConstants.iconColor),
+            )
+          ]),
+        ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          searchString = value.toLowerCase();
-                        });
-                      },
-                      decoration: const InputDecoration(
-                          labelText: 'Pesquisar',
-                          prefixIcon: Icon(
-                            FontAwesomeIcons.magnifyingGlass,
-                            color: ColorsConstants.iconColor,
-                          ),
-                          border: InputBorder.none),
-                    ),
+    );
+  }
+
+  Widget naturalPerson() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                IconButton(
-                  icon: const Icon(
-                    FontAwesomeIcons.userPlus,
-                    color: ColorsConstants.iconColor,
-                    size: 40,
-                  ),
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NaturalPersonRegister(
-                          person: {},
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchString = value.toLowerCase();
+                      });
+                    },
+                    decoration: const InputDecoration(
+                        labelText: 'Pesquisar',
+                        prefixIcon: Icon(
+                          FontAwesomeIcons.magnifyingGlass,
+                          color: ColorsConstants.iconColor,
                         ),
+                        border: InputBorder.none),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.userPlus,
+                  color: ColorsConstants.iconColor,
+                  size: 40,
+                ),
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const NaturalPersonRegister(
+                        person: {},
                       ),
                     ),
-                  },
-                )
-              ],
-            ),
+                  ),
+                },
+              )
+            ],
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('pessoa_fisica')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const CircularProgressIndicator();
-                    }
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('pessoa_fisica')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
 
-                    var items = snapshot.data!.docs.where((element) =>
-                        element['name']
-                            .toString()
-                            .toLowerCase()
-                            .contains(searchString));
-                    return ListView.builder(
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        var person = items.elementAt(index).data();
+                  var items = snapshot.data!.docs.where((element) =>
+                      element['name']
+                          .toString()
+                          .toLowerCase()
+                          .contains(searchString));
+                  return ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      var person = items.elementAt(index).data();
 
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return ConfirmationDialog(
+                      return GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return ConfirmationDialog(
                                     content: GeneralConstants.confirmEdit,
                                     confirmationWidget:
-                                        confirmationAction(context, person)
-                                  );
-                                });
-                          },
-                          child: PersonCard(person['name'], person['cpf'],
-                              person['cellPhone'], person['id']),
-                        );
-                      },
-                    );
-                  },
-                ),
+                                        confirmationAction(context, person));
+                              });
+                        },
+                        child: PersonCard(person['name'], person['cpf'],
+                            person['cellPhone'], person['id']),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
