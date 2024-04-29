@@ -67,7 +67,19 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
       _sexController = widget.person["sex"];
       _cellPhoneController.text = widget.person["cellPhone"].toString();
       _birthDateController.text = widget.person["birthDate"];
-      _cepController.text = widget.person["cep"];
+      if (widget.person["cep"] != null) {
+        _isAddressEditable = true;
+        _cepController.text = widget.person["cep"];
+        _stateController.text = widget.person["state"];
+        _cityController.text = widget.person["city"];
+        _streetController.text = widget.person["street"];
+        _neighborhoodController.text = widget.person["neighborhood"];
+        _addressComplementController.text = widget.person["addressComplement"];
+        if (widget.person["addressNumber"] != null) {
+          _addressNumberController.text =
+              widget.person["addressNumber"].toString();
+        }
+      }
     }
 
     _nameController.addListener(_checkButtonStatus);
@@ -328,7 +340,8 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   }
 
   Future<bool> isCPFRegistered() async {
-    if (widget.person['id'] == null || widget.person['cpf'] != _cpfController.text) {
+    if (widget.person['id'] == null ||
+        widget.person['cpf'] != _cpfController.text) {
       return await isCpfAlreadyRegistered(_cpfController.text);
     }
     return false;
@@ -372,24 +385,24 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
 
   Future<void> _fetchAddress(String cep) async {
     final data = await FetchAddressService().fetchAddress(cep);
-    if (data != null) {
-      if (data['erro'] != null) {
-        setState(() {
-          _streetController.text = '';
-          _neighborhoodController.text = '';
-          _stateController.text = '';
-          _cityController.text = '';
-          _isAddressEditable = false;
-        });
-      } else {
-        setState(() {
-          _streetController.text = data['logradouro'];
-          _neighborhoodController.text = data['bairro'];
-          _stateController.text = data['uf'];
-          _cityController.text = data['localidade'];
-          _isAddressEditable = true;
-        });
-      }
+    if (data != null && data['erro'] == null) {
+      setState(() {
+        _streetController.text = data['logradouro'];
+        _neighborhoodController.text = data['bairro'];
+        _stateController.text = data['uf'];
+        _cityController.text = data['localidade'];
+        _isAddressEditable = true;
+      });
+    } else {
+      setState(() {
+        _streetController.text = '';
+        _neighborhoodController.text = '';
+        _stateController.text = '';
+        _cityController.text = '';
+        _addressNumberController.text = '';
+        _addressComplementController.text = '';
+        _isAddressEditable = false;
+      });
     }
   }
 

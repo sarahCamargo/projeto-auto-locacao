@@ -69,16 +69,20 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
           widget.legalPerson["state_registration"];
       _emailController.text = widget.legalPerson["email"];
       _cellPhoneController.text = widget.legalPerson["cell_phone"];
-      _cepController.text = widget.legalPerson["cep"];
-      _stateController.text = widget.legalPerson["state"];
-      _cityController.text = widget.legalPerson["city"];
-      _streetController.text = widget.legalPerson["street"];
-      _neighborhoodController.text = widget.legalPerson["neighborhood"];
-      if (widget.legalPerson["address_number"] != null) {
-        _addressNumberController.text = widget.legalPerson["address_number"];
+      if (widget.legalPerson["cep"] != null) {
+        _isAddressEditable = true;
+        _cepController.text = widget.legalPerson["cep"];
+        _stateController.text = widget.legalPerson["state"];
+        _cityController.text = widget.legalPerson["city"];
+        _streetController.text = widget.legalPerson["street"];
+        _neighborhoodController.text = widget.legalPerson["neighborhood"];
+        if (widget.legalPerson["address_number"] != null) {
+          _addressNumberController.text =
+              widget.legalPerson["address_number"].toString();
+        }
+        _addressComplementController.text =
+            widget.legalPerson["address_complement"];
       }
-      _addressComplementController.text =
-          widget.legalPerson["address_complement"];
       _legalResponsibleController.text =
           widget.legalPerson["legal_responsible"];
       _legalResponsibleCPFController.text =
@@ -321,7 +325,8 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
   }
 
   Future<bool> isCNPJRegistered() async {
-    if (widget.legalPerson['id'] == null || widget.legalPerson['cnpj'] != _cnpjController.text) {
+    if (widget.legalPerson['id'] == null ||
+        widget.legalPerson['cnpj'] != _cnpjController.text) {
       return await isCnpjAlreadyRegistered(_cnpjController.text);
     }
     return false;
@@ -366,24 +371,24 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
 
   Future<void> _fetchAddress(String cep) async {
     final data = await FetchAddressService().fetchAddress(cep);
-    if (data != null) {
-      if (data['erro'] != null) {
-        setState(() {
-          _streetController.text = '';
-          _neighborhoodController.text = '';
-          _stateController.text = '';
-          _cityController.text = '';
-          _isAddressEditable = false;
-        });
-      } else {
-        setState(() {
-          _streetController.text = data['logradouro'];
-          _neighborhoodController.text = data['bairro'];
-          _stateController.text = data['uf'];
-          _cityController.text = data['localidade'];
-          _isAddressEditable = true;
-        });
-      }
+    if (data != null && data['erro'] == null) {
+      setState(() {
+        _streetController.text = data['logradouro'];
+        _neighborhoodController.text = data['bairro'];
+        _stateController.text = data['uf'];
+        _cityController.text = data['localidade'];
+        _isAddressEditable = true;
+      });
+    } else {
+      setState(() {
+        _streetController.text = '';
+        _neighborhoodController.text = '';
+        _stateController.text = '';
+        _cityController.text = '';
+        _addressNumberController.text = '';
+        _addressComplementController.text = '';
+        _isAddressEditable = false;
+      });
     }
   }
 
