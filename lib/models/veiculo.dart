@@ -12,6 +12,7 @@ class Veiculo implements DaoInterface {
   String? tipoTransmissao;
   String? condicao;
   String? descricao;
+  String? image;
 
   Veiculo(
       {this.id,
@@ -24,7 +25,8 @@ class Veiculo implements DaoInterface {
       this.tipoCombustivel,
       this.tipoTransmissao,
       this.condicao,
-      this.descricao});
+      this.descricao,
+      this.image});
 
   @override
   String? getId() {
@@ -49,7 +51,8 @@ class Veiculo implements DaoInterface {
       "tipoCombustivel": tipoCombustivel,
       "tipoTransmissao": tipoTransmissao,
       "condicao": condicao,
-      "descricao": descricao
+      "descricao": descricao,
+      "image": image
     };
   }
 }

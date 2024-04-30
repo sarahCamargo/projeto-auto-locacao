@@ -135,7 +135,8 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                         veiculo['modelo'],
                         veiculo['anoFabricacao'],
                         veiculo['placa'],
-                        veiculo['id']),
+                        veiculo['id'],
+                        veiculo['image']),
                   );
                 },
               );

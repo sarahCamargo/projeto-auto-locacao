@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:projeto_auto_locacao/services/dao_service.dart';
 
 import '../../constants/colors_constants.dart';
@@ -13,14 +16,17 @@ class CustomCardVehicle extends StatelessWidget {
   final String ano;
   final String placa;
   final String id;
+  final XFile? _image;
 
-  const CustomCardVehicle(this.modelo, this.ano, this.placa, this.id);
+  const CustomCardVehicle(
+      this.modelo, this.ano, this.placa, this.id, this._image);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
       child: Card(
+        elevation: 3,
         color: Colors.white,
         child: ListTile(
           title: CustomTextLabel(
@@ -34,9 +40,28 @@ class CustomCardVehicle extends StatelessWidget {
               CustomTextLabel(label: "Placa: $placa"),
             ],
           ),
-          leading: Icon(
-            Icons.image_not_supported_outlined,
-            size: 50,
+          leading: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey[300],
+            ),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: _image != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        _image.toString(),
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : const Center(
+                      child: Icon(
+                        FontAwesomeIcons.car,
+                        color: ColorsConstants.iconColor,
+                      ),
+                    ),
+            ),
           ),
           trailing: IconButton(
             icon: const Icon(
@@ -49,8 +74,7 @@ class CustomCardVehicle extends StatelessWidget {
                   builder: (BuildContext context) {
                     return ConfirmationDialog(
                         content: GeneralConstants.confirmDelete,
-                        confirmationWidget: confirmationAction(context)
-                    );
+                        confirmationWidget: confirmationAction(context));
                   }),
             },
           ),
@@ -83,5 +107,4 @@ class CustomCardVehicle extends StatelessWidget {
           label: GeneralConstants.ok,
         ));
   }
-
 }

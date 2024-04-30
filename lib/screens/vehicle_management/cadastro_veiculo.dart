@@ -1,5 +1,12 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/models/veiculo.dart';
@@ -23,6 +30,9 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
   String? _selectedTipoCombustivel;
   String? _selectedTipoTransmissao;
   String? _selectedCondicao;
+  XFile? _image;
+  String? _imageUrl;
+  bool _hasImage = false;
 
   final MaskedTextController _anoFabricacaoController =
       MaskedTextController(mask: '0000/0000');
@@ -91,7 +101,16 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
                 fontSize: 18.0,
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(onPressed: () => {}, child: Text("Enviar imagem")),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  GestureDetector(
+                      onTap: _getImageFromGallery,
+                      child: _buildImageAndButton()),
+                  const SizedBox(height: 20),
+                  _imageUrl != null ? Image.network(_imageUrl!) : Container(),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Row(
@@ -397,12 +416,21 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     DaoService daoService = DaoService(collectionName: "veiculos");
 
     daoService.save(veiculo).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dados salvos com sucesso'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+        email: "sarahcamargo00@gmail.com",
+        password: "721*klmno_AB430",
+      )
+          .then((value) {
+        _uploadImageToFirebase().then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Dados salvos com sucesso'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        });
+      });
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -428,5 +456,102 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     setState(() {
       _isSaveButtonEnabled = textEditingController.text.isNotEmpty;
     });
+  }
+
+  Future<void> _getImageFromGallery() async {
+    final XFile? pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = pickedFile;
+        _hasImage = true;
+      });
+    }
+  }
+
+  Future<void> _uploadImageToFirebase() async {
+    try {
+      if (_image != null) {
+        final File file = File(_image!.path);
+        final fileName = 'images/${DateTime.now()}.png';
+
+        final ref = FirebaseStorage.instance.ref().child(fileName);
+        await ref.putFile(file);
+        _imageUrl = await ref.getDownloadURL();
+        await FirebaseFirestore.instance
+            .collection('veiculos')
+            .add({'image': _imageUrl});
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Widget _buildImageContainer() {
+    return Container(
+      width: double.infinity,
+      height: 150,
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: _image == null
+          ? Center(
+              child: Icon(
+                FontAwesomeIcons.squarePlus,
+                size: 50,
+                color: Colors.grey[400],
+              ),
+            )
+          : ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.file(
+                File(_image!.path),
+                fit: BoxFit.contain,
+              ),
+            ),
+    );
+  }
+
+  Widget _buildRemoveImageButton() {
+    return Positioned(
+      right: 0,
+      top: 0,
+      child: IconButton(
+        icon: const Icon(
+          FontAwesomeIcons.xmark,
+          color: ColorsConstants.iconColor,
+        ),
+        onPressed: _removeImage,
+      ),
+    );
+  }
+
+  Widget _buildImageAndButton() {
+    return Stack(
+      children: [
+        _buildImageContainer(),
+        if (_hasImage) _buildRemoveImageButton(),
+      ],
+    );
+  }
+
+  void _removeImage() {
+    setState(() {
+      _image = null;
+      _hasImage = false;
+    });
+  }
+
+  void signIn() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: "",
+        password: "",
+      );
+    } catch (e) {
+      print("Erro ao autenticar usuário: $e");
+    }
   }
 }
