@@ -13,6 +13,7 @@ class CustomTextField extends StatefulWidget {
   final OnChangeCallback? onChange;
   final bool isRequired;
   final String? labelText;
+  final bool isCapitalized;
 
   const CustomTextField(
       {super.key,
@@ -24,7 +25,8 @@ class CustomTextField extends StatefulWidget {
       this.readOnly = false,
       this.onChange,
       this.isRequired = false,
-      this.labelText});
+      this.labelText,
+      this.isCapitalized = false});
 
   @override
   CustomTextFieldState createState() => CustomTextFieldState();
@@ -56,6 +58,7 @@ class CustomTextFieldState extends State<CustomTextField> {
           widget.onChange?.call(value);
           _updateBorderColor();
         },
+        textCapitalization: widget.isCapitalized ? TextCapitalization.characters : TextCapitalization.none,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: widget.hintText,

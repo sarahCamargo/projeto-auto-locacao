@@ -406,18 +406,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     }
   }
 
-  void checkRequiredFields(TextEditingController? textControllers) {
-    bool isAllFieldsFilled = true;
-
-    if (textControllers!.text.isEmpty) {
-      isAllFieldsFilled = false;
-    }
-
-    setState(() {
-      _isSaveButtonEnabled = isAllFieldsFilled;
-    });
-  }
-
   void _checkButtonStatus() {
     setState(() {
       _isSaveButtonEnabled = _nameController.text.isNotEmpty &&

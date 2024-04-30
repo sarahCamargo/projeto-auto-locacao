@@ -9,7 +9,7 @@ import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
 import '../../utils/confirmation_dialog.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_card_vehicle.dart';
+import 'custom_card_vehicle.dart';
 import '../../widgets/custom_text_label.dart';
 
 class VehiclesManagement extends StatefulWidget {

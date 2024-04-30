@@ -5,15 +5,12 @@ class Veiculo implements DaoInterface {
   String? placa;
   String? modelo;
   String? marca;
-  int? anoFabricacao;
+  String? anoFabricacao;
   int? renavan;
   String? cor;
-  int? quilometragem;
   String? tipoCombustivel;
-  int? numeroPortas;
   String? tipoTransmissao;
   String? condicao;
-  int? numeroAssentos;
   String? descricao;
 
   Veiculo(
@@ -24,12 +21,9 @@ class Veiculo implements DaoInterface {
       this.anoFabricacao,
       this.renavan,
       this.cor,
-      this.quilometragem,
       this.tipoCombustivel,
-      this.numeroPortas,
       this.tipoTransmissao,
       this.condicao,
-      this.numeroAssentos,
       this.descricao});
 
   @override
@@ -52,12 +46,9 @@ class Veiculo implements DaoInterface {
       "anoFabricacao": anoFabricacao,
       "renavan": renavan,
       "cor": cor,
-      "quilometragem": quilometragem,
       "tipoCombustivel": tipoCombustivel,
-      "numeroPortas": numeroPortas,
       "tipoTransmissao": tipoTransmissao,
       "condicao": condicao,
-      "numeroAssentos": numeroAssentos,
       "descricao": descricao
     };
   }

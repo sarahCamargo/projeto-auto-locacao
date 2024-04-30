@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/services/dao_service.dart';
 
-import '../constants/colors_constants.dart';
-import '../constants/general_constants.dart';
-import '../utils/confirmation_dialog.dart';
-import 'custom_text_label.dart';
+import '../../constants/colors_constants.dart';
+import '../../constants/general_constants.dart';
+import '../../utils/confirmation_dialog.dart';
+import '../../widgets/custom_text_label.dart';
 
 class CustomCardVehicle extends StatelessWidget {
   final String modelo;
-  final int ano;
+  final String ano;
   final String placa;
   final String id;
 
