@@ -1,25 +1,27 @@
+
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projeto_auto_locacao/services/dao_service.dart';
 
 import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
 import '../../utils/confirmation_dialog.dart';
 import '../../widgets/custom_text_label.dart';
 
+typedef OnDelete = Future<void> Function(int id);
+
 class CustomCardVehicle extends StatelessWidget {
   final String modelo;
   final String ano;
   final String placa;
-  final String id;
-  final XFile? _image;
+  final int id;
+  final String? _image;
+  final OnDelete? delete;
 
   const CustomCardVehicle(
-      this.modelo, this.ano, this.placa, this.id, this._image);
+      this.modelo, this.ano, this.placa, this.id, this._image, this.delete, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +52,9 @@ class CustomCardVehicle extends StatelessWidget {
               child: _image != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        _image.toString(),
-                        fit: BoxFit.cover,
+                      child: Image.file(
+                        File(_image),
+                        fit: BoxFit.contain,
                       ),
                     )
                   : const Center(
@@ -83,28 +85,24 @@ class CustomCardVehicle extends StatelessWidget {
     );
   }
 
-  Future<void> deleteVehicle() {
-    DaoService daoService = DaoService(collectionName: "veiculos");
-    return daoService.delete(id);
-  }
-
   Widget confirmationAction(BuildContext context) {
     return TextButton(
-        onPressed: () {
-          deleteVehicle().then((value) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text(GeneralConstants.registerDeleted)),
-            );
-            Navigator.of(context).pop();
-          }).catchError((error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Erro ao realizar ação: $error')),
-            );
-            Navigator.of(context).pop();
-          });
-        },
-        child: const CustomTextLabel(
-          label: GeneralConstants.ok,
-        ));
+      onPressed: () {
+        delete?.call(id).then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text(GeneralConstants.registerDeleted)),
+          );
+          Navigator.of(context).pop(true);
+        }).catchError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro ao realizar ação: $error')),
+          );
+          Navigator.of(context).pop();
+        });
+      },
+      child: const CustomTextLabel(
+        label: GeneralConstants.ok,
+      ),
+    );
   }
 }

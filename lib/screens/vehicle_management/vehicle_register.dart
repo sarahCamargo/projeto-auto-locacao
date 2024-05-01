@@ -1,32 +1,31 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
-import 'package:projeto_auto_locacao/models/veiculo.dart';
-import 'package:projeto_auto_locacao/services/dao_service.dart';
+import 'package:projeto_auto_locacao/models/vehicle.dart';
+import 'package:projeto_auto_locacao/services/database_helper.dart';
 
 import '../../constants/colors_constants.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_text_form_field.dart';
 import '../../widgets/custom_text_label.dart';
 
-class CadastroVeiculo extends StatefulWidget {
+class VehicleRegister extends StatefulWidget {
   @override
-  _CadastroVeiculoState createState() => _CadastroVeiculoState();
+  VehicleRegisterState createState() => VehicleRegisterState();
 
-  final Map<String, dynamic> veiculo;
+  final Map<String, dynamic> vehicle;
 
-  const CadastroVeiculo({super.key, required this.veiculo});
+  const VehicleRegister({super.key, required this.vehicle});
 }
 
-class _CadastroVeiculoState extends State<CadastroVeiculo> {
+class VehicleRegisterState extends State<VehicleRegister> {
   String? _selectedTipoCombustivel;
   String? _selectedTipoTransmissao;
   String? _selectedCondicao;
@@ -48,22 +47,24 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
   @override
   void initState() {
     super.initState();
-    if (widget.veiculo["id"] != null) {
-      _marcaController.text = widget.veiculo["marca"];
-      _modeloController.text = widget.veiculo["modelo"];
-      _placaController.text = widget.veiculo["placa"];
-      _anoFabricacaoController.text =
-          widget.veiculo["anoFabricacao"].toString();
-      _renavanController.text = widget.veiculo["renavan"] != null
-          ? widget.veiculo["renavan"].toString()
+    if (widget.vehicle["id"] != null) {
+      _marcaController.text = widget.vehicle["brand"];
+      _modeloController.text = widget.vehicle["model"];
+      _placaController.text = widget.vehicle["licensePlate"];
+      _anoFabricacaoController.text = widget.vehicle["year"].toString();
+      _renavanController.text = widget.vehicle["renavam"] != null
+          ? widget.vehicle["renavam"].toString()
           : "";
-      _corController.text = widget.veiculo["cor"];
-      _selectedTipoCombustivel = widget.veiculo["tipoCombustivel"];
-      _selectedTipoTransmissao = widget.veiculo["tipoTransmissao"];
-      _selectedCondicao = widget.veiculo["condicao"];
-      _descricaoController.text = widget.veiculo["descricao"];
+      _corController.text = widget.vehicle["color"];
+      _selectedTipoCombustivel = widget.vehicle["fuelType"];
+      _selectedTipoTransmissao = widget.vehicle["transmissionType"];
+      _selectedCondicao = widget.vehicle["condition"];
+      _descricaoController.text = widget.vehicle["description"];
+      if (widget.vehicle["imageUrl"] != null) {
+        _imageUrl = widget.vehicle["imageUrl"];
+        _hasImage = true;
+      }
     }
-
     _marcaController.addListener(_checkButtonStatus);
     _modeloController.addListener(_checkButtonStatus);
     _placaController.addListener(_checkButtonStatus);
@@ -108,7 +109,6 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
                       onTap: _getImageFromGallery,
                       child: _buildImageAndButton()),
                   const SizedBox(height: 20),
-                  _imageUrl != null ? Image.network(_imageUrl!) : Container(),
                 ],
               ),
               Padding(
@@ -381,8 +381,7 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
               ElevatedButton(
                   onPressed: _isSaveButtonEnabled
                       ? () {
-                          salvarDados();
-                          Navigator.of(context).pop();
+                          save();
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
@@ -398,40 +397,16 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     );
   }
 
-  void salvarDados() {
-    Veiculo veiculo = new Veiculo();
-    if (widget.veiculo["id"] != null) {
-      veiculo.id = widget.veiculo["id"];
-    }
-    veiculo.placa = _placaController.text;
-    veiculo.modelo = _modeloController.text;
-    veiculo.marca = _marcaController.text;
-    veiculo.anoFabricacao = _anoFabricacaoController.text;
-    if (_renavanController.text.isNotEmpty) {
-      veiculo.renavan = int.parse(_renavanController.text);
-    }
-    veiculo.cor = _corController.text;
-    veiculo.descricao = _descricaoController.text;
-
-    DaoService daoService = DaoService(collectionName: "veiculos");
-
-    daoService.save(veiculo).then((value) {
-      FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-        email: "sarahcamargo00@gmail.com",
-        password: "721*klmno_AB430",
-      )
-          .then((value) {
-        _uploadImageToFirebase().then((value) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Dados salvos com sucesso'),
-              duration: Duration(seconds: 3),
-            ),
-          );
-        });
-      });
-    }).catchError((error) {
+  void save() {
+    saveData().then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Dados salvos com sucesso'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      Navigator.pop(context, true);
+    }).catchError((error){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro ao salvar dados: $error'),
@@ -439,6 +414,29 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
         ),
       );
     });
+  }
+
+  Future<void> saveData() async {
+    DatabaseHelper databaseHelper = DatabaseHelper();
+    Vehicle vehicle = Vehicle();
+    vehicle.licensePlate = _placaController.text;
+    vehicle.model = _modeloController.text;
+    vehicle.brand = _marcaController.text;
+    vehicle.year = _anoFabricacaoController.text;
+    if (_renavanController.text.isNotEmpty) {
+      vehicle.renavam = int.parse(_renavanController.text);
+    }
+    vehicle.color = _corController.text;
+    vehicle.description = _descricaoController.text;
+    vehicle.imageUrl = await _getImagePath();
+
+    if (widget.vehicle['id'] != null) {
+      vehicle.id = widget.vehicle['id'];
+      await databaseHelper.update(
+          vehicle.id!, vehicle.toMap(), CollectionNames.vehicle);
+    } else {
+      await databaseHelper.insert(vehicle, CollectionNames.vehicle);
+    }
   }
 
   void _checkButtonStatus() {
@@ -469,25 +467,26 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
     }
   }
 
-  Future<void> _uploadImageToFirebase() async {
+  Future<String?> _getImagePath() async {
     try {
       if (_image != null) {
         final File file = File(_image!.path);
-        final fileName = 'images/${DateTime.now()}.png';
-
-        final ref = FirebaseStorage.instance.ref().child(fileName);
-        await ref.putFile(file);
-        _imageUrl = await ref.getDownloadURL();
-        await FirebaseFirestore.instance
-            .collection('veiculos')
-            .add({'image': _imageUrl});
+        final directory = await getApplicationDocumentsDirectory();
+        final imagePath = '${directory.path}/vechile_${DateTime.now()}.png';
+        await file.copy(imagePath);
+        return imagePath;
+      }
+      if (_imageUrl != null) {
+        return _imageUrl;
       }
     } catch (e) {
       rethrow;
     }
+    return null;
   }
 
   Widget _buildImageContainer() {
+    String? newImage = _image == null ? _imageUrl : _image!.path;
     return Container(
       width: double.infinity,
       height: 150,
@@ -495,7 +494,7 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: _image == null
+      child: newImage == null
           ? Center(
               child: Icon(
                 FontAwesomeIcons.squarePlus,
@@ -506,7 +505,7 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
           : ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.file(
-                File(_image!.path),
+                File(newImage),
                 fit: BoxFit.contain,
               ),
             ),
@@ -539,19 +538,8 @@ class _CadastroVeiculoState extends State<CadastroVeiculo> {
   void _removeImage() {
     setState(() {
       _image = null;
+      _imageUrl = null;
       _hasImage = false;
     });
-  }
-
-  void signIn() async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: "",
-        password: "",
-      );
-    } catch (e) {
-      print("Erro ao autenticar usuário: $e");
-    }
   }
 }

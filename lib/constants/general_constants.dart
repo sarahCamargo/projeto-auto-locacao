@@ -9,4 +9,5 @@ class GeneralConstants {
   static const String confirmEdit = "Confirma edição do registro?";
   static const String saveButton = 'Salvar';
   static const String doNotInform = 'Não Informar';
+  static const String search = 'Pesquisar';
 }

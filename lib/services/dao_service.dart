@@ -9,11 +9,11 @@ class DaoService {
 
   Future<void> save(DaoInterface daoInterface) async {
     if (daoInterface.getId() == null) {
-      daoInterface.setId(const Uuid().v1());
+      //daoInterface.setId(const Uuid().v1());
     }
     FirebaseFirestore.instance
         .collection(collectionName)
-        .doc(daoInterface.getId())
+        .doc(daoInterface.getId().toString())
         .set(daoInterface.toMap());
   }
 

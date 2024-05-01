@@ -4,7 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/gerenciar_veiculo.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_management.dart';
+import 'package:projeto_auto_locacao/services/database_helper.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
@@ -16,7 +17,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //FirebaseAppCheck.instance.activate();
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  await databaseHelper.database;
   runApp(const MyApp());
 }
 

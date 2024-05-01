@@ -32,7 +32,10 @@ dependencies:
     sdk: flutter
 
   #Database libraries
+  sqflite: ^2.3.3
   firebase_core: ^2.27.1
+  firebase_storage: ^11.7.4
+  firebase_auth: ^4.19.4
   cloud_firestore: ^4.15.9
   uuid: ^4.3.3
 
@@ -44,6 +47,12 @@ dependencies:
   google_fonts: ^6.2.1
   logger: ^2.2.0
   intl: ^0.19.0
+
+  #image and files
+  path_provider: ^2.1.3
+  path: ^1.9.0
+  file_picker: ^8.0.3
+  image_picker: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
 
 class NaturalPerson implements DaoInterface{
-  String? id;
+  int? id;
   String? name;
   String? cpf;
   String? email;
@@ -37,12 +37,12 @@ class NaturalPerson implements DaoInterface{
       this.addressComplement});
 
   @override
-  String? getId() {
+  int? getId() {
     return id;
   }
 
   @override
-  void setId(final String id) {
+  void setId(final int id) {
     this.id = id;
   }
 

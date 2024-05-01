@@ -1,15 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/cadastro_veiculo.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_register.dart';
+import 'package:projeto_auto_locacao/services/database_helper.dart';
 
+import '../../constants/collection_names.dart';
 import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
 import '../../utils/confirmation_dialog.dart';
 import '../../widgets/custom_app_bar.dart';
-import 'custom_card_vehicle.dart';
+import 'vehicle_card.dart';
 import '../../widgets/custom_text_label.dart';
 
 class VehiclesManagement extends StatefulWidget {
@@ -21,6 +23,14 @@ class VehiclesManagement extends StatefulWidget {
 
 class VehiclesManagementState extends State<VehiclesManagement> {
   String searchString = '';
+  final StreamController<List<Map<String, dynamic>>> _streamController =
+  StreamController<List<Map<String, dynamic>>>();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDataFromDatabase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +41,13 @@ class VehiclesManagementState extends State<VehiclesManagement> {
           title: VehicleConstants.vehicleManagementTitle,
           hasReturnScreen: true,
         ),
-        body: TabBarView(children: [listaVeiculos(), Container()]),
+        body: TabBarView(children: [listVehicles(), Container()]),
         bottomNavigationBar: Container(
           color: Colors.white,
           child: const TabBar(tabs: [
             Tab(
               icon:
-                  Icon(FontAwesomeIcons.car, color: ColorsConstants.iconColor),
+              Icon(FontAwesomeIcons.car, color: ColorsConstants.iconColor),
             ),
             Tab(
               icon: Icon(FontAwesomeIcons.screwdriverWrench,
@@ -49,7 +59,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
     );
   }
 
-  Widget listaVeiculos() {
+  Widget listVehicles() {
     return Column(
       children: [
         Padding(
@@ -69,7 +79,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                       });
                     },
                     decoration: const InputDecoration(
-                        labelText: 'Pesquisar',
+                        labelText: GeneralConstants.search,
                         prefixIcon: Icon(
                           FontAwesomeIcons.magnifyingGlass,
                           color: ColorsConstants.iconColor,
@@ -87,15 +97,21 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                   color: ColorsConstants.iconColor,
                   size: 40,
                 ),
-                onPressed: () => {
+                onPressed: () =>
+                {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CadastroVeiculo(
-                        veiculo: const {},
+                      builder: (context) =>
+                      const VehicleRegister(
+                        vehicle: {},
                       ),
                     ),
-                  ),
+                  ).then((value) {
+                    if (value == true) {
+                      fetchDataFromDatabase();
+                    }
+                  }),
                 },
               )
             ],
@@ -103,23 +119,24 @@ class VehiclesManagementState extends State<VehiclesManagement> {
         ),
         Expanded(
           child: StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection('veiculos').snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
+            stream: _streamController.stream,
+            builder:
+                (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               }
-
-              var items = snapshot.data!.docs.where((element) =>
-                  element['placa']
+              if (!snapshot.hasData) {
+                return SizedBox.shrink();
+              }
+              var items = snapshot.data!.where((element) =>
+                  element['licensePlate']
                       .toString()
                       .toLowerCase()
                       .contains(searchString));
               return ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (context, index) {
-                  var veiculo = items.elementAt(index).data();
-
+                  var vehicle = items.elementAt(index);
                   return GestureDetector(
                     onTap: () {
                       showDialog(
@@ -128,15 +145,17 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                             return ConfirmationDialog(
                                 content: GeneralConstants.confirmEdit,
                                 confirmationWidget:
-                                    confirmationAction(context, veiculo));
+                                confirmationAction(context, vehicle));
                           });
                     },
                     child: CustomCardVehicle(
-                        veiculo['modelo'],
-                        veiculo['anoFabricacao'],
-                        veiculo['placa'],
-                        veiculo['id'],
-                        veiculo['image']),
+                        vehicle['brand'],
+                        vehicle['year'],
+                        vehicle['licensePlate'],
+                        vehicle['id'],
+                        vehicle['imageUrl'], (id) async {
+                      await deleteVehicle(vehicle['id']);
+                    }),
                   );
                 },
               );
@@ -154,12 +173,27 @@ class VehiclesManagementState extends State<VehiclesManagement> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CadastroVeiculo(veiculo: veiculo),
+              builder: (context) => VehicleRegister(vehicle: veiculo),
             ),
-          );
+          ).then((value) {
+            fetchDataFromDatabase();
+          });
         },
         child: const CustomTextLabel(
           label: GeneralConstants.ok,
         ));
+  }
+
+  Future<List<Map<String, dynamic>>> fetchDataFromDatabase() async {
+    List<Map<String, dynamic>> results =
+    await DatabaseHelper().fetchData(CollectionNames.vehicle);
+    _streamController.add(results);
+    return results;
+  }
+
+  Future<void> deleteVehicle(int id) async {
+    await DatabaseHelper().delete(id, CollectionNames.vehicle).then((value) {
+      fetchDataFromDatabase();
+    });
   }
 }
