@@ -1,5 +1,6 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
-import 'package:projeto_auto_locacao/services/queries/vehicle_queries.dart';
+import 'package:projeto_auto_locacao/services/database/queries/natural_person_queries.dart';
+import 'package:projeto_auto_locacao/services/database/queries/vehicle_queries.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -41,6 +42,7 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(VehicleQueries.createTableQuery);
+    await db.execute(NaturalPersonQueries.createTableQuery);
   }
 
   Future<void> close() async {

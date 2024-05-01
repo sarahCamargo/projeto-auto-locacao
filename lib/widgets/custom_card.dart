@@ -1,8 +1,8 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:projeto_auto_locacao/services/database/database_handler.dart';
 
 import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
@@ -11,16 +11,22 @@ import '../../widgets/custom_text_label.dart';
 
 typedef OnDelete = Future<void> Function(int id);
 
-class CustomCardVehicle extends StatelessWidget {
-  final String modelo;
-  final String ano;
-  final String placa;
+class CustomCard extends StatelessWidget {
+  final List<Widget> data;
+  final String title;
   final int id;
-  final String? _image;
-  final OnDelete? delete;
+  final bool hasImage;
+  final String? imageUrl;
+  final DatabaseHandler dbHandler;
 
-  const CustomCardVehicle(
-      this.modelo, this.ano, this.placa, this.id, this._image, this.delete, {super.key});
+  const CustomCard(
+      {super.key,
+      required this.title,
+      required this.data,
+      required this.id,
+      this.hasImage = false,
+      this.imageUrl,
+      required this.dbHandler});
 
   @override
   Widget build(BuildContext context) {
@@ -31,39 +37,38 @@ class CustomCardVehicle extends StatelessWidget {
         color: Colors.white,
         child: ListTile(
           title: CustomTextLabel(
-            label: modelo,
+            label: title,
             fontWeight: FontWeight.bold,
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomTextLabel(label: "Ano: $ano"),
-              CustomTextLabel(label: "Placa: $placa"),
-            ],
+            children: data,
           ),
-          leading: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.grey[300],
-            ),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: _image != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(
-                        File(_image),
-                        fit: BoxFit.contain,
-                      ),
-                    )
-                  : const Center(
-                      child: Icon(
-                        FontAwesomeIcons.car,
-                        color: ColorsConstants.iconColor,
-                      ),
-                    ),
-            ),
-          ),
+          leading: hasImage
+              ? Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey[300],
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: imageUrl != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.file(
+                              File(imageUrl!),
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                        : const Center(
+                            child: Icon(
+                              FontAwesomeIcons.car,
+                              color: ColorsConstants.iconColor,
+                            ),
+                          ),
+                  ),
+                )
+              : null,
           trailing: IconButton(
             icon: const Icon(
               FontAwesomeIcons.trash,
@@ -87,11 +92,11 @@ class CustomCardVehicle extends StatelessWidget {
   Widget confirmationAction(BuildContext context) {
     return TextButton(
       onPressed: () {
-        delete?.call(id).then((value) {
+        dbHandler.delete(id).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text(GeneralConstants.registerDeleted)),
           );
-          Navigator.of(context).pop(true);
+          Navigator.of(context).pop();
         }).catchError((error) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Erro ao realizar ação: $error')),

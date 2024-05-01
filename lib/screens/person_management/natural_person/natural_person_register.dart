@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
 import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
+import 'package:projeto_auto_locacao/services/database/database_handler.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
-import '../../../services/dao_service.dart';
 import '../../../services/validation_service.dart';
 
 class NaturalPersonRegister extends StatefulWidget {
@@ -23,6 +23,7 @@ class NaturalPersonRegister extends StatefulWidget {
 }
 
 class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.naturalPerson);
   String? _cpfError;
   String? _birthDateError;
   String? _selectedCivilStatus;
@@ -85,7 +86,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     _nameController.addListener(_checkButtonStatus);
     _cpfController.addListener(_checkButtonStatus);
     _emailController.addListener(_checkButtonStatus);
-    _birthDateController.addListener(_checkButtonStatus);
     _cellPhoneController.addListener(_checkButtonStatus);
     _checkButtonStatus();
   }
@@ -94,6 +94,10 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   void dispose() {
     _cpfController.removeListener(_validateCPF);
     _birthDateController.removeListener(_validateDate);
+    _nameController.removeListener(_checkButtonStatus);
+    _cpfController.removeListener(_checkButtonStatus);
+    _emailController.removeListener(_checkButtonStatus);
+    _cellPhoneController.removeListener(_checkButtonStatus);
     _cpfController.dispose();
     super.dispose();
   }
@@ -152,11 +156,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                   maskedController: _birthDateController,
                   keyboardType: TextInputType.datetime,
                   errorText: _birthDateError,
-                  hintText: PersonConstants.birthDateHint,
-                  onChange: (value) {
-                    _updateSaveButtonState(_birthDateController);
-                  },
-                  isRequired: true),
+                  hintText: PersonConstants.birthDateHint),
               const SizedBox(height: 16.0),
               const CustomTextLabel(label: PersonConstants.sexLabel),
               Row(
@@ -320,7 +320,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                               );
                             } else {
                               saveData();
-                              Navigator.of(context).pop();
                             }
                           });
                         }
@@ -348,39 +347,27 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   }
 
   void saveData() {
-    NaturalPerson person = NaturalPerson();
-    if (widget.person["id"] != null) {
-      person.id = widget.person["id"];
-    }
-    person.name = _nameController.text;
-    person.cpf = _cpfController.text;
-    person.email = _emailController.text;
-    person.civilState = _selectedCivilStatus;
-    person.career = _careerController.text;
-    person.sex = _sexController;
-    person.cellPhone = _cellPhoneController.text;
-    person.birthDate = _birthDateController.text;
-    person.cep = _cepController.text;
-    person.street = _streetController.text;
-    person.state = _stateController.text;
-    person.city = _cityController.text;
-    person.neighborhood = _neighborhoodController.text;
+    NaturalPerson naturalPerson = NaturalPerson();
+    naturalPerson.name = _nameController.text;
+    naturalPerson.cpf = _cpfController.text;
+    naturalPerson.email = _emailController.text;
+    naturalPerson.civilState = _selectedCivilStatus;
+    naturalPerson.career = _careerController.text;
+    naturalPerson.sex = _sexController;
+    naturalPerson.cellPhone = _cellPhoneController.text;
+    naturalPerson.birthDate = _birthDateController.text;
+    naturalPerson.cep = _cepController.text;
+    naturalPerson.street = _streetController.text;
+    naturalPerson.state = _stateController.text;
+    naturalPerson.city = _cityController.text;
+    naturalPerson.neighborhood = _neighborhoodController.text;
     if (_addressNumberController.text.isNotEmpty) {
-      person.addressNumber = int.parse(_addressNumberController.text);
+      naturalPerson.addressNumber = int.parse(_addressNumberController.text);
     }
-    person.addressComplement = _addressComplementController.text;
+    naturalPerson.addressComplement = _addressComplementController.text;
 
-    DaoService daoService = DaoService(collectionName: "pessoa_fisica");
+    dbHandler.save(context, widget.person["id"], naturalPerson);
 
-    daoService.save(person).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(GeneralConstants.dataSaved)),
-      );
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar dados: $error')),
-      );
-    });
   }
 
   Future<void> _fetchAddress(String cep) async {
@@ -410,7 +397,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     setState(() {
       _isSaveButtonEnabled = _nameController.text.isNotEmpty &&
           _cpfController.text.isNotEmpty &&
-          _birthDateController.text.isNotEmpty &&
           _cellPhoneController.text.isNotEmpty &&
           _cpfError == null &&
           _birthDateError == null;

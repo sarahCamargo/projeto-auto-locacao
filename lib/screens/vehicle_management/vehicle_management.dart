@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_register.dart';
-import 'package:projeto_auto_locacao/services/database_helper.dart';
+import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 
 import '../../constants/collection_names.dart';
 import '../../constants/colors_constants.dart';
@@ -126,7 +126,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                 return const CircularProgressIndicator();
               }
               if (!snapshot.hasData) {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
               var items = snapshot.data!.where((element) =>
                   element['licensePlate']
@@ -166,14 +166,14 @@ class VehiclesManagementState extends State<VehiclesManagement> {
     );
   }
 
-  Widget confirmationAction(BuildContext context, var veiculo) {
+  Widget confirmationAction(BuildContext context, var vehicle) {
     return TextButton(
         onPressed: () {
           Navigator.of(context).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VehicleRegister(vehicle: veiculo),
+              builder: (context) => VehicleRegister(vehicle: vehicle),
             ),
           ).then((value) {
             fetchDataFromDatabase();

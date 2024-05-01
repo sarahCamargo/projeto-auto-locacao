@@ -1,12 +1,15 @@
+
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/screens/person_management/natural_person/natural_person_register.dart';
-import 'package:projeto_auto_locacao/screens/person_management/natural_person/natural_person_card.dart';
+import 'package:projeto_auto_locacao/services/database/database_handler.dart';
 
 import '../../../constants/general_constants.dart';
+import '../../../constants/person_management_constants.dart';
 import '../../../utils/confirmation_dialog.dart';
+import '../../../widgets/custom_card.dart';
 import '../../../widgets/custom_text_label.dart';
 
 class NaturalPersonManagement extends StatefulWidget {
@@ -18,6 +21,13 @@ class NaturalPersonManagement extends StatefulWidget {
 
 class NaturalPersonManagementState extends State<NaturalPersonManagement> {
   String searchString = '';
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.naturalPerson);
+
+  @override
+  void initState() {
+    super.initState();
+    dbHandler.fetchDataFromDatabase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +76,11 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                         person: {},
                       ),
                     ),
-                  ),
+                  ).then((value) {
+                    if (value == true) {
+                      dbHandler.fetchDataFromDatabase();
+                    }
+                  }),
                 },
               )
             ],
@@ -81,23 +95,23 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('pessoa_fisica')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
+                stream: dbHandler.dataStream,
+                builder: (context,
+                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   }
-
-                  var items = snapshot.data!.docs.where((element) =>
-                      element['name']
-                          .toString()
-                          .toLowerCase()
-                          .contains(searchString));
+                  if (!snapshot.hasData) {
+                    return const SizedBox.shrink();
+                  }
+                  var items = snapshot.data!.where((element) => element['name']
+                      .toString()
+                      .toLowerCase()
+                      .contains(searchString));
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      var person = items.elementAt(index).data();
+                      var person = items.elementAt(index);
 
                       return GestureDetector(
                         onTap: () {
@@ -110,8 +124,12 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                                         confirmationAction(context, person));
                               });
                         },
-                        child: PersonCard(person['name'], person['cpf'],
-                            person['cellPhone'], person['id']),
+                        child: CustomCard(
+                          title: person['name'],
+                          data: _getCardInfo(person),
+                          id: person['id'],
+                          dbHandler: dbHandler,
+                        ),
                       );
                     },
                   );
@@ -124,6 +142,16 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
     );
   }
 
+  List<Widget> _getCardInfo(Map<String, dynamic> naturalPerson) {
+    List<Widget> info = [];
+    info.add(CustomTextLabel(
+        label: '${PersonConstants.cpfLabel}: ${naturalPerson['cpf']}'));
+    info.add(CustomTextLabel(
+        label:
+            '${PersonConstants.cellPhoneLabel}: ${naturalPerson['cellPhone']}'));
+    return info;
+  }
+
   Widget confirmationAction(BuildContext context, var person) {
     return TextButton(
         onPressed: () {
@@ -133,7 +161,9 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
             MaterialPageRoute(
               builder: (context) => NaturalPersonRegister(person: person),
             ),
-          );
+          ).then((value) {
+            dbHandler.fetchDataFromDatabase();
+          });
         },
         child: const CustomTextLabel(
           label: GeneralConstants.ok,

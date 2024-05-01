@@ -9,9 +9,10 @@ import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
-import 'package:projeto_auto_locacao/services/database_helper.dart';
+import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 
 import '../../constants/colors_constants.dart';
+import '../../services/database/database_handler.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_text_form_field.dart';
 import '../../widgets/custom_text_label.dart';
@@ -26,6 +27,7 @@ class VehicleRegister extends StatefulWidget {
 }
 
 class VehicleRegisterState extends State<VehicleRegister> {
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
   String? _selectedTipoCombustivel;
   String? _selectedTipoTransmissao;
   String? _selectedCondicao;
@@ -398,26 +400,12 @@ class VehicleRegisterState extends State<VehicleRegister> {
   }
 
   void save() {
-    saveData().then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Dados salvos com sucesso'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      Navigator.pop(context, true);
-    }).catchError((error){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao salvar dados: $error'),
-          duration: const Duration(seconds: 3),
-        ),
-      );
+    saveData().then((vehicle) {
+      dbHandler.save(context, widget.vehicle['id'], vehicle);
     });
   }
 
-  Future<void> saveData() async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
+  Future<Vehicle> saveData() async {
     Vehicle vehicle = Vehicle();
     vehicle.licensePlate = _placaController.text;
     vehicle.model = _modeloController.text;
@@ -429,14 +417,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
     vehicle.color = _corController.text;
     vehicle.description = _descricaoController.text;
     vehicle.imageUrl = await _getImagePath();
-
-    if (widget.vehicle['id'] != null) {
-      vehicle.id = widget.vehicle['id'];
-      await databaseHelper.update(
-          vehicle.id!, vehicle.toMap(), CollectionNames.vehicle);
-    } else {
-      await databaseHelper.insert(vehicle, CollectionNames.vehicle);
-    }
+    return vehicle;
   }
 
   void _checkButtonStatus() {
