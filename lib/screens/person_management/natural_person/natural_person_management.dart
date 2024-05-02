@@ -10,6 +10,7 @@ import '../../../constants/general_constants.dart';
 import '../../../constants/person_management_constants.dart';
 import '../../../utils/confirmation_dialog.dart';
 import '../../../widgets/custom_card.dart';
+import '../../../widgets/custom_snack_bar.dart';
 import '../../../widgets/custom_text_label.dart';
 
 class NaturalPersonManagement extends StatefulWidget {
@@ -169,4 +170,5 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
           label: GeneralConstants.ok,
         ));
   }
+
 }

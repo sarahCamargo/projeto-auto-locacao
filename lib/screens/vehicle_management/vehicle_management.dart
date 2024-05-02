@@ -1,17 +1,16 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_register.dart';
-import 'package:projeto_auto_locacao/services/database/database_helper.dart';
+import 'package:projeto_auto_locacao/widgets/custom_card.dart';
 
 import '../../constants/collection_names.dart';
 import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
+import '../../services/database/database_handler.dart';
 import '../../utils/confirmation_dialog.dart';
 import '../../widgets/custom_app_bar.dart';
-import 'vehicle_card.dart';
 import '../../widgets/custom_text_label.dart';
 
 class VehiclesManagement extends StatefulWidget {
@@ -23,13 +22,12 @@ class VehiclesManagement extends StatefulWidget {
 
 class VehiclesManagementState extends State<VehiclesManagement> {
   String searchString = '';
-  final StreamController<List<Map<String, dynamic>>> _streamController =
-  StreamController<List<Map<String, dynamic>>>();
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
 
   @override
   void initState() {
     super.initState();
-    fetchDataFromDatabase();
+    dbHandler.fetchDataFromDatabase();
   }
 
   @override
@@ -47,7 +45,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
           child: const TabBar(tabs: [
             Tab(
               icon:
-              Icon(FontAwesomeIcons.car, color: ColorsConstants.iconColor),
+                  Icon(FontAwesomeIcons.car, color: ColorsConstants.iconColor),
             ),
             Tab(
               icon: Icon(FontAwesomeIcons.screwdriverWrench,
@@ -97,19 +95,17 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                   color: ColorsConstants.iconColor,
                   size: 40,
                 ),
-                onPressed: () =>
-                {
+                onPressed: () => {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                      const VehicleRegister(
+                      builder: (context) => const VehicleRegister(
                         vehicle: {},
                       ),
                     ),
                   ).then((value) {
                     if (value == true) {
-                      fetchDataFromDatabase();
+                      dbHandler.fetchDataFromDatabase();
                     }
                   }),
                 },
@@ -119,7 +115,7 @@ class VehiclesManagementState extends State<VehiclesManagement> {
         ),
         Expanded(
           child: StreamBuilder(
-            stream: _streamController.stream,
+            stream: dbHandler.dataStream,
             builder:
                 (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -138,25 +134,24 @@ class VehiclesManagementState extends State<VehiclesManagement> {
                 itemBuilder: (context, index) {
                   var vehicle = items.elementAt(index);
                   return GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ConfirmationDialog(
-                                content: GeneralConstants.confirmEdit,
-                                confirmationWidget:
-                                confirmationAction(context, vehicle));
-                          });
-                    },
-                    child: CustomCardVehicle(
-                        vehicle['brand'],
-                        vehicle['year'],
-                        vehicle['licensePlate'],
-                        vehicle['id'],
-                        vehicle['imageUrl'], (id) async {
-                      await deleteVehicle(vehicle['id']);
-                    }),
-                  );
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ConfirmationDialog(
+                                  content: GeneralConstants.confirmEdit,
+                                  confirmationWidget:
+                                      confirmationAction(context, vehicle));
+                            });
+                      },
+                      child: CustomCard(
+                        title: vehicle['brand'],
+                        data: _getCardInfo(vehicle),
+                        id: vehicle['id'],
+                        imageUrl: vehicle['imageUrl'],
+                        hasImage: true,
+                        dbHandler: dbHandler,
+                      ));
                 },
               );
             },
@@ -164,6 +159,16 @@ class VehiclesManagementState extends State<VehiclesManagement> {
         ),
       ],
     );
+  }
+
+  List<Widget> _getCardInfo(Map<String, dynamic> vehicle) {
+    List<Widget> info = [];
+    info.add(CustomTextLabel(
+        label: '${VehicleConstants.yearLabel}: ${vehicle['year']}'));
+    info.add(CustomTextLabel(
+        label:
+            '${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}'));
+    return info;
   }
 
   Widget confirmationAction(BuildContext context, var vehicle) {
@@ -176,24 +181,11 @@ class VehiclesManagementState extends State<VehiclesManagement> {
               builder: (context) => VehicleRegister(vehicle: vehicle),
             ),
           ).then((value) {
-            fetchDataFromDatabase();
+            dbHandler.fetchDataFromDatabase();
           });
         },
         child: const CustomTextLabel(
           label: GeneralConstants.ok,
         ));
-  }
-
-  Future<List<Map<String, dynamic>>> fetchDataFromDatabase() async {
-    List<Map<String, dynamic>> results =
-    await DatabaseHelper().fetchData(CollectionNames.vehicle);
-    _streamController.add(results);
-    return results;
-  }
-
-  Future<void> deleteVehicle(int id) async {
-    await DatabaseHelper().delete(id, CollectionNames.vehicle).then((value) {
-      fetchDataFromDatabase();
-    });
   }
 }
