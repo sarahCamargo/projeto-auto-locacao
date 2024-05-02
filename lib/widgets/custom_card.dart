@@ -17,6 +17,7 @@ class CustomCard extends StatelessWidget {
   final String title;
   final int id;
   final bool hasImage;
+  final bool hasDelete;
   final String? imageUrl;
   final DatabaseHandler dbHandler;
 
@@ -26,6 +27,7 @@ class CustomCard extends StatelessWidget {
       required this.data,
       required this.id,
       this.hasImage = false,
+      this.hasDelete = false,
       this.imageUrl,
       required this.dbHandler});
 
@@ -70,7 +72,7 @@ class CustomCard extends StatelessWidget {
                   ),
                 )
               : null,
-          trailing: IconButton(
+          trailing: hasDelete ? IconButton(
             icon: const Icon(
               FontAwesomeIcons.trash,
               color: ColorsConstants.iconColor,
@@ -84,7 +86,7 @@ class CustomCard extends StatelessWidget {
                         confirmationWidget: confirmationAction(context));
                   }),
             },
-          ),
+          ) : null,
         ),
       ),
     );

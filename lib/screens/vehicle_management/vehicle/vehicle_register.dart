@@ -10,11 +10,11 @@ import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 
-import '../../constants/colors_constants.dart';
-import '../../services/database/database_handler.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/custom_text_form_field.dart';
-import '../../widgets/custom_text_label.dart';
+import '../../../constants/colors_constants.dart';
+import '../../../services/database/database_handler.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/custom_text_form_field.dart';
+import '../../../widgets/custom_text_label.dart';
 
 class VehicleRegister extends StatefulWidget {
   @override
