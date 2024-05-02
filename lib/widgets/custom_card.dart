@@ -8,6 +8,7 @@ import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
 import '../../utils/confirmation_dialog.dart';
 import '../../widgets/custom_text_label.dart';
+import '../utils/show_snackbar.dart';
 
 typedef OnDelete = Future<void> Function(int id);
 
@@ -93,14 +94,10 @@ class CustomCard extends StatelessWidget {
     return TextButton(
       onPressed: () {
         dbHandler.delete(id).then((value) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text(GeneralConstants.registerDeleted)),
-          );
+          showCustomSnackBar(context, GeneralConstants.registerDeleted);
           Navigator.of(context).pop();
         }).catchError((error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Erro ao realizar ação: $error')),
-          );
+          showCustomSnackBar(context, '${GeneralConstants.errorInAction}: $error');
           Navigator.of(context).pop();
         });
       },

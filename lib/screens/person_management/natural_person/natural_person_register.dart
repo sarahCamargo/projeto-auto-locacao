@@ -6,6 +6,7 @@ import 'package:projeto_auto_locacao/constants/person_management_constants.dart'
 import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/services/database/database_handler.dart';
+import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
@@ -311,13 +312,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                       ? () {
                           isCPFRegistered().then((isRegistered) {
                             if (isRegistered) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'CPF já cadastrado. Não é possível salvar.'),
-                                  duration: Duration(seconds: 3),
-                                ),
-                              );
+                              showCustomSnackBar(context, PersonConstants.cpfAlreadyRegistered);
                             } else {
                               saveData();
                             }

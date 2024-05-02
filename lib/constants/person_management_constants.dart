@@ -48,4 +48,6 @@ class PersonConstants {
   static const String saveButton = 'Salvar';
 
   static const String cpfErrorMessage = 'CPF inválido';
+
+  static const String cpfAlreadyRegistered = 'CPF já cadastrado. Não é possível salvar.';
 }
