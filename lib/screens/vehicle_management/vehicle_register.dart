@@ -9,7 +9,6 @@ import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
-import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 
 import '../../constants/colors_constants.dart';
 import '../../services/database/database_handler.dart';
@@ -146,7 +145,6 @@ class VehicleRegisterState extends State<VehicleRegister> {
                         ),
                         CustomTextField(
                           controller: _modeloController,
-                          keyboardType: TextInputType.name,
                           onChange: (value) {
                             _updateSaveButtonState(_modeloController);
                           },
@@ -170,7 +168,6 @@ class VehicleRegisterState extends State<VehicleRegister> {
                         ),
                         CustomTextField(
                           controller: _placaController,
-                          keyboardType: TextInputType.name,
                           onChange: (value) {
                             _updateSaveButtonState(_placaController);
                           },
@@ -235,7 +232,6 @@ class VehicleRegisterState extends State<VehicleRegister> {
                         ),
                         CustomTextField(
                           controller: _corController,
-                          keyboardType: TextInputType.name,
                           onChange: (value) {
                             _updateSaveButtonState(_corController);
                           },
@@ -377,7 +373,6 @@ class VehicleRegisterState extends State<VehicleRegister> {
               ),
               CustomTextField(
                 controller: _descricaoController,
-                keyboardType: TextInputType.name,
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
@@ -416,9 +411,16 @@ class VehicleRegisterState extends State<VehicleRegister> {
     }
     vehicle.color = _corController.text;
     vehicle.description = _descricaoController.text;
+    vehicle.fuelType = _selectedTipoCombustivel;
+    vehicle.transmissionType = _selectedTipoTransmissao;
+    vehicle.condition = _selectedCondicao;
     vehicle.imageUrl = await _getImagePath();
     return vehicle;
   }
+
+  String? fuelType;
+  String? transmissionType;
+  String? condition;
 
   void _checkButtonStatus() {
     setState(() {

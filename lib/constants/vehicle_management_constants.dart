@@ -20,10 +20,13 @@ class VehicleConstants {
   static const String descriptionLabel = 'Descrição';
 
   static const List<String?> typeOfFuel = [
+    'Flex',
     'Gasolina',
     'Etanol',
     'Diesel',
     'Gás Natural Veicular',
+    'Biodiesel',
+    'Elétrico',
     null
   ];
 
@@ -35,7 +38,7 @@ class VehicleConstants {
 
   static const List<String?> condition = [
     'Novo',
-    'Usado',
+    'Seminovo',
     null
   ];
 }

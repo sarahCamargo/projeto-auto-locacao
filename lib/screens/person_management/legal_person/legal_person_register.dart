@@ -112,7 +112,7 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: PersonConstants.appBarTitle),
+      appBar: const CustomAppBar(title: LegalPersonConstants.appBarTitle),
       body: _buildForm(),
     );
   }
@@ -143,6 +143,7 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
                 onChange: (value) {
                   _updateSaveButtonState(_companyNameController);
                 },
+                keyboardType: TextInputType.name,
                 isRequired: true,
               ),
               const SizedBox(height: 16.0),
@@ -283,6 +284,7 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
                 hintText: PersonConstants.cpfMask,
                 errorText: _cpfError,
                 isRequired: true,
+                keyboardType: TextInputType.number,
                 onChange: (value) {
                   _updateSaveButtonState(_legalResponsibleCPFController);
                 },

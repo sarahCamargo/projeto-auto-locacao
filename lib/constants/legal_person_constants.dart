@@ -1,4 +1,5 @@
 class LegalPersonConstants {
+  static const String appBarTitle = 'Cadastro Pessoa Jurídica';
   static const String companyData = 'Dados da Empresa';
   static const String cnpjMask = '00.000.000/0000-00';
   static const String tradingName = 'Nome Fantasia';
