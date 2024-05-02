@@ -1,18 +1,19 @@
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
+import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cnpj_validator.dart';
 
+import '../../../constants/collection_names.dart';
 import '../../../constants/legal_person_constants.dart';
 import '../../../constants/person_management_constants.dart';
 import '../../../models/legal_person.dart';
-import '../../../services/dao_service.dart';
+import '../../../services/database/database_handler.dart';
 import '../../../services/validation_service.dart';
 
 class LegalPersonRegister extends StatefulWidget {
@@ -24,6 +25,7 @@ class LegalPersonRegister extends StatefulWidget {
 }
 
 class LegalPersonRegisterState extends State<LegalPersonRegister> {
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.legalPerson);
   String? _cnpjError;
   String? _cpfError;
   bool _isAddressEditable = false;
@@ -62,13 +64,13 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
     _cnpjController.addListener(_validateCNPJ);
     _legalResponsibleCPFController.addListener(_validateCPF);
     if (widget.legalPerson["id"] != null) {
-      _companyNameController.text = widget.legalPerson["company_name"];
-      _tradingNameController.text = widget.legalPerson["trading_name"];
+      _companyNameController.text = widget.legalPerson["companyName"];
+      _tradingNameController.text = widget.legalPerson["tradingName"];
       _cnpjController.text = widget.legalPerson["cnpj"];
       _stateRegistrationController.text =
-          widget.legalPerson["state_registration"];
+          widget.legalPerson["stateRegistration"];
       _emailController.text = widget.legalPerson["email"];
-      _cellPhoneController.text = widget.legalPerson["cell_phone"];
+      _cellPhoneController.text = widget.legalPerson["cellPhone"];
       if (widget.legalPerson["cep"] != null) {
         _isAddressEditable = true;
         _cepController.text = widget.legalPerson["cep"];
@@ -76,19 +78,19 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
         _cityController.text = widget.legalPerson["city"];
         _streetController.text = widget.legalPerson["street"];
         _neighborhoodController.text = widget.legalPerson["neighborhood"];
-        if (widget.legalPerson["address_number"] != null) {
+        if (widget.legalPerson["addressNumber"] != null) {
           _addressNumberController.text =
-              widget.legalPerson["address_number"].toString();
+              widget.legalPerson["addressNumber"].toString();
         }
         _addressComplementController.text =
-            widget.legalPerson["address_complement"];
+            widget.legalPerson["addressComplement"];
       }
       _legalResponsibleController.text =
-          widget.legalPerson["legal_responsible"];
+          widget.legalPerson["legalResponsible"];
       _legalResponsibleCPFController.text =
-          widget.legalPerson["legal_responsible_cpf"];
+          widget.legalPerson["legalResponsibleCpf"];
       _legalResponsibleRoleController.text =
-          widget.legalPerson["legal_responsible_role"];
+          widget.legalPerson["legalResponsibleRole"];
     }
 
     _companyNameController.addListener(_checkButtonStatus);
@@ -296,16 +298,9 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
                       ? () {
                           isCNPJRegistered().then((isRegistered) {
                             if (isRegistered) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'CNPJ já cadastrado. Não é possível salvar.'),
-                                  duration: Duration(seconds: 3),
-                                ),
-                              );
+                              showCustomSnackBar(context, LegalPersonConstants.cnpjAlreadyRegistered);
                             } else {
                               saveData();
-                              Navigator.of(context).pop();
                             }
                           });
                         }
@@ -334,9 +329,6 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
 
   void saveData() {
     LegalPerson legalPerson = LegalPerson();
-    if (widget.legalPerson["id"] != null) {
-      legalPerson.id = widget.legalPerson["id"];
-    }
     legalPerson.cnpj = _cnpjController.text;
     legalPerson.email = _emailController.text;
     legalPerson.tradingName = _tradingNameController.text;
@@ -356,17 +348,7 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
     }
     legalPerson.addressComplement = _addressComplementController.text;
 
-    DaoService daoService = DaoService(collectionName: "pessoa_juridica");
-
-    daoService.save(legalPerson).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(GeneralConstants.dataSaved)),
-      );
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar dados: $error')),
-      );
-    });
+    dbHandler.save(context, widget.legalPerson["id"], legalPerson);
   }
 
   Future<void> _fetchAddress(String cep) async {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
@@ -10,13 +9,9 @@ import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
-import 'services/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
   runApp(const MyApp());

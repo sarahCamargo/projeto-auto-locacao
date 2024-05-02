@@ -10,4 +10,6 @@ class LegalPersonConstants {
   static const String legalResponsibleName = 'Nome';
   static const String legalResposibleCPF = 'CPF';
   static const String legalResponsibleRole = 'Cargo';
+
+  static const String cnpjAlreadyRegistered = 'CNPJ já cadastrado. Não é possível salvar.';
 }

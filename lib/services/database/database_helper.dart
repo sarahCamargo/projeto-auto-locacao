@@ -1,4 +1,5 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
+import 'package:projeto_auto_locacao/services/database/queries/legal_person_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/natural_person_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/vehicle_queries.dart';
 import 'package:sqflite/sqflite.dart';
@@ -21,8 +22,9 @@ class DatabaseHelper {
     if (_database != null) {
       return _database!;
     }
-
-    /*String path = await getDatabasesPath();
+    /* Descomentar se necessário criar o banco de novo.*/
+    /*
+    String path = await getDatabasesPath();
     String fullPath = join(path, dbName);
 
     await deleteDatabase(fullPath);*/
@@ -43,6 +45,7 @@ class DatabaseHelper {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute(VehicleQueries.createTableQuery);
     await db.execute(NaturalPersonQueries.createTableQuery);
+    await db.execute(LegalPersonQueries.createTableQuery);
   }
 
   Future<void> close() async {

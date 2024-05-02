@@ -54,20 +54,20 @@ class LegalPerson implements DaoInterface{
       "id": id,
       "cnpj": cnpj,
       "email": email,
-      "trading_name": tradingName,
-      "company_name": companyName,
-      "legal_responsible": legalResponsible,
-      "legal_responsible_cpf": legalResponsibleCPF,
-      "legal_responsible_role": legalResponsibleRole,
-      "state_registration": stateRegistration,
-      "cell_phone": cellPhone,
+      "tradingName": tradingName,
+      "companyName": companyName,
+      "legalResponsible": legalResponsible,
+      "legalResponsibleCpf": legalResponsibleCPF,
+      "legalResponsibleRole": legalResponsibleRole,
+      "stateRegistration": stateRegistration,
+      "cellPhone": cellPhone,
       "cep": cep,
       "street": street,
       "state": state,
       "city": city,
       "neighborhood": neighborhood,
-      "address_number": addressNumber,
-      "address_complement": addressComplement
+      "addressNumber": addressNumber,
+      "addressComplement": addressComplement
     };
   }
 }

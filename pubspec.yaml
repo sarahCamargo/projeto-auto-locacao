@@ -33,11 +33,6 @@ dependencies:
 
   #Database libraries
   sqflite: ^2.3.3
-  firebase_core: ^2.27.1
-  firebase_storage: ^11.7.4
-  firebase_auth: ^4.19.4
-  cloud_firestore: ^4.15.9
-  uuid: ^4.3.3
 
   #utils
   cpf_cnpj_validator: ^2.0.0

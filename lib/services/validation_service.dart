@@ -1,17 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
+import 'package:projeto_auto_locacao/constants/collection_names.dart';
+import 'package:projeto_auto_locacao/services/database/database_helper.dart';
+import 'package:sqflite/sqflite.dart';
 
 Future<bool> isCpfAlreadyRegistered(String cpf) async {
   final logger = Logger();
 
   try {
-    CollectionReference personsCollection =
-        FirebaseFirestore.instance.collection('pessoa_fisica');
+    DatabaseHelper databaseHelper = DatabaseHelper();
+    Database db = await databaseHelper.database;
 
-    QuerySnapshot querySnapshot =
-        await personsCollection.where('cpf', isEqualTo: cpf).get();
+    var result = await db.query(CollectionNames.naturalPerson,
+        where: 'cpf = ?', whereArgs: [cpf]);
 
-    return querySnapshot.docs.isNotEmpty;
+    return result.isNotEmpty;
   } catch (e) {
     logger.e('Erro ao verificar CPF', error: e);
     return false;
@@ -22,13 +24,12 @@ Future<bool> isCnpjAlreadyRegistered(String cnpj) async {
   final logger = Logger();
 
   try {
-    CollectionReference legalPersonsCollection =
-    FirebaseFirestore.instance.collection('pessoa_juridica');
+    DatabaseHelper databaseHelper = DatabaseHelper();
+    Database db = await databaseHelper.database;
 
-    QuerySnapshot querySnapshot =
-    await legalPersonsCollection.where('cnpj', isEqualTo: cnpj).get();
-
-    return querySnapshot.docs.isNotEmpty;
+    var result = await db.query(CollectionNames.legalPerson,
+        where: 'cnpj = ?', whereArgs: [cnpj]);
+    return result.isNotEmpty;
   } catch (e) {
     logger.e('Erro ao verificar CNPJ', error: e);
     return false;

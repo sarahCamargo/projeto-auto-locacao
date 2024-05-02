@@ -360,7 +360,6 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
       naturalPerson.addressNumber = int.parse(_addressNumberController.text);
     }
     naturalPerson.addressComplement = _addressComplementController.text;
-
     dbHandler.save(context, widget.person["id"], naturalPerson);
 
   }

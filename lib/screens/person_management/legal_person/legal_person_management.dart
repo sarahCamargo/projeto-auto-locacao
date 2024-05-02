@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/screens/person_management/legal_person/legal_person_card.dart';
+import 'package:projeto_auto_locacao/constants/legal_person_constants.dart';
+import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
 import 'package:projeto_auto_locacao/screens/person_management/legal_person/legal_person_register.dart';
 
+import '../../../constants/collection_names.dart';
 import '../../../constants/general_constants.dart';
+import '../../../services/database/database_handler.dart';
 import '../../../utils/confirmation_dialog.dart';
+import '../../../widgets/custom_card.dart';
 import '../../../widgets/custom_text_label.dart';
 
 class LegalPersonManagement extends StatefulWidget {
@@ -17,7 +20,14 @@ class LegalPersonManagement extends StatefulWidget {
 }
 
 class LegalPersonManagementState extends State<LegalPersonManagement> {
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.legalPerson);
   String searchString = '';
+
+  @override
+  void initState() {
+    super.initState();
+    dbHandler.fetchDataFromDatabase();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +50,7 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                       });
                     },
                     decoration: const InputDecoration(
-                        labelText: 'Pesquisar',
+                        labelText: GeneralConstants.search,
                         prefixIcon: Icon(
                           FontAwesomeIcons.magnifyingGlass,
                           color: ColorsConstants.iconColor,
@@ -66,7 +76,11 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                         legalPerson: {},
                       ),
                     ),
-                  ),
+                  ).then((value) {
+                    if (value == true) {
+                      dbHandler.fetchDataFromDatabase();
+                    }
+                  }),
                 },
               )
             ],
@@ -81,23 +95,24 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('pessoa_juridica')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
+                stream: dbHandler.dataStream,
+                builder: (context,
+                    AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   }
-
-                  var items = snapshot.data!.docs.where((element) =>
-                      element['company_name']
+                  if (!snapshot.hasData) {
+                    return const SizedBox.shrink();
+                  }
+                  var items = snapshot.data!.where((element) =>
+                      element['companyName']
                           .toString()
                           .toLowerCase()
                           .contains(searchString));
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      var legalPerson = items.elementAt(index).data();
+                      var legalPerson = items.elementAt(index);
 
                       return GestureDetector(
                         onTap: () {
@@ -110,12 +125,11 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                                         context, legalPerson));
                               });
                         },
-                        child: LegalPersonCard(
-                            legalPerson['company_name'],
-                            legalPerson['cnpj'],
-                            legalPerson['cell_phone'],
-                            legalPerson['trading_name'],
-                            legalPerson['id']),
+                        child: CustomCard(
+                            title: legalPerson['companyName'],
+                            data: _getCardInfo(legalPerson),
+                            id: legalPerson['id'],
+                            dbHandler: dbHandler),
                       );
                     },
                   );
@@ -128,7 +142,20 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
     );
   }
 
-  Widget confirmationAction(BuildContext context, var legalPerson) {
+  List<Widget> _getCardInfo(Map<String, dynamic> legalPerson) {
+    List<Widget> info = [];
+    info.add(CustomTextLabel(
+        label: '${LegalPersonConstants.cnpjLabel}: ${legalPerson['cnpj']}'));
+    info.add(CustomTextLabel(
+        label:
+            '${PersonConstants.cellPhoneLabel}: ${legalPerson['cellPhone']}'));
+    info.add(CustomTextLabel(
+        label:
+            '${LegalPersonConstants.tradingName}: ${legalPerson['tradingName']}'));
+    return info;
+  }
+
+  Widget confirmationAction(BuildContext context, Map<String, dynamic> legalPerson) {
     return TextButton(
         onPressed: () {
           Navigator.of(context).pop();
@@ -138,7 +165,9 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
               builder: (context) =>
                   LegalPersonRegister(legalPerson: legalPerson),
             ),
-          );
+          ).then((value) {
+            dbHandler.fetchDataFromDatabase();
+          });
         },
         child: const CustomTextLabel(
           label: GeneralConstants.ok,

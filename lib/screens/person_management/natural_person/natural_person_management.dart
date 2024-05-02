@@ -50,7 +50,7 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                       });
                     },
                     decoration: const InputDecoration(
-                        labelText: 'Pesquisar',
+                        labelText: GeneralConstants.search,
                         prefixIcon: Icon(
                           FontAwesomeIcons.magnifyingGlass,
                           color: ColorsConstants.iconColor,
@@ -152,7 +152,7 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
     return info;
   }
 
-  Widget confirmationAction(BuildContext context, var person) {
+  Widget confirmationAction(BuildContext context, Map<String, dynamic> person) {
     return TextButton(
         onPressed: () {
           Navigator.of(context).pop();
