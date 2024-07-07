@@ -10,16 +10,17 @@ import '../../../services/database/database_handler.dart';
 import '../../../utils/confirmation_dialog.dart';
 import '../../../widgets/custom_text_label.dart';
 
-class VehicleScreen extends StatefulWidget {
-  const VehicleScreen({super.key});
+class MaintenanceScreen extends StatefulWidget {
+  final Map<String, dynamic> vehicle;
+  const MaintenanceScreen({super.key, required this.vehicle});
 
   @override
-  VehicleScreenState createState() => VehicleScreenState();
+  MaintenanceScreenState createState() => MaintenanceScreenState();
 }
 
-class VehicleScreenState extends State<VehicleScreen> {
+class MaintenanceScreenState extends State<MaintenanceScreen> {
   String searchString = '';
-  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.maintenance);
 
   @override
   void initState() {
@@ -119,7 +120,7 @@ class VehicleScreenState extends State<VehicleScreen> {
                                 return ConfirmationDialog(
                                     content: GeneralConstants.confirmEdit,
                                     confirmationWidget:
-                                        confirmationAction(context, vehicle));
+                                    confirmationAction(context, vehicle));
                               });
                         },
                         child: CustomCard(
@@ -149,7 +150,7 @@ class VehicleScreenState extends State<VehicleScreen> {
         label: '${VehicleConstants.yearLabel}: ${vehicle['year']}'));
     info.add(CustomTextLabel(
         label:
-            '${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}'));
+        '${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}'));
     return info;
   }
 

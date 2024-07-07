@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance_manager.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 import 'package:projeto_auto_locacao/widgets/custom_card.dart';
 
@@ -8,18 +9,16 @@ import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
 import '../../../constants/general_constants.dart';
 import '../../../services/database/database_handler.dart';
-import '../../../utils/confirmation_dialog.dart';
-import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_text_label.dart';
 
-class MaintenanceManagement extends StatefulWidget {
-  const MaintenanceManagement({super.key});
+class VehicleMaintenanceScreen extends StatefulWidget {
+  const VehicleMaintenanceScreen({super.key});
 
   @override
-  MaintenanceManagementState createState() => MaintenanceManagementState();
+  VehicleMaintenanceScreenState createState() => VehicleMaintenanceScreenState();
 }
 
-class MaintenanceManagementState extends State<MaintenanceManagement> {
+class VehicleMaintenanceScreenState extends State<VehicleMaintenanceScreen> {
   String searchString = '';
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
 
@@ -62,15 +61,6 @@ class MaintenanceManagementState extends State<MaintenanceManagement> {
               const SizedBox(
                 width: 16,
               ),
-              IconButton(
-                icon: const Icon(
-                  FontAwesomeIcons.plus,
-                  color: ColorsConstants.iconColor,
-                  size: 40,
-                ),
-                onPressed: () => {
-                },
-              )
             ],
           ),
         ),
@@ -103,6 +93,14 @@ class MaintenanceManagementState extends State<MaintenanceManagement> {
                       var vehicle = items.elementAt(index);
                       return GestureDetector(
                           onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MaintenanceManagement(vehicle: vehicle),
+                              ),
+                            ).then((value) {
+                              dbHandler.fetchDataFromDatabase();
+                            });
                           },
                           child: CustomCard(
                             title: vehicle['brand'],
@@ -129,7 +127,7 @@ class MaintenanceManagementState extends State<MaintenanceManagement> {
         label: '${VehicleConstants.yearLabel}: ${vehicle['year']}'));
     info.add(CustomTextLabel(
         label:
-            '${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}'));
+        '${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}'));
     return info;
   }
 
@@ -140,7 +138,7 @@ class MaintenanceManagementState extends State<MaintenanceManagement> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VehicleRegister(vehicle: vehicle),
+              builder: (context) => MaintenanceManagement(vehicle: vehicle),
             ),
           ).then((value) {
             dbHandler.fetchDataFromDatabase();

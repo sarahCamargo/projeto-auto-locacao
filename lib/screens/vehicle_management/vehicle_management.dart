@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_maintenance_screen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_screen.dart';
 import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
-
-import 'maintenance/maintenance_management.dart';
 
 class VehicleManagement extends StatefulWidget {
   const VehicleManagement({super.key});
@@ -27,7 +26,7 @@ class VehicleManagementState extends State<VehicleManagement> {
           hasReturnScreen: true,
         ),
         body: const TabBarView(
-            children: [VehicleScreen(), MaintenanceManagement()]),
+            children: [VehicleScreen(), VehicleMaintenanceScreen()]),
         bottomNavigationBar: Container(
           color: Colors.white,
           child: const TabBar(tabs: [
