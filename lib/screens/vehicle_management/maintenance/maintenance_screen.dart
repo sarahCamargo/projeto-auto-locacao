@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:projeto_auto_locacao/constants/maintenance_management_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_register.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 import 'package:projeto_auto_locacao/widgets/custom_card.dart';
 import '../../../constants/collection_names.dart';
@@ -42,19 +44,14 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        searchString = value.toLowerCase();
-                      });
-                    },
-                    decoration: const InputDecoration(
-                        labelText: GeneralConstants.search,
-                        prefixIcon: Icon(
-                          FontAwesomeIcons.magnifyingGlass,
-                          color: ColorsConstants.iconColor,
-                        ),
-                        border: InputBorder.none),
+                  child: CustomCard(
+                    title: widget.vehicle['brand'],
+                    data: _getCardInfoVehicle(widget.vehicle),
+                    id: widget.vehicle['id'],
+                    imageUrl: widget.vehicle['imageUrl'],
+                    hasImage: true,
+                    hasDelete: false,
+                    dbHandler: dbHandler,
                   ),
                 ),
               ),
@@ -71,8 +68,9 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const VehicleRegister(
-                        vehicle: {},
+                      builder: (context) => MaintenanceRegister(
+                        idVehicle: widget.vehicle['id'],
+                        maintenance: {},
                       ),
                     ),
                   ).then((value) {
@@ -111,7 +109,7 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      var vehicle = items.elementAt(index);
+                      var maintenance = items.elementAt(index);
                       return GestureDetector(
                         onTap: () {
                           showDialog(
@@ -120,17 +118,16 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
                                 return ConfirmationDialog(
                                     content: GeneralConstants.confirmEdit,
                                     confirmationWidget:
-                                    confirmationAction(context, vehicle));
+                                    confirmationAction(context, maintenance));
                               });
                         },
                         child: CustomCard(
-                          title: vehicle['brand'],
-                          data: _getCardInfo(vehicle),
-                          id: vehicle['id'],
-                          imageUrl: vehicle['imageUrl'],
-                          hasImage: true,
-                          hasDelete: true,
+                          title: maintenance['type'],
+                          data: _getCardInfoMaintenance(maintenance),
+                          id: maintenance['id'],
                           dbHandler: dbHandler,
+                          hasDelete: true,
+
                         ),
                       );
                     },
@@ -144,7 +141,7 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
     );
   }
 
-  List<Widget> _getCardInfo(Map<String, dynamic> vehicle) {
+  List<Widget> _getCardInfoVehicle(Map<String, dynamic> vehicle) {
     List<Widget> info = [];
     info.add(CustomTextLabel(
         label: '${VehicleConstants.yearLabel}: ${vehicle['year']}'));
@@ -154,14 +151,22 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
     return info;
   }
 
-  Widget confirmationAction(BuildContext context, var vehicle) {
+  List<Widget> _getCardInfoMaintenance(Map<String, dynamic> maintenance) {
+    List<Widget> info = [];
+    info.add(CustomTextLabel(label: '${maintenance['frequency']}'));
+    info.add(CustomTextLabel(label: 'Últ. verif: ${maintenance['lastCheck']}'));
+    info.add(CustomTextLabel(label: 'Próx. verif.: ${maintenance['nextCheck']}'));
+    return info;
+  }
+
+  Widget confirmationAction(BuildContext context, var maintenance) {
     return TextButton(
         onPressed: () {
           Navigator.of(context).pop();
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VehicleRegister(vehicle: vehicle),
+              builder: (context) => MaintenanceRegister(maintenance: maintenance, idVehicle: widget.vehicle['id'],),
             ),
           ).then((value) {
             dbHandler.fetchDataFromDatabase();

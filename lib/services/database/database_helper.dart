@@ -1,5 +1,6 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
 import 'package:projeto_auto_locacao/services/database/queries/legal_person_queries.dart';
+import 'package:projeto_auto_locacao/services/database/queries/maintenance_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/natural_person_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/vehicle_queries.dart';
 import 'package:sqflite/sqflite.dart';
@@ -46,6 +47,7 @@ class DatabaseHelper {
     await db.execute(VehicleQueries.createTableQuery);
     await db.execute(NaturalPersonQueries.createTableQuery);
     await db.execute(LegalPersonQueries.createTableQuery);
+    await db.execute(MaintenanceQueries.createTableQuery);
   }
 
   Future<void> close() async {
