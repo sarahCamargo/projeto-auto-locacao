@@ -4,6 +4,7 @@ class HomePageConstants {
   static const String menu = "Menu";
   static const String personFeature = "Pessoas";
   static const String vehicleFeature = "Veículos";
+  static const String rentalFeature = "Locações";
   static const String settings = "Configurações";
 
 }

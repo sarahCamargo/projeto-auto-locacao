@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_screen.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/rental_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_management.dart';
 import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
@@ -65,6 +65,16 @@ class MyHomePage extends StatelessWidget {
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.vehicleFeature,
                         VehicleManagement(), FontAwesomeIcons.car),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: CustomInitialButton(HomePageConstants.rentalFeature, RentalManagement(),
+                        FontAwesomeIcons.handHoldingDollar),
                   ),
                 ],
               ),

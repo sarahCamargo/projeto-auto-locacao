@@ -55,4 +55,14 @@ class Vehicle implements DaoInterface{
       "imageUrl": imageUrl
     };
   }
+
+  factory Vehicle.fromMap(Map<String, dynamic> map) {
+    return Vehicle(
+      id: map['id'],
+      licensePlate: map['licensePlate'],
+      brand: map['brand'],
+      model: map['model'],
+      imageUrl: map['imageUrl']
+    );
+  }
 }

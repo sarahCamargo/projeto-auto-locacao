@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
 
+import '../../models/rental.dart';
 import 'database_helper.dart';
 
 class DatabaseHandler {
@@ -12,6 +13,10 @@ class DatabaseHandler {
   final _dataController = StreamController<List<Map<String, dynamic>>>();
 
   Stream<List<Map<String, dynamic>>> get dataStream => _dataController.stream;
+
+  final StreamController<List<Rental>> _rentalController = StreamController.broadcast();
+
+  Stream<List<Rental>> get rentalStream => _rentalController.stream;
 
   final DatabaseHelper databaseHelper = DatabaseHelper();
 
@@ -57,4 +62,15 @@ class DatabaseHandler {
     });
   }
 
+  Future<void> fetchRentals() async {
+    List<Rental> results =
+    await DatabaseHelper().getRentalsWithVehicles();
+    _rentalController.add(results);
+  }
+
+  Future<List<Map<String, dynamic>>> getData(String collection) async {
+    List<Map<String, dynamic>> results =
+    await DatabaseHelper().fetchData(collection);
+    return results;
+  }
 }

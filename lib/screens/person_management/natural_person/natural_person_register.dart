@@ -342,20 +342,20 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   }
 
   void saveData() {
-    NaturalPerson naturalPerson = NaturalPerson();
-    naturalPerson.name = _nameController.text;
-    naturalPerson.cpf = _cpfController.text;
-    naturalPerson.email = _emailController.text;
-    naturalPerson.civilState = _selectedCivilStatus;
-    naturalPerson.career = _careerController.text;
-    naturalPerson.sex = _sexController;
-    naturalPerson.cellPhone = _cellPhoneController.text;
-    naturalPerson.birthDate = _birthDateController.text;
-    naturalPerson.cep = _cepController.text;
-    naturalPerson.street = _streetController.text;
-    naturalPerson.state = _stateController.text;
-    naturalPerson.city = _cityController.text;
-    naturalPerson.neighborhood = _neighborhoodController.text;
+    NaturalPerson naturalPerson = NaturalPerson(
+      name: _nameController.text,
+      cpf: _cpfController.text,
+      email: _emailController.text,
+      civilState: _selectedCivilStatus,
+      career: _careerController.text,
+      sex: _sexController,
+      cellPhone: _cellPhoneController.text,
+      birthDate: _birthDateController.text,
+      cep: _cepController.text,
+      street: _streetController.text,
+      state: _stateController.text,
+      city: _cityController.text,
+      neighborhood: _neighborhoodController.text);
     if (_addressNumberController.text.isNotEmpty) {
       naturalPerson.addressNumber = int.parse(_addressNumberController.text);
     }

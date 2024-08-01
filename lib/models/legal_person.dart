@@ -70,4 +70,12 @@ class LegalPerson implements DaoInterface{
       "addressComplement": addressComplement
     };
   }
+
+  factory LegalPerson.fromMap(Map<String, dynamic> map) {
+    return LegalPerson(
+      id: map['id'],
+      tradingName: map['tradingName'],
+      companyName: map['companyName']
+    );
+  }
 }

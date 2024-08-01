@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 typedef OnChangeCallback = void Function(String value);
+typedef OnTapCallback = void Function();
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -14,6 +16,8 @@ class CustomTextField extends StatefulWidget {
   final bool isRequired;
   final String? labelText;
   final bool isCapitalized;
+  final OnTapCallback? onTap;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField(
       {super.key,
@@ -26,7 +30,9 @@ class CustomTextField extends StatefulWidget {
       this.onChange,
       this.isRequired = false,
       this.labelText,
-      this.isCapitalized = false});
+      this.isCapitalized = false,
+      this.onTap,
+      this.inputFormatters});
 
   @override
   CustomTextFieldState createState() => CustomTextFieldState();
@@ -51,21 +57,26 @@ class CustomTextFieldState extends State<CustomTextField> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: TextFormField(
-        controller: widget.controller ?? widget.maskedController,
-        keyboardType: widget.keyboardType,
-        readOnly: widget.readOnly,
-        onChanged: (value) {
-          widget.onChange?.call(value);
-          _updateBorderColor();
-        },
-        textCapitalization: widget.isCapitalized ? TextCapitalization.characters : TextCapitalization.none,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: widget.hintText,
-          hintStyle: const TextStyle(color: Color(0xFFA6A6A6)),
-          errorText: widget.errorText,
-        ),
-      ),
+          controller: widget.controller ?? widget.maskedController,
+          keyboardType: widget.keyboardType,
+          readOnly: widget.readOnly,
+          onChanged: (value) {
+            widget.onChange?.call(value);
+            _updateBorderColor();
+          },
+          textCapitalization: widget.isCapitalized
+              ? TextCapitalization.characters
+              : TextCapitalization.none,
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(color: Color(0xFFA6A6A6)),
+            errorText: widget.errorText,
+          ),
+          onTap: () {
+            widget.onTap?.call();
+          },
+          inputFormatters: widget.inputFormatters),
     );
   }
 

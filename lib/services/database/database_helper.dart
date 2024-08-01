@@ -2,9 +2,12 @@ import 'package:projeto_auto_locacao/models/dao_interface.dart';
 import 'package:projeto_auto_locacao/services/database/queries/legal_person_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/maintenance_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/natural_person_queries.dart';
+import 'package:projeto_auto_locacao/services/database/queries/rental_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/vehicle_queries.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
+import '../../models/rental.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -48,6 +51,7 @@ class DatabaseHelper {
     await db.execute(NaturalPersonQueries.createTableQuery);
     await db.execute(LegalPersonQueries.createTableQuery);
     await db.execute(MaintenanceQueries.createTableQuery);
+    await db.execute(RentalQueries.createTableQuery);
   }
 
   Future<void> close() async {
@@ -82,5 +86,11 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+  Future<List<Rental>> getRentalsWithVehicles() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getRentalInfo);
+    print("Data fetched: $maps");
+    return List.generate(maps.length, (i) => Rental.fromMap(maps[i]));
   }
 }
