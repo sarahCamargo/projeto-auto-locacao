@@ -206,12 +206,18 @@ class RentalRegisterState extends State<RentalRegister> {
                   ],
                 ),
               ),
+              const CustomTextLabel(
+                label: 'Tipo de Pessoa:',
+              ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Row(
+                padding: const EdgeInsets.all(20.0), // Ajuste o padding conforme necessário
+                child: Wrap(
+                  spacing: 20.0, // Espaço horizontal entre os widgets
+                  runSpacing: 10.0, // Espaço vertical entre as linhas
                   children: <Widget>[
-                    Checkbox(
-                      value: _isNaturalPerson,
+                    _buildCheckboxRow(
+                      isChecked: _isNaturalPerson,
+                      label: 'Pessoa Física',
                       onChanged: (bool? value) {
                         setState(() {
                           _isNaturalPerson = value ?? true;
@@ -219,10 +225,9 @@ class RentalRegisterState extends State<RentalRegister> {
                         });
                       },
                     ),
-                    Text('Pessoa Física'),
-                    SizedBox(width: 20),
-                    Checkbox(
-                      value: !_isNaturalPerson,
+                    _buildCheckboxRow(
+                      isChecked: !_isNaturalPerson,
+                      label: 'Pessoa Jurídica',
                       onChanged: (bool? value) {
                         setState(() {
                           _isNaturalPerson = !(value ?? false);
@@ -230,7 +235,6 @@ class RentalRegisterState extends State<RentalRegister> {
                         });
                       },
                     ),
-                    Text('Pessoa Jurídica'),
                   ],
                 ),
               ),
@@ -413,6 +417,24 @@ class RentalRegisterState extends State<RentalRegister> {
   Widget _buildImageAndButton() {
     return Stack(
       children: [_buildImageContainer()],
+    );
+  }
+
+  Widget _buildCheckboxRow({required bool isChecked, required String label, required ValueChanged<bool?> onChanged}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min, // Ajusta o tamanho do Row para o conteúdo
+      children: <Widget>[
+        Checkbox(
+          value: isChecked,
+          onChanged: onChanged,
+        ),
+        Flexible(
+          child: Text(
+            label,
+            overflow: TextOverflow.ellipsis, // Adiciona reticências se o texto for muito longo
+          ),
+        ),
+      ],
     );
   }
 }
