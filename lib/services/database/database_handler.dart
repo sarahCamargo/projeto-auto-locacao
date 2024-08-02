@@ -62,15 +62,40 @@ class DatabaseHandler {
     });
   }
 
-  Future<void> fetchRentals() async {
-    List<Rental> results =
-    await DatabaseHelper().getRentalsWithVehicles();
-    _rentalController.add(results);
+  Future<void> fetchRentals(bool isHistory) async {
+    if (!isHistory) {
+      List<Rental> results =
+      await DatabaseHelper().getRentalsWithVehicles();
+      _rentalController.add(results);
+    } else {
+      List<Rental> results =
+      await DatabaseHelper().getRentalsHistory();
+      _rentalController.add(results);
+    }
   }
 
   Future<List<Map<String, dynamic>>> getData(String collection) async {
     List<Map<String, dynamic>> results =
     await DatabaseHelper().fetchData(collection);
     return results;
+  }
+
+  Future<void> update(BuildContext context, int id, Map<String, dynamic> newData,String collection) async {
+    await databaseHelper.update(id, newData, collection).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Locação finalizada com sucesso'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      Navigator.pop(context, true);
+    }).catchError((error){
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao finalizar locação: $error'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    });
   }
 }

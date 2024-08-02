@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,7 +23,7 @@ class RentalRegister extends StatefulWidget {
   @override
   RentalRegisterState createState() => RentalRegisterState();
 
-  final Map<String, dynamic> rental;
+  final Rental rental;
 
   const RentalRegister({super.key, required this.rental});
 }
@@ -37,7 +36,7 @@ class RentalRegisterState extends State<RentalRegister> {
   DateTime? _selectedDate = DateTime.now();
   String? _selectedPaymentType;
 
-  TextEditingController _paymentValueController = TextEditingController();
+  final TextEditingController _paymentValueController = TextEditingController();
 
   List<Vehicle> _vehicles = [];
   List<DropdownMenuItem<int>> _naturalPerson = [];
@@ -53,32 +52,21 @@ class RentalRegisterState extends State<RentalRegister> {
   void initState() {
     super.initState();
     _loadData();
-    /*if (widget.vehicle["id"] != null) {
-      _marcaController.text = widget.vehicle["brand"];
-      _modeloController.text = widget.vehicle["model"];
-      _placaController.text = widget.vehicle["licensePlate"];
-      _anoFabricacaoController.text = widget.vehicle["year"].toString();
-      _renavanController.text = widget.vehicle["renavam"] != null
-          ? widget.vehicle["renavam"].toString()
-          : "";
-      _corController.text = widget.vehicle["color"];
-      _selectedTipoCombustivel = widget.vehicle["fuelType"];
-      _selectedTipoTransmissao = widget.vehicle["transmissionType"];
-      _selectedCondicao = widget.vehicle["condition"];
-      _descricaoController.text = widget.vehicle["description"];
-      if (widget.vehicle["imageUrl"] != null) {
-        _imageUrl = widget.vehicle["imageUrl"];
-        _hasImage = true;
-      }
+    _selectedVehicle = widget.rental.vehicleId;
+    if (widget.rental.naturalPersonId == null) {
+      _selectedPerson = widget.rental.legalPersonId;
+    } else {
+      _selectedPerson = widget.rental.naturalPersonId;
     }
-    _marcaController.addListener(_checkButtonStatus);
-    _modeloController.addListener(_checkButtonStatus);
-    _placaController.addListener(_checkButtonStatus);
-    _renavanController.addListener(_checkButtonStatus);
-    _anoFabricacaoController.addListener(_checkButtonStatus);
-    _corController.addListener(_checkButtonStatus);
-    _checkButtonStatus();*/
-  }
+    if (widget.rental.startDate != null) {
+      _selectedDate = DateFormat('dd/MM/yyyy').parse(widget.rental.startDate!);
+    }
+    _selectedPaymentType = widget.rental.paymentType;
+    _paymentValueController.text = widget.rental.paymentValue ?? '';
+    if (widget.rental.vehicle?.imageUrl != null) {
+      _imageUrl = widget.rental.vehicle?.imageUrl;
+    }
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +257,9 @@ class RentalRegisterState extends State<RentalRegister> {
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
                               ),
-                              items: (_isNaturalPerson ? _naturalPerson : _legalPerson),
+                              items: (_isNaturalPerson
+                                  ? _naturalPerson
+                                  : _legalPerson),
                               onChanged: (int? value) {
                                 setState(() {
                                   _selectedPerson = value;
@@ -375,14 +365,14 @@ class RentalRegisterState extends State<RentalRegister> {
 
   void save() {
     saveData().then((rental) {
-      dbHandler.save(context, widget.rental['id'], rental);
+      dbHandler.save(context, widget.rental.id, rental);
     });
   }
 
   Future<Rental> saveData() async {
     Rental rental = Rental();
     rental.vehicleId = _selectedVehicle;
-    rental.startDate = _selectedDate.toString();
+    rental.startDate = DateFormat('dd/MM/yyyy').format(_selectedDate!);
     if (_isNaturalPerson) {
       rental.naturalPersonId = _selectedPerson;
     } else {
@@ -391,23 +381,6 @@ class RentalRegisterState extends State<RentalRegister> {
     rental.paymentType = _selectedPaymentType;
     rental.paymentValue = _paymentValueController.text;
     return rental;
-  }
-
-  void _checkButtonStatus() {
-    /*setState(() {
-      _isSaveButtonEnabled = _marcaController.text.isNotEmpty &&
-          _modeloController.text.isNotEmpty &&
-          _placaController.text.isNotEmpty &&
-          _renavanController.text.isNotEmpty &&
-          _anoFabricacaoController.text.isNotEmpty &&
-          _corController.text.isNotEmpty;
-    });*/
-  }
-
-  void _updateSaveButtonState(TextEditingController textEditingController) {
-    setState(() {
-      _isSaveButtonEnabled = textEditingController.text.isNotEmpty;
-    });
   }
 
   Widget _buildImageContainer() {
@@ -439,9 +412,7 @@ class RentalRegisterState extends State<RentalRegister> {
 
   Widget _buildImageAndButton() {
     return Stack(
-      children: [
-        _buildImageContainer()
-      ],
+      children: [_buildImageContainer()],
     );
   }
 }

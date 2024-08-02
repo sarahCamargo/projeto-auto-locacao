@@ -69,7 +69,6 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> fetchData(String collection) async {
     final db = await database;
     var result =  await db.query(collection);
-    print('Lista $result tabela $collection');
     return result;
   }
 
@@ -87,10 +86,16 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+
   Future<List<Rental>> getRentalsWithVehicles() async {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getRentalInfo);
-    print("Data fetched: $maps");
+    return List.generate(maps.length, (i) => Rental.fromMap(maps[i]));
+  }
+
+  Future<List<Rental>> getRentalsHistory() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getRentalHistory);
     return List.generate(maps.length, (i) => Rental.fromMap(maps[i]));
   }
 }

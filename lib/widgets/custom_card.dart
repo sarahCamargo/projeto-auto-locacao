@@ -12,7 +12,7 @@ import '../utils/show_snackbar.dart';
 
 typedef OnDelete = Future<void> Function(int id);
 
-class CustomCard extends StatelessWidget {
+class CustomCard extends StatefulWidget {
   final List<Widget> data;
   final String title;
   final int id;
@@ -20,6 +20,9 @@ class CustomCard extends StatelessWidget {
   final bool hasDelete;
   final String? imageUrl;
   final DatabaseHandler dbHandler;
+  final bool hasOptions;
+  final VoidCallback? onEdit;
+  final VoidCallback? onFinalize;
 
   const CustomCard(
       {super.key,
@@ -29,7 +32,35 @@ class CustomCard extends StatelessWidget {
       this.hasImage = false,
       this.hasDelete = false,
       this.imageUrl,
-      required this.dbHandler});
+      required this.dbHandler,
+      this.hasOptions = false,
+      this.onEdit,
+      this.onFinalize});
+
+  @override
+  CustomCardState createState() => CustomCardState();
+}
+
+class CustomCardState extends State<CustomCard> {
+  bool _isOptionsVisible = false;
+
+  void _toggleOptions() {
+    setState(() {
+      _isOptionsVisible = !_isOptionsVisible;
+    });
+  }
+
+  void _handleEdit() {
+    if (widget.onEdit != null) {
+      widget.onEdit!();
+    }
+  }
+
+  void _handleFinalize() {
+    if (widget.onFinalize != null) {
+      widget.onFinalize!();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,55 +69,113 @@ class CustomCard extends StatelessWidget {
       child: Card(
         elevation: 3,
         color: Colors.white,
-        child: ListTile(
-          title: CustomTextLabel(
-            label: title,
-            fontWeight: FontWeight.bold,
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: data,
-          ),
-          leading: hasImage
-              ? Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey[300],
-                  ),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: imageUrl != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.file(
-                              File(imageUrl!),
-                              fit: BoxFit.contain,
-                            ),
-                          )
-                        : const Center(
-                            child: Icon(
-                              FontAwesomeIcons.car,
-                              color: ColorsConstants.iconColor,
-                            ),
-                          ),
-                  ),
-                )
-              : null,
-          trailing: hasDelete ? IconButton(
-            icon: const Icon(
-              FontAwesomeIcons.trash,
-              color: ColorsConstants.iconColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              title: CustomTextLabel(
+                label: widget.title,
+                fontWeight: FontWeight.bold,
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.data,
+              ),
+              leading: widget.hasImage
+                  ? Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[300],
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: widget.imageUrl != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(
+                                  File(widget.imageUrl!),
+                                  fit: BoxFit.contain,
+                                ),
+                              )
+                            : const Center(
+                                child: Icon(
+                                  FontAwesomeIcons.car,
+                                  color: ColorsConstants.iconColor,
+                                ),
+                              ),
+                      ),
+                    )
+                  : null,
+              trailing: widget.hasDelete
+                  ? IconButton(
+                      icon: const Icon(
+                        FontAwesomeIcons.trash,
+                        color: ColorsConstants.iconColor,
+                      ),
+                      onPressed: () => {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ConfirmationDialog(
+                                  content: GeneralConstants.confirmDelete,
+                                  confirmationWidget:
+                                      confirmationAction(context));
+                            }),
+                      },
+                    )
+                  : null,
             ),
-            onPressed: () => {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ConfirmationDialog(
-                        content: GeneralConstants.confirmDelete,
-                        confirmationWidget: confirmationAction(context));
-                  }),
-            },
-          ) : null,
+            if (widget.hasOptions) ...[
+              const Divider(),
+              if (_isOptionsVisible) ...[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16.0),
+                      title: Center(
+                        child: TextButton(
+                          onPressed: _handleEdit,
+                          child: const CustomTextLabel(
+                            label: 'Editar',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ListTile(
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16.0),
+                      title: Center(
+                        child: TextButton(
+                          onPressed: _handleFinalize,
+                          child: const CustomTextLabel(
+                            label: 'Finalizar',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                child: IconButton(
+                  icon: Icon(
+                    _isOptionsVisible
+                        ? FontAwesomeIcons.angleUp
+                        : FontAwesomeIcons.angleDown,
+                    color: ColorsConstants.iconColor,
+                    size: 24,
+                  ),
+                  onPressed: _toggleOptions,
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -95,11 +184,12 @@ class CustomCard extends StatelessWidget {
   Widget confirmationAction(BuildContext context) {
     return TextButton(
       onPressed: () {
-        dbHandler.delete(id).then((value) {
+        widget.dbHandler.delete(widget.id).then((value) {
           showCustomSnackBar(context, GeneralConstants.registerDeleted);
           Navigator.of(context).pop();
         }).catchError((error) {
-          showCustomSnackBar(context, '${GeneralConstants.errorInAction}: $error');
+          showCustomSnackBar(
+              context, '${GeneralConstants.errorInAction}: $error');
           Navigator.of(context).pop();
         });
       },

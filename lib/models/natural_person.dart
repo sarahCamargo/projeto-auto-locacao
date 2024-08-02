@@ -71,7 +71,8 @@ class NaturalPerson implements DaoInterface{
   factory NaturalPerson.fromMap(Map<String, dynamic> map) {
     return NaturalPerson(
       id: map['id'],
-      name: map['name']
+      name: map['name'],
+      cpf: map['cpf']
     );
   }
 }

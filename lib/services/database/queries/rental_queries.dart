@@ -29,5 +29,23 @@ class RentalQueries {
         INNER JOIN vehicle v ON r.vehicleId = v.id
         LEFT JOIN natural_person np ON r.naturalPersonId = np.id
         LEFT JOIN legal_person lp ON r.legalPersonId = lp.id 
+    WHERE r.endDate is null;
+  ''';
+
+  static const getRentalHistory = '''
+    SELECT r.*, 
+        v.model, 
+        v.brand, 
+        v.licensePlate, 
+        v.imageUrl, 
+        np.name,
+        np.cpf,
+        lp.tradingName,
+        lp.companyName
+    FROM rental r
+        INNER JOIN vehicle v ON r.vehicleId = v.id
+        LEFT JOIN natural_person np ON r.naturalPersonId = np.id
+        LEFT JOIN legal_person lp ON r.legalPersonId = lp.id 
+    WHERE r.endDate is not null;
   ''';
 }

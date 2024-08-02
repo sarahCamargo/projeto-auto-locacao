@@ -55,13 +55,16 @@ class Rental implements DaoInterface {
 
   factory Rental.fromMap(Map<String, dynamic> map) {
     return Rental(
-      id: map['id'],
-      vehicleId: map['vehicleId'],
-      startDate: map['startDate'],
-      endDate: map['endDate'],
-      vehicle: Vehicle.fromMap(map),
-      naturalPerson: NaturalPerson.fromMap(map),
-      legalPerson: LegalPerson.fromMap(map)
-    );
+        id: map['id'],
+        vehicleId: map['vehicleId'],
+        naturalPersonId: map['naturalPersonId'],
+        legalPersonId: map['legalPersonId'],
+        startDate: map['startDate'],
+        endDate: map['endDate'],
+        paymentType: map['paymentType'],
+        paymentValue: map['paymentValue'],
+        vehicle: Vehicle.fromMap(map),
+        naturalPerson: NaturalPerson.fromMap(map),
+        legalPerson: LegalPerson.fromMap(map));
   }
 }

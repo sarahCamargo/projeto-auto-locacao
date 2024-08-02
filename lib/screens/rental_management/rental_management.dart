@@ -26,7 +26,7 @@ class RentalManagementState extends State<RentalManagement> {
           title: RentalConstants.rentalManagementTitle,
           hasReturnScreen: true,
         ),
-        body: const TabBarView(children: [RentalScreen(), VehicleScreen()]),
+        body: const TabBarView(children: [RentalScreen(), RentalScreen(isHistory: true)]),
         bottomNavigationBar: Container(
           color: Colors.white,
           child: const TabBar(tabs: [
