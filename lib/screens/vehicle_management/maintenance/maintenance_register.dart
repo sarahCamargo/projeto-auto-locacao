@@ -1,7 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/maintenance_management_constants.dart';
+import 'package:projeto_auto_locacao/services/notification_service.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
@@ -27,9 +31,9 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.maintenance);
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
-
+  String? _dateError;
   String? _selectedTipo;
-  String? _selectedFrequencia;
+  int? _selectedFrequencia;
   final TextEditingController _outroController = TextEditingController();
   final MaskedTextController _ultimaVerificacaoController = MaskedTextController(mask: '00/00/0000');
   final MaskedTextController _proximaVerificacaoController = MaskedTextController(mask: '00/00/0000');
@@ -43,7 +47,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
     if (widget.maintenance['id'] != null) {
       _selectedTipo = widget.maintenance['type'];
       _outroController.text = widget.maintenance['other'];
-      _selectedFrequencia = widget.maintenance['frequency'];
+      _selectedFrequencia = int.parse(widget.maintenance['frequency']);
       _ultimaVerificacaoController.text = widget.maintenance['lastCheck'];
       _proximaVerificacaoController.text = widget.maintenance['nextCheck'];
     }
@@ -53,7 +57,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          const CustomAppBar(title: MaintenanceManagementConstants.appBarTitle),
+          const CustomAppBar(title: MaintenanceConstants.appBarTitle),
       body: _buildForm(),
     );
   }
@@ -73,7 +77,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
             children: <Widget>[
               const SizedBox(height: 16.0),
               const CustomTextLabel(
-                label: MaintenanceManagementConstants.maintenanceData,
+                label: MaintenanceConstants.maintenanceData,
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0,
               ),
@@ -87,7 +91,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const CustomTextLabel(
-                              label: MaintenanceManagementConstants.typeLabel,
+                              label: MaintenanceConstants.typeLabel,
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -100,7 +104,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
                                 ),
-                                items: MaintenanceManagementConstants.type.map((status) {
+                                items: MaintenanceConstants.type.map((status) {
                                   return DropdownMenuItem<String>(
                                     value: status,
                                     child: status == null
@@ -121,15 +125,17 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                 ),
               ),
               const CustomTextLabel(
-                label: MaintenanceManagementConstants.otherLabel,
+                label: MaintenanceConstants.otherLabel,
               ),
               CustomTextField(
                 controller: _outroController,
                 keyboardType: TextInputType.name,
+                /*
                 onChange: (value) {
                   _updateSaveButtonState(_outroController);
                 },
-                isRequired: true,
+                */
+                isRequired: false,
               ),
               const SizedBox(height: 16.0),
               Padding(
@@ -141,7 +147,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const CustomTextLabel(
-                              label: MaintenanceManagementConstants.frequencyLabel,
+                              label: MaintenanceConstants.frequencyLabel,
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -149,17 +155,15 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: DropdownButtonFormField<String>(
-                                value: _selectedFrequencia,
+                              child: DropdownButtonFormField<int>(
+                                value:  _selectedFrequencia,
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
                                 ),
-                                items: MaintenanceManagementConstants.frequency.map((status) {
-                                  return DropdownMenuItem<String>(
-                                    value: status,
-                                    child: status == null
-                                        ? const Text(GeneralConstants.doNotInform)
-                                        : Text(status),
+                                items: MaintenanceConstants.frequency.entries.map((status) {
+                                  return DropdownMenuItem<int>(
+                                    value: status.key,
+                                    child: Text(status.value),
                                   );
                                 }).toList(),
                                 onChanged: (value) {
@@ -183,13 +187,17 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const CustomTextLabel(
-                              label: MaintenanceManagementConstants.lastCheckLabel,
+                              label: MaintenanceConstants.lastCheckLabel,
                             ),
                             CustomTextField(
                               maskedController: _ultimaVerificacaoController,
                               keyboardType: TextInputType.datetime,
                               hintText: PersonConstants.birthDateHint,
-                              isRequired: true,
+                              isRequired: false,
+                              errorText: _dateError,
+                              onChange: (value) {
+                                _calcNextFrequency();
+                              },
                             )
                           ],
                         )),
@@ -205,13 +213,17 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const CustomTextLabel(
-                              label: MaintenanceManagementConstants.nextCheckLabel,
+                              label: MaintenanceConstants.nextCheckLabel,
                             ),
                             CustomTextField(
                               maskedController: _proximaVerificacaoController,
                               keyboardType: TextInputType.datetime,
                               hintText: PersonConstants.birthDateHint,
-                              isRequired: true,
+                              isRequired: false,
+                              errorText: _dateError,
+                              onChange: (value) {
+                                _validateDate(_proximaVerificacaoController);
+                              },
                             ),
                           ],
                         ))
@@ -254,10 +266,113 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
     });
   }
 
+  void _validateDate(TextEditingController textEditingController) {
+    String date = textEditingController.text;
+    if (date.isNotEmpty) {
+      String numericDate = date.replaceAll(RegExp(r'[^0-9]'), '');
+      setState(() {
+        try {
+          DateTime parsedDate = DateTime.parse(
+            '${numericDate.substring(4, 8)}-${numericDate.substring(2, 4)}-${numericDate.substring(0, 2)}',
+          );
+          if (_dateFormat.format(parsedDate) == date) {
+            _dateError = null;
+          }
+        } catch (e) {
+          _dateError = 'Data inválida. Use o formato dd/mm/aaaa.';
+          // _isSaveButtonEnabled = false;
+        }
+      });
+    }
+  }
+
+  void _calcNextFrequency() {
+    _validateDate(_ultimaVerificacaoController);
+    if (_dateError == null) {
+      String date = _ultimaVerificacaoController.text;
+      String numericDate = date.replaceAll(RegExp(r'[^0-9]'), '');
+      DateTime parsedDate = DateTime.parse(
+        '${numericDate.substring(4, 8)}-${numericDate.substring(2, 4)}-${numericDate.substring(0, 2)}',
+      );
+
+      if (MaintenanceConstants.frequencyDurations.containsKey(_selectedFrequencia)) {
+        parsedDate = parsedDate.add(MaintenanceConstants.frequencyDurations[_selectedFrequencia]!);
+      }
+      
+      _proximaVerificacaoController.text = _dateFormat.format(parsedDate);
+    }
+  }
+
   void save() {
+    if (_selectedTipo == null || _selectedTipo!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe o tipo'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    if (_selectedTipo == 'Outro' && _outroController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe o campo Outro'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    if (_selectedTipo != 'Outro' && _outroController.text.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não informe o campo Outro'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    if (_selectedFrequencia == null || _selectedFrequencia == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe a frequência'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    if (_ultimaVerificacaoController.text == null || _ultimaVerificacaoController.text!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe a última verificação'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    if (_proximaVerificacaoController.text == null || _proximaVerificacaoController.text!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe a última verificação'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
     saveData().then((maintenance) {
       dbHandler.save(context, widget.maintenance['id'], maintenance);
     });
+
+    Provider.of<NotificationService>(context, listen: false).showNotification(
+      CustomNotification(id: 1, title: 'Teste', body: 'Acesse o app', payload: '/aa')
+    );
+
+
   }
 
   Future<Maintenance> saveData() async {

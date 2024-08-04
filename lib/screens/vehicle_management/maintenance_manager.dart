@@ -16,7 +16,7 @@ class MaintenanceManagementState extends State<MaintenanceManagement> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        title: MaintenanceManagementConstants.maintenanceManagementTitle,
+        title: MaintenanceConstants.maintenanceManagementTitle,
         hasReturnScreen: true,
       ),
       body: //Container(color: Colors.blue, width: 100, height: 100,)

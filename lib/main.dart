@@ -6,16 +6,27 @@ import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_management.dart';
 import 'package:projeto_auto_locacao/services/database/database_helper.dart';
+import 'package:projeto_auto_locacao/services/notification_service.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
-  runApp(const MyApp());
+
+  
+
+  //runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [
+        Provider<NotificationService>(create: (context) => NotificationService())
+      ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

@@ -6,7 +6,7 @@ class Maintenance implements DaoInterface{
   int? idVehicle;
   String? type;
   String? other;
-  String? frequency;
+  int? frequency;
   String? lastCheck;
   String? nextCheck;
 
