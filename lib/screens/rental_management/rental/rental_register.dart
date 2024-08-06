@@ -422,7 +422,7 @@ class RentalRegisterState extends State<RentalRegister> {
 
   Widget _buildCheckboxRow({required bool isChecked, required String label, required ValueChanged<bool?> onChanged}) {
     return Row(
-      mainAxisSize: MainAxisSize.min, // Ajusta o tamanho do Row para o conteúdo
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Checkbox(
           value: isChecked,
@@ -431,7 +431,7 @@ class RentalRegisterState extends State<RentalRegister> {
         Flexible(
           child: Text(
             label,
-            overflow: TextOverflow.ellipsis, // Adiciona reticências se o texto for muito longo
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

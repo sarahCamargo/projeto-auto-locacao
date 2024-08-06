@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
+import 'package:projeto_auto_locacao/screens/configuration_management/configuration_screen.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 
 class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
@@ -21,7 +22,6 @@ class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
-
             ),
           ),
           ListTile(
@@ -44,6 +44,12 @@ class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
             ),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ConfigurationScreen(),
+                ),
+              );
             },
           ),
         ],
