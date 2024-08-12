@@ -1,6 +1,6 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
 
-class Vehicle implements DaoInterface{
+class Vehicle implements DaoInterface {
   int? id;
   String? licensePlate;
   String? model;
@@ -13,6 +13,7 @@ class Vehicle implements DaoInterface{
   String? condition;
   String? description;
   String? imageUrl;
+  String? owner;
 
   Vehicle(
       {this.id,
@@ -26,7 +27,8 @@ class Vehicle implements DaoInterface{
       this.transmissionType,
       this.condition,
       this.description,
-      this.imageUrl});
+      this.imageUrl,
+      this.owner});
 
   @override
   int? getId() {
@@ -52,17 +54,21 @@ class Vehicle implements DaoInterface{
       "transmissionType": transmissionType,
       "condition": condition,
       "description": description,
-      "imageUrl": imageUrl
+      "imageUrl": imageUrl,
+      "owner": owner
     };
   }
 
   factory Vehicle.fromMap(Map<String, dynamic> map) {
     return Vehicle(
-      id: map['id'],
-      licensePlate: map['licensePlate'],
-      brand: map['brand'],
-      model: map['model'],
-      imageUrl: map['imageUrl']
-    );
+        id: map['id'],
+        licensePlate: map['licensePlate'],
+        brand: map['brand'],
+        model: map['model'],
+        imageUrl: map['imageUrl'],
+        year: map['year'],
+        color: map['color'],
+        renavam: map['renavam'],
+        owner: map['owner']);
   }
 }

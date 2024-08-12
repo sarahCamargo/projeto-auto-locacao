@@ -21,8 +21,20 @@ class RentalQueries {
         v.brand, 
         v.licensePlate, 
         v.imageUrl, 
+        v.year, 
+        v.color, 
+        v.renavam, 
+        v.owner, 
         np.name,
         np.cpf,
+        np.street,
+        np.addressNumber,
+        np.neighborhood,
+        np.addressComplement,
+        np.city,
+        np.state,
+        np.cep,
+        lp.tradingName,
         lp.tradingName,
         lp.companyName
     FROM rental r
@@ -37,10 +49,8 @@ class RentalQueries {
         v.model, 
         v.brand, 
         v.licensePlate, 
-        v.imageUrl, 
         np.name,
         np.cpf,
-        lp.tradingName,
         lp.companyName
     FROM rental r
         INNER JOIN vehicle v ON r.vehicleId = v.id

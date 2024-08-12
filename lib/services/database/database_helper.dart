@@ -26,24 +26,19 @@ class DatabaseHelper {
     if (_database != null) {
       return _database!;
     }
-    /* Descomentar se necessário criar o banco de novo.*/
-    /*
     String path = await getDatabasesPath();
     String fullPath = join(path, dbName);
 
-    await deleteDatabase(fullPath);*/
+    /* Descomentar se necessário criar o banco de novo.*/
+    //await deleteDatabase(fullPath);
 
-    _database = await _initDatabase();
-    return _database!;
-  }
-
-  Future<Database> _initDatabase() async {
-    String path = await getDatabasesPath();
-    return openDatabase(
-      join(path, dbName),
+    _database = await openDatabase(
+      fullPath,
       version: dbVersion,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
+    return _database!;
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -97,5 +92,11 @@ class DatabaseHelper {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getRentalHistory);
     return List.generate(maps.length, (i) => Rental.fromMap(maps[i]));
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await db.execute('ALTER TABLE vehicle ADD COLUMN owner TEXT;');
+    }
   }
 }

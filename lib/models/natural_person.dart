@@ -1,6 +1,6 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
 
-class NaturalPerson implements DaoInterface{
+class NaturalPerson implements DaoInterface {
   int? id;
   String? name;
   String? cpf;
@@ -70,9 +70,15 @@ class NaturalPerson implements DaoInterface{
 
   factory NaturalPerson.fromMap(Map<String, dynamic> map) {
     return NaturalPerson(
-      id: map['id'],
-      name: map['name'],
-      cpf: map['cpf']
-    );
+        id: map['id'],
+        name: map['name'],
+        cpf: map['cpf'],
+        street: map['street'],
+        city: map['city'],
+        addressNumber: map['addressNumber'],
+        neighborhood: map['neighborhood'],
+        addressComplement: map['addressComplement'],
+        state: map['state'],
+        cep: map['cep']);
   }
 }

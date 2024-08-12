@@ -42,6 +42,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
   final TextEditingController _renavanController = TextEditingController();
   final TextEditingController _corController = TextEditingController();
   final TextEditingController _descricaoController = TextEditingController();
+  final TextEditingController _ownerController = TextEditingController();
 
   bool _isSaveButtonEnabled = false;
 
@@ -66,6 +67,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
         _hasImage = true;
       }
     }
+    _ownerController.text = widget.vehicle["owner"] ?? '';
     _marcaController.addListener(_checkButtonStatus);
     _modeloController.addListener(_checkButtonStatus);
     _placaController.addListener(_checkButtonStatus);
@@ -242,6 +244,12 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   ],
                 ),
               ),
+              const CustomTextLabel(label: 'Proprietário'),
+              CustomTextField(
+                controller: _ownerController,
+                keyboardType: TextInputType.name,
+              ),
+              const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Row(
@@ -400,6 +408,8 @@ class VehicleRegisterState extends State<VehicleRegister> {
     });
   }
 
+  String? fuelType;
+
   Future<Vehicle> saveData() async {
     Vehicle vehicle = Vehicle();
     vehicle.licensePlate = _placaController.text;
@@ -415,10 +425,10 @@ class VehicleRegisterState extends State<VehicleRegister> {
     vehicle.transmissionType = _selectedTipoTransmissao;
     vehicle.condition = _selectedCondicao;
     vehicle.imageUrl = await _getImagePath();
+    vehicle.owner = _ownerController.text;
     return vehicle;
   }
 
-  String? fuelType;
   String? transmissionType;
   String? condition;
 

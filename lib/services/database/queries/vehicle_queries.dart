@@ -12,7 +12,8 @@ class VehicleQueries {
       transmissionType TEXT,
       condition TEXT,
       description TEXT,
-      imageUrl TEXT
+      imageUrl TEXT,
+      owner TEXT
     )
   ''';
 }

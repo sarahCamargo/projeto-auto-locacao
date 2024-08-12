@@ -15,9 +15,7 @@ class ContractFileManipulation {
     final defaultFile = await prefsService.getDefaultFilePath();
     final outputDir = Directory('$tempDir/unzipped_docx');
 
-    final data = {
-      'name': rental.naturalPerson?.name,
-    };
+    final data = getData(rental);
 
     limparDiretorio(outputDir.path);
 
@@ -42,16 +40,16 @@ class ContractFileManipulation {
     final newContentFile = ArchiveFile('content.xml', utf8.encode(newContent).length, utf8.encode(newContent));
 
     final newArchive = Archive();
-    archive.files.forEach((file) {
+    for (var file in archive.files) {
       if (file.name == 'content.xml') {
         newArchive.addFile(newContentFile);
       } else {
         newArchive.addFile(file);
       }
-    });
+    }
 
     final output = ZipEncoder().encode(newArchive);
-    final newDocxPath = '$defaultFile/template_preenchido.odt';
+    final newDocxPath = '$defaultFile/contrato-locacao-${rental.id}.odt';
     await File(newDocxPath).writeAsBytes(output!);
 
     final file2 = File(newDocxPath);
@@ -99,5 +97,22 @@ class ContractFileManipulation {
     });
 
     await file.writeAsString(document.toXmlString(pretty: true, indent: '  '), encoding: utf8); // Garante UTF-8 ao escrever o XML
+  }
+
+  Map<String, String?> getData(Rental rental) {
+    return {
+      'nome': rental.naturalPerson?.name,
+      'cpf': rental.naturalPerson?.cpf,
+      'endereco': '${rental.naturalPerson?.street}, ${rental.naturalPerson?.addressNumber}, bairro ${rental.naturalPerson?.neighborhood}, ${rental.naturalPerson?.addressComplement}',
+      'cidade': rental.naturalPerson?.city,
+      'cep': rental.naturalPerson?.cep,
+      'estado': rental.naturalPerson?.state,
+      'modelo': '${rental.vehicle?.brand}/${rental.vehicle?.model}',
+      'ano': rental.vehicle?.year,
+      'cor': rental.vehicle?.color,
+      'placa': rental.vehicle?.licensePlate,
+      'renavam': rental.vehicle?.renavam.toString(),
+      'proprietario': rental.vehicle?.owner,
+    };
   }
 }
