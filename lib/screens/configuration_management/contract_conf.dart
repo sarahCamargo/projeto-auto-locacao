@@ -75,7 +75,7 @@ class ContractConfState extends State<ContractConf> {
                     ),
                     const SizedBox(height: 16),
                     const CustomTextLabel(
-                      label: 'Escolher arquivo .docx',
+                      label: 'Escolher arquivo .odt',
                       fontSize: 16,
                     ),
                   ],
@@ -98,7 +98,7 @@ class ContractConfState extends State<ContractConf> {
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['docx'],
+      allowedExtensions: ['odt'],
     );
 
     if (result != null) {

@@ -23,6 +23,7 @@ class CustomCard extends StatefulWidget {
   final bool hasOptions;
   final VoidCallback? onEdit;
   final VoidCallback? onFinalize;
+  final VoidCallback? onGenerateContract;
 
   const CustomCard(
       {super.key,
@@ -35,7 +36,8 @@ class CustomCard extends StatefulWidget {
       required this.dbHandler,
       this.hasOptions = false,
       this.onEdit,
-      this.onFinalize});
+      this.onFinalize,
+      this.onGenerateContract});
 
   @override
   CustomCardState createState() => CustomCardState();
@@ -59,6 +61,12 @@ class CustomCardState extends State<CustomCard> {
   void _handleFinalize() {
     if (widget.onFinalize != null) {
       widget.onFinalize!();
+    }
+  }
+
+  void _handleGenerateContract() {
+    if (widget.onGenerateContract != null) {
+      widget.onGenerateContract!();
     }
   }
 
@@ -131,6 +139,19 @@ class CustomCardState extends State<CustomCard> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    ListTile(
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16.0),
+                      title: Center(
+                        child: TextButton(
+                          onPressed: _handleGenerateContract,
+                          child: const CustomTextLabel(
+                            label: 'Gerar Contrato',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
                     ListTile(
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 16.0),
