@@ -153,7 +153,11 @@ class MaintenanceScreenState extends State<MaintenanceScreen> {
 
   List<Widget> _getCardInfoMaintenance(Map<String, dynamic> maintenance) {
     List<Widget> info = [];
-    info.add(CustomTextLabel(label: '${ MaintenanceConstants.frequency[int.parse(maintenance['frequency'])]}'));
+    if (maintenance['frequency'] != null) {
+      info.add(CustomTextLabel(
+          label: '${ MaintenanceConstants.frequency[int.parse(
+              maintenance['frequency'])]}'));
+    }
     info.add(CustomTextLabel(label: 'Últ. verif: ${maintenance['lastCheck']}'));
     info.add(CustomTextLabel(label: 'Próx. verif.: ${maintenance['nextCheck']}'));
     return info;

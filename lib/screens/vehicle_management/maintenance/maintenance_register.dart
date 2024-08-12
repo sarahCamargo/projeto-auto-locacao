@@ -24,7 +24,8 @@ class MaintenanceRegister extends StatefulWidget {
   final int idVehicle;
   final Map<String, dynamic> maintenance;
 
-  const MaintenanceRegister({super.key, required this.idVehicle, required this.maintenance});
+  const MaintenanceRegister(
+      {super.key, required this.idVehicle, required this.maintenance});
 }
 
 class MaintenanceRegisterState extends State<MaintenanceRegister> {
@@ -35,8 +36,10 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
   String? _selectedTipo;
   int? _selectedFrequencia;
   final TextEditingController _outroController = TextEditingController();
-  final MaskedTextController _ultimaVerificacaoController = MaskedTextController(mask: '00/00/0000');
-  final MaskedTextController _proximaVerificacaoController = MaskedTextController(mask: '00/00/0000');
+  final MaskedTextController _ultimaVerificacaoController =
+      MaskedTextController(mask: '00/00/0000');
+  final MaskedTextController _proximaVerificacaoController =
+      MaskedTextController(mask: '00/00/0000');
 
   bool _isSaveButtonEnabled = true;
 
@@ -47,7 +50,9 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
     if (widget.maintenance['id'] != null) {
       _selectedTipo = widget.maintenance['type'];
       _outroController.text = widget.maintenance['other'];
-      _selectedFrequencia = int.parse(widget.maintenance['frequency']);
+      if (widget.maintenance['frequency'] != null) {
+        _selectedFrequencia = int.parse(widget.maintenance['frequency']);
+      }
       _ultimaVerificacaoController.text = widget.maintenance['lastCheck'];
       _proximaVerificacaoController.text = widget.maintenance['nextCheck'];
     }
@@ -56,8 +61,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          const CustomAppBar(title: MaintenanceConstants.appBarTitle),
+      appBar: const CustomAppBar(title: MaintenanceConstants.appBarTitle),
       body: _buildForm(),
     );
   }
@@ -88,93 +92,59 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomTextLabel(
-                              label: MaintenanceConstants.typeLabel,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomTextLabel(
+                          label: MaintenanceConstants.typeLabel,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedTipo,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: DropdownButtonFormField<String>(
-                                value: _selectedTipo,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                ),
-                                items: MaintenanceConstants.type.map((status) {
-                                  return DropdownMenuItem<String>(
-                                    value: status,
-                                    child: status == null
-                                        ? const Text(GeneralConstants.doNotInform)
-                                        : Text(status),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedTipo = value;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ))
+                            items: MaintenanceConstants.type.map((status) {
+                              return DropdownMenuItem<String>(
+                                value: status,
+                                child: status == null
+                                    ? const Text(GeneralConstants.doNotInform)
+                                    : Text(status),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedTipo = value;
+                                if (_selectedTipo != 'Outro') {
+                                  _outroController.text = '';
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ))
                   ],
                 ),
               ),
-              const CustomTextLabel(
-                label: MaintenanceConstants.otherLabel,
-              ),
-              CustomTextField(
-                controller: _outroController,
-                keyboardType: TextInputType.name,
-                /*
-                onChange: (value) {
-                  _updateSaveButtonState(_outroController);
-                },
-                */
-                isRequired: false,
-              ),
-              const SizedBox(height: 16.0),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Row(
+              Visibility(
+                visible: _selectedTipo == 'Outro',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomTextLabel(
-                              label: MaintenanceConstants.frequencyLabel,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: DropdownButtonFormField<int>(
-                                value:  _selectedFrequencia,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                ),
-                                items: MaintenanceConstants.frequency.entries.map((status) {
-                                  return DropdownMenuItem<int>(
-                                    value: status.key,
-                                    child: Text(status.value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedFrequencia = value;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ))
+                    const CustomTextLabel(
+                      label: MaintenanceConstants.otherLabel,
+                    ),
+                    CustomTextField(
+                      controller: _outroController,
+                      keyboardType: TextInputType.name,
+                      isRequired: false,
+                    ),
+                    const SizedBox(height: 16.0),
                   ],
                 ),
               ),
@@ -184,23 +154,38 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomTextLabel(
-                              label: MaintenanceConstants.lastCheckLabel,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomTextLabel(
+                          label: MaintenanceConstants.frequencyLabel,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: DropdownButtonFormField<int>(
+                            value: _selectedFrequencia,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
                             ),
-                            CustomTextField(
-                              maskedController: _ultimaVerificacaoController,
-                              keyboardType: TextInputType.datetime,
-                              hintText: PersonConstants.birthDateHint,
-                              isRequired: false,
-                              errorText: _dateError,
-                              onChange: (value) {
-                                _calcNextFrequency();
-                              },
-                            )
-                          ],
-                        )),
+                            items: MaintenanceConstants.frequency.entries
+                                .map((status) {
+                              return DropdownMenuItem<int>(
+                                value: status.key,
+                                child: Text(status.value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedFrequencia = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ))
                   ],
                 ),
               ),
@@ -210,23 +195,49 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const CustomTextLabel(
-                              label: MaintenanceConstants.nextCheckLabel,
-                            ),
-                            CustomTextField(
-                              maskedController: _proximaVerificacaoController,
-                              keyboardType: TextInputType.datetime,
-                              hintText: PersonConstants.birthDateHint,
-                              isRequired: false,
-                              errorText: _dateError,
-                              onChange: (value) {
-                                _validateDate(_proximaVerificacaoController);
-                              },
-                            ),
-                          ],
-                        ))
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomTextLabel(
+                          label: MaintenanceConstants.lastCheckLabel,
+                        ),
+                        CustomTextField(
+                          maskedController: _ultimaVerificacaoController,
+                          keyboardType: TextInputType.datetime,
+                          hintText: PersonConstants.birthDateHint,
+                          isRequired: false,
+                          errorText: _dateError,
+                          onChange: (value) {
+                            _calcNextFrequency();
+                          },
+                        )
+                      ],
+                    )),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomTextLabel(
+                          label: MaintenanceConstants.nextCheckLabel,
+                        ),
+                        CustomTextField(
+                          maskedController: _proximaVerificacaoController,
+                          keyboardType: TextInputType.datetime,
+                          hintText: PersonConstants.birthDateHint,
+                          isRequired: false,
+                          errorText: _dateError,
+                          onChange: (value) {
+                            _validateDate(_proximaVerificacaoController);
+                          },
+                        ),
+                      ],
+                    ))
                   ],
                 ),
               ),
@@ -234,8 +245,8 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
               ElevatedButton(
                   onPressed: _isSaveButtonEnabled
                       ? () {
-                    save();
-                  }
+                          save();
+                        }
                       : null,
                   style: ElevatedButton.styleFrom(
                       backgroundColor: ColorsConstants.backgroundColor),
@@ -252,11 +263,10 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
 
   void _checkButtonStatus() {
     setState(() {
-      _isSaveButtonEnabled = _outroController.text.isNotEmpty &&
-          _selectedTipo.toString().isNotEmpty &&
-         _selectedFrequencia.toString().isNotEmpty &&
-      _ultimaVerificacaoController.text.isNotEmpty &&
-      _proximaVerificacaoController.text.isNotEmpty;
+      _isSaveButtonEnabled = _selectedTipo.toString().isNotEmpty &&
+          _selectedFrequencia.toString().isNotEmpty &&
+          _ultimaVerificacaoController.text.isNotEmpty &&
+          _proximaVerificacaoController.text.isNotEmpty;
     });
   }
 
@@ -280,7 +290,6 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
           }
         } catch (e) {
           _dateError = 'Data inválida. Use o formato dd/mm/aaaa.';
-          // _isSaveButtonEnabled = false;
         }
       });
     }
@@ -295,10 +304,12 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
         '${numericDate.substring(4, 8)}-${numericDate.substring(2, 4)}-${numericDate.substring(0, 2)}',
       );
 
-      if (MaintenanceConstants.frequencyDurations.containsKey(_selectedFrequencia)) {
-        parsedDate = parsedDate.add(MaintenanceConstants.frequencyDurations[_selectedFrequencia]!);
+      if (MaintenanceConstants.frequencyDurations
+          .containsKey(_selectedFrequencia)) {
+        parsedDate = parsedDate
+            .add(MaintenanceConstants.frequencyDurations[_selectedFrequencia]!);
       }
-      
+
       _proximaVerificacaoController.text = _dateFormat.format(parsedDate);
     }
   }
@@ -334,45 +345,13 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
       return;
     }
 
-    if (_selectedFrequencia == null || _selectedFrequencia == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Informe a frequência'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
-    }
-
-    if (_ultimaVerificacaoController.text == null || _ultimaVerificacaoController.text!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Informe a última verificação'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
-    }
-
-    if (_proximaVerificacaoController.text == null || _proximaVerificacaoController.text!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Informe a última verificação'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-      return;
-    }
-
     saveData().then((maintenance) {
       dbHandler.save(context, widget.maintenance['id'], maintenance);
     });
 
     Provider.of<NotificationService>(context, listen: false).showNotification(
-      CustomNotification(id: 1, title: 'Teste', body: 'Acesse o app', payload: '/aa')
-    );
-
-
+        CustomNotification(
+            id: 1, title: 'Teste', body: 'Acesse o app', payload: '/aa'));
   }
 
   Future<Maintenance> saveData() async {

@@ -10,10 +10,10 @@ class MaintenanceConstants {
 
 
   static const List<String?> type = [
-    'Outro',
     'Troca de óleo',
     'Fluído de freio',
     'Verificação dos pneus',
+    'Outro',
     null
   ];
 
