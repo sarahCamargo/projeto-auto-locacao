@@ -46,7 +46,7 @@ class RentalRegisterState extends State<RentalRegister> {
   XFile? _image;
   String? _imageUrl;
 
-  bool _isSaveButtonEnabled = true;
+  bool _isSaveButtonEnabled = false;
 
   @override
   void initState() {
@@ -66,7 +66,9 @@ class RentalRegisterState extends State<RentalRegister> {
     if (widget.rental.vehicle?.imageUrl != null) {
       _imageUrl = widget.rental.vehicle?.imageUrl;
     }
-    }
+    _paymentValueController.addListener(_checkButtonStatus);
+    _checkButtonStatus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +76,12 @@ class RentalRegisterState extends State<RentalRegister> {
       appBar: const CustomAppBar(title: RentalConstants.rentalPrimaryTab),
       body: _buildForm(),
     );
+  }
+
+  @override
+  void dispose() {
+    _paymentValueController.removeListener(_checkButtonStatus);
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -167,9 +175,15 @@ class RentalRegisterState extends State<RentalRegister> {
                           decoration: BoxDecoration(
                             color: Colors.grey.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(10.0),
+                            border: Border.all(
+                              color: _selectedVehicle == null
+                                  ? Colors.red
+                                  : Colors.transparent,
+                            ),
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: DropdownButtonFormField<int>(
+                            isExpanded: true,
                             value: _selectedVehicle,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
@@ -197,6 +211,7 @@ class RentalRegisterState extends State<RentalRegister> {
                                       ),
                                     )
                                     .imageUrl;
+                                _checkButtonStatus();
                               });
                             },
                           ),
@@ -210,13 +225,14 @@ class RentalRegisterState extends State<RentalRegister> {
                 label: 'Tipo de Pessoa:',
               ),
               Padding(
-                padding: const EdgeInsets.all(20.0), // Ajuste o padding conforme necessário
+                padding: const EdgeInsets.all(20.0),
                 child: Wrap(
-                  spacing: 20.0, // Espaço horizontal entre os widgets
-                  runSpacing: 10.0, // Espaço vertical entre as linhas
+                  spacing: 20.0,
+                  runSpacing: 10.0,
                   children: <Widget>[
-                    _buildCheckboxRow(
-                      isChecked: _isNaturalPerson,
+                    _buildRadioButtonRow(
+                      value: true,
+                      groupValue: _isNaturalPerson,
                       label: 'Pessoa Física',
                       onChanged: (bool? value) {
                         setState(() {
@@ -225,12 +241,13 @@ class RentalRegisterState extends State<RentalRegister> {
                         });
                       },
                     ),
-                    _buildCheckboxRow(
-                      isChecked: !_isNaturalPerson,
+                    _buildRadioButtonRow(
+                      value: false,
+                      groupValue: _isNaturalPerson,
                       label: 'Pessoa Jurídica',
                       onChanged: (bool? value) {
                         setState(() {
-                          _isNaturalPerson = !(value ?? false);
+                          _isNaturalPerson = value ?? false;
                           _selectedPerson = null;
                         });
                       },
@@ -253,10 +270,16 @@ class RentalRegisterState extends State<RentalRegister> {
                             decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(10.0),
+                              border: Border.all(
+                                color: _selectedPerson == null
+                                    ? Colors.red
+                                    : Colors.transparent,
+                              ),
                             ),
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: DropdownButtonFormField<int>(
+                              isExpanded: true,
                               value: _selectedPerson,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
@@ -267,6 +290,7 @@ class RentalRegisterState extends State<RentalRegister> {
                               onChanged: (int? value) {
                                 setState(() {
                                   _selectedPerson = value;
+                                  _checkButtonStatus();
                                 });
                               },
                             ),
@@ -292,10 +316,16 @@ class RentalRegisterState extends State<RentalRegister> {
                             decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(10.0),
+                              border: Border.all(
+                                color: _selectedPaymentType == null
+                                    ? Colors.red
+                                    : Colors.transparent,
+                              ),
                             ),
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: DropdownButtonFormField<String>(
+                              isExpanded: true,
                               value: _selectedPaymentType,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
@@ -311,6 +341,7 @@ class RentalRegisterState extends State<RentalRegister> {
                               onChanged: (value) {
                                 setState(() {
                                   _selectedPaymentType = value;
+                                  _checkButtonStatus();
                                 });
                               },
                             ),
@@ -329,10 +360,10 @@ class RentalRegisterState extends State<RentalRegister> {
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
                   CurrencyInputFormatter(),
                 ],
                 hintText: 'R\$ XX,XX',
+                isRequired: true,
               ),
               const SizedBox(height: 16.0),
               const CustomTextLabel(
@@ -399,7 +430,7 @@ class RentalRegisterState extends State<RentalRegister> {
       child: newImage == null
           ? Center(
               child: Icon(
-                FontAwesomeIcons.squarePlus,
+                FontAwesomeIcons.image,
                 size: 50,
                 color: Colors.grey[400],
               ),
@@ -420,13 +451,21 @@ class RentalRegisterState extends State<RentalRegister> {
     );
   }
 
-  Widget _buildCheckboxRow({required bool isChecked, required String label, required ValueChanged<bool?> onChanged}) {
+  Widget _buildRadioButtonRow({
+    required bool value,
+    required bool groupValue,
+    required String label,
+    required ValueChanged<bool?> onChanged,
+  }) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Checkbox(
-          value: isChecked,
-          onChanged: onChanged,
+        Radio<bool>(
+          value: value,
+          groupValue: groupValue,
+          onChanged: (bool? newValue) {
+            onChanged(newValue);
+          },
         ),
         Flexible(
           child: Text(
@@ -436,5 +475,14 @@ class RentalRegisterState extends State<RentalRegister> {
         ),
       ],
     );
+  }
+
+  void _checkButtonStatus() {
+    setState(() {
+      _isSaveButtonEnabled = _selectedVehicle != null &&
+          _selectedPerson != null &&
+          _selectedPaymentType != null &&
+          _paymentValueController.text.isNotEmpty;
+    });
   }
 }

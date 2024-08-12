@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyInputFormatter extends TextInputFormatter {
-  final NumberFormat _currencyFormatter = NumberFormat.compactCurrency(locale: 'pt', symbol: 'R\$' );
+  final NumberFormat _currencyFormatter = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
 
   @override
   TextEditingValue formatEditUpdate(
@@ -13,9 +13,11 @@ class CurrencyInputFormatter extends TextInputFormatter {
     }
 
     final value = double.tryParse(text.replaceAll(RegExp(r'\D'), ''));
-    final formattedValue = value != null
-        ? _currencyFormatter.format(value / 100)
-        : '';
+    if (value == null) {
+      return newValue.copyWith(text: '');
+    }
+
+    final formattedValue = _currencyFormatter.format(value / 100);
 
     return newValue.copyWith(
       text: formattedValue,

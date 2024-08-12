@@ -55,9 +55,13 @@ dependencies:
   path: ^1.9.0
   file_picker: ^8.0.3
   image_picker: ^1.1.0
-  archive: ^3.0.0
-  xml: ^6.0.1
+  archive: ^3.6.1
+  xml: ^6.5.0
   shared_preferences: ^2.0.15
+  pdf: ^3.6.0
+  pdf_image_renderer: ^0.7.0
+  open_filex: ^4.4.0
+  flutter_document_picker: ^5.2.3
 
 dev_dependencies:
   flutter_test:
