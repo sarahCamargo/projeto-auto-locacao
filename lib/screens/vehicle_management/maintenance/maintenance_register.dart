@@ -349,9 +349,9 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
       dbHandler.save(context, widget.maintenance['id'], maintenance);
     });
 
-    Provider.of<NotificationService>(context, listen: false).showNotification(
+    /*Provider.of<NotificationService>(context, listen: false).showNotification(
         CustomNotification(
-            id: 1, title: 'Teste', body: 'Acesse o app', payload: '/aa'));
+            id: 1, title: 'Teste', body: 'Acesse o app', payload: '/aa'));*/
   }
 
   Future<Maintenance> saveData() async {

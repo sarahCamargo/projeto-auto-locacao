@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance_manager.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 import 'package:projeto_auto_locacao/widgets/custom_card.dart';
 
 import '../../../constants/collection_names.dart';

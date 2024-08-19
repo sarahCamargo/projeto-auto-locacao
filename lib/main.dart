@@ -17,10 +17,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
-
-  
-
-  //runApp(const MyApp());
   runApp(MultiProvider(
       providers: [
         Provider<NotificationService>(create: (context) => NotificationService())
