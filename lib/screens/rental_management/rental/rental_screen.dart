@@ -120,47 +120,58 @@ class RentalScreenState extends State<RentalScreen> {
                       var rentals = filteredRentals[index];
                       return GestureDetector(
                         child: CustomCard(
-                            title:
-                                'Locação nº ${rentals.id} - ${rentals.vehicle?.brand} ',
-                            data: _getCardInfo(rentals),
-                            id: rentals.id ?? 0,
-                            imageUrl: rentals.vehicle?.imageUrl,
-                            hasImage: true,
-                            dbHandler: dbHandler,
-                            hasOptions: widget.isHistory ? false : true,
-                            onEdit: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return ConfirmationDialog(
-                                        content: GeneralConstants.confirmEdit,
-                                        confirmationWidget: confirmationAction(
-                                            context, rentals));
-                                  });
-                            },
-                            onFinalize: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return ConfirmationDialog(
-                                        content:
-                                            GeneralConstants.confirmEndRental,
-                                        confirmationWidget:
-                                            confirmationEndRental(
-                                                context, rentals));
-                                  });
-                            },
-                            onGenerateContract: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return ConfirmationDialog(
-                                        content:
-                                            'Confirma geração do contrato?',
-                                        confirmationWidget:
-                                            generateContract(context, rentals));
-                                  });
-                            }),
+                          title:
+                              'Locação nº ${rentals.id} - ${rentals.vehicle?.brand} ',
+                          data: _getCardInfo(rentals),
+                          id: rentals.id ?? 0,
+                          imageUrl: rentals.vehicle?.imageUrl,
+                          hasImage: true,
+                          dbHandler: dbHandler,
+                          hasOptions: true,
+                          isHistory: widget.isHistory ? true : false,
+                          onEdit: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ConfirmationDialog(
+                                      content: GeneralConstants.confirmEdit,
+                                      confirmationWidget:
+                                          confirmationAction(context, rentals));
+                                });
+                          },
+                          onFinalize: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ConfirmationDialog(
+                                      content:
+                                          GeneralConstants.confirmEndRental,
+                                      confirmationWidget: confirmationEndRental(
+                                          context, rentals));
+                                });
+                          },
+                          onGenerateContract: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ConfirmationDialog(
+                                      content: 'Confirma geração do contrato?',
+                                      confirmationWidget:
+                                          generateContract(context, rentals));
+                                });
+                          },
+                          onRenovateContract: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ConfirmationDialog(
+                                      content:
+                                          'Confirma renovação do contrato?',
+                                      confirmationWidget:
+                                          confirmationRenovateRental(context, rentals));
+                                });
+                          },
+                        ),
                       );
                     },
                   );
@@ -214,9 +225,37 @@ class RentalScreenState extends State<RentalScreen> {
         ));
   }
 
+  Widget confirmationRenovateRental(BuildContext context, var rental) {
+    return TextButton(
+        onPressed: () {
+          renovateRental(context, rental).then((value) {
+            dbHandler.fetchRentals(widget.isHistory);
+          });
+        },
+        child: const CustomTextLabel(
+          label: GeneralConstants.ok,
+        ));
+  }
+
   Future<void> endRental(BuildContext context, var rental) async {
-    await dbHandler.update(context, rental.id,
-        {"endDate": DateFormat('dd/MM/yyyy').format(DateTime.now())}, 'rental');
+    await dbHandler.updateRentalStatus(context, rental.id,
+        {"endDate": DateFormat('dd/MM/yyyy').format(DateTime.now())}, 'rental', "Locação Finalizada com Sucesso");
+  }
+
+  Future<void> renovateRental(BuildContext context, var rental) async {
+    final vehicles = await dbHandler.fetchVehiclesToRent();
+    if (vehicles.any((vehicle) => vehicle.id == rental.vehicleId)) {
+      await dbHandler.updateRentalStatus(context, rental.id,
+          {"endDate": null}, 'rental', "Locação Renovada com Sucesso");
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Locação não pode ser renovada. Veículo em uso.'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      Navigator.pop(context, true);
+    }
   }
 
   Widget generateContract(BuildContext context, var rental) {

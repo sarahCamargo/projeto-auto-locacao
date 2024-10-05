@@ -24,6 +24,8 @@ class CustomCard extends StatefulWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onFinalize;
   final VoidCallback? onGenerateContract;
+  final VoidCallback? onRenovateContract;
+  final bool isHistory;
 
   const CustomCard(
       {super.key,
@@ -37,7 +39,9 @@ class CustomCard extends StatefulWidget {
       this.hasOptions = false,
       this.onEdit,
       this.onFinalize,
-      this.onGenerateContract});
+      this.onGenerateContract,
+      this.onRenovateContract,
+      this.isHistory = false});
 
   @override
   CustomCardState createState() => CustomCardState();
@@ -67,6 +71,12 @@ class CustomCardState extends State<CustomCard> {
   void _handleGenerateContract() {
     if (widget.onGenerateContract != null) {
       widget.onGenerateContract!();
+    }
+  }
+
+  void _handleRenovateContract() {
+    if (widget.onRenovateContract != null) {
+      widget.onRenovateContract!();
     }
   }
 
@@ -139,45 +149,61 @@ class CustomCardState extends State<CustomCard> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ListTile(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16.0),
-                      title: Center(
-                        child: TextButton(
-                          onPressed: _handleGenerateContract,
-                          child: const CustomTextLabel(
-                            label: 'Gerar Contrato',
-                            fontSize: 14,
+                    if (widget.isHistory) ...[
+                      ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16.0),
+                        title: Center(
+                          child: TextButton(
+                            onPressed: _handleRenovateContract,
+                            child: const CustomTextLabel(
+                              label: 'Renovar Contrato',
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListTile(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16.0),
-                      title: Center(
-                        child: TextButton(
-                          onPressed: _handleEdit,
-                          child: const CustomTextLabel(
-                            label: 'Editar',
-                            fontSize: 14,
+                    ] else ...[
+                      ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16.0),
+                        title: Center(
+                          child: TextButton(
+                            onPressed: _handleGenerateContract,
+                            child: const CustomTextLabel(
+                              label: 'Gerar Contrato',
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ListTile(
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 16.0),
-                      title: Center(
-                        child: TextButton(
-                          onPressed: _handleFinalize,
-                          child: const CustomTextLabel(
-                            label: 'Finalizar',
-                            fontSize: 14,
+                      ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16.0),
+                        title: Center(
+                          child: TextButton(
+                            onPressed: _handleEdit,
+                            child: const CustomTextLabel(
+                              label: 'Editar',
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16.0),
+                        title: Center(
+                          child: TextButton(
+                            onPressed: _handleFinalize,
+                            child: const CustomTextLabel(
+                              label: 'Finalizar',
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ],

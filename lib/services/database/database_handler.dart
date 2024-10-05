@@ -87,12 +87,12 @@ class DatabaseHandler {
     return results;
   }
 
-  Future<void> update(BuildContext context, int id, Map<String, dynamic> newData,String collection) async {
+  Future<void> updateRentalStatus(BuildContext context, int id, Map<String, dynamic> newData,String collection, String successMessage) async {
     await databaseHelper.update(id, newData, collection).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Locação finalizada com sucesso'),
-          duration: Duration(seconds: 3),
+        SnackBar(
+          content: Text(successMessage),
+          duration: const Duration(seconds: 3),
         ),
       );
       Navigator.pop(context, true);

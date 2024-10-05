@@ -48,7 +48,8 @@ class RentalQueries {
     SELECT r.*, 
         v.model, 
         v.brand, 
-        v.licensePlate, 
+        v.licensePlate,
+        v.imageUrl,
         np.name,
         np.cpf,
         lp.companyName
@@ -72,6 +73,5 @@ class RentalQueries {
         FROM rental r2
         WHERE r2.endDate IS NULL
     )
-    AND (r.endDate IS NOT NULL OR r.vehicleId IS NULL);
   ''';
 }

@@ -32,9 +32,9 @@ dependencies:
     sdk: flutter
 
   provider:
-  timezone: ^0.8.0
+  timezone: ^0.9.4
   #flutter_native_timezone: ^1.0.3
-  flutter_local_notifications: ^9.4.0
+  flutter_local_notifications: ^17.2.3
   #firebase_core: ^1.14.1
   #firebase_messaging: ^11.2.13
 

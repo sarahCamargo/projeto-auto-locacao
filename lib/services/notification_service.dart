@@ -1,7 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-//import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest_all.dart' as tz;
 
 class CustomNotification {
   final int id;
@@ -13,7 +10,7 @@ class CustomNotification {
     required this.id,
     required this.title,
     required this.body,
-    required this.payload
+    required this.payload,
   });
 }
 
@@ -26,61 +23,50 @@ class NotificationService {
     _setupNotifications();
   }
 
-  _setupNotifications() async {
-    //await _setupTimezone();
+  Future<void> _setupNotifications() async {
     await _initializeNotifications();
   }
 
-  _setupTimezone() async {
-    /*
-    tz.initializeTimeZones();
-    final String? timezoneName = await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timezoneName!));
-    */
-  }
-
-  _initializeNotifications() async {
+  Future<void> _initializeNotifications() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     await localNotificationsPlugin.initialize(
-      const InitializationSettings(android: android),
-      onSelectNotification: _onSelectNotification,
+      InitializationSettings(android: android),
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        _onSelectNotification(response.payload);
+      },
     );
   }
 
-  _onSelectNotification(String? payload) {
-    if (payload != null && payload.isNotEmpty) {
+  Future<void> _onSelectNotification(String? payload) async {
+    if (payload != null) {
+      print("Notification Payload: $payload");
     }
   }
 
-  showNotification(CustomNotification notification) {
-
+  void showNotification(CustomNotification notification) {
     androidNotificationDetails = const AndroidNotificationDetails(
-        'testes_notifications',
-        'Lembretes',
-         importance: Importance.max,
-         priority: Priority.max,
-         enableVibration: true
+      'testes_notifications',
+      'Lembretes',
+      importance: Importance.max,
+      priority: Priority.max,
+      enableVibration: true,
     );
 
     localNotificationsPlugin.show(
       notification.id,
       notification.title,
       notification.body,
-      NotificationDetails(
-        android: androidNotificationDetails
-      ),
-      //payload: notification.payload
+      NotificationDetails(android: androidNotificationDetails),
+      payload: notification.payload,
     );
 
-    print("Vontade de me matar");
-
+    print("Notificação enviada: ${notification.title}");
   }
 
-  checkForNotifications() async {
+  Future<void> checkForNotifications() async {
     final details = await localNotificationsPlugin.getNotificationAppLaunchDetails();
     if (details != null && details.didNotificationLaunchApp) {
-      _onSelectNotification(details.payload);
+      print("App launched from notification");
     }
   }
-
 }
