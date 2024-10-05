@@ -35,8 +35,8 @@ class RentalQueries {
         np.state,
         np.cep,
         lp.tradingName,
-        lp.tradingName,
-        lp.companyName
+        lp.companyName,
+        lp.cnpj
     FROM rental r
         INNER JOIN vehicle v ON r.vehicleId = v.id
         LEFT JOIN natural_person np ON r.naturalPersonId = np.id

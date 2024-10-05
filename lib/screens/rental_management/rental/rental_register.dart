@@ -53,11 +53,14 @@ class RentalRegisterState extends State<RentalRegister> {
     super.initState();
     _loadData();
     _selectedVehicle = widget.rental.vehicleId;
-    if (widget.rental.naturalPersonId == null) {
-      _selectedPerson = widget.rental.legalPersonId;
-    } else {
+    if (widget.rental.naturalPersonId != null) {
       _selectedPerson = widget.rental.naturalPersonId;
     }
+    if (widget.rental.legalPersonId != null) {
+      _selectedPerson = widget.rental.legalPersonId;
+      _isNaturalPerson = false;
+    }
+
     if (widget.rental.startDate != null) {
       _selectedDate = DateFormat('dd/MM/yyyy').parse(widget.rental.startDate!);
     }
@@ -105,7 +108,7 @@ class RentalRegisterState extends State<RentalRegister> {
       _legalPerson = legalPersons.map((person) {
         return DropdownMenuItem<int>(
           value: person['id'],
-          child: Text('${person['tradingName']} - ${person['companyName']}'),
+          child: Text('${person['tradingName']}/${person['companyName']} ${person['cnpj']}'),
         );
       }).toList();
     });

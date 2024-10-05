@@ -75,7 +75,8 @@ class LegalPerson implements DaoInterface{
     return LegalPerson(
       id: map['id'],
       tradingName: map['tradingName'],
-      companyName: map['companyName']
+      companyName: map['companyName'],
+      cnpj: map['cnpj'],
     );
   }
 }

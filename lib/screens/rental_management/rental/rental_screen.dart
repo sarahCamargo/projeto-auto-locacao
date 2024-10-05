@@ -189,8 +189,16 @@ class RentalScreenState extends State<RentalScreen> {
     info.add(CustomTextLabel(
         label:
             '${VehicleConstants.licensePlateLabel}: ${rentals.vehicle.licensePlate}'));
-    info.add(CustomTextLabel(label: 'Locador: ${rentals.naturalPerson.name}'));
-    info.add(CustomTextLabel(label: 'CPF: ${rentals.naturalPerson.cpf}'));
+    if (rentals.naturalPersonId != null) {
+      info.add(
+          CustomTextLabel(label: 'Locador: ${rentals.naturalPerson.name}'));
+      info.add(CustomTextLabel(label: 'CPF: ${rentals.naturalPerson.cpf}'));
+    }
+    if (rentals.legalPersonId != null) {
+      info.add(
+          CustomTextLabel(label: '${rentals.legalPerson.tradingName}/${rentals.legalPerson.companyName}'));
+      info.add(CustomTextLabel(label: '${rentals.legalPerson.cnpj}'));
+    }
     return info;
   }
 
