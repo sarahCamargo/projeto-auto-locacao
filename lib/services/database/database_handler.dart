@@ -75,9 +75,13 @@ class DatabaseHandler {
     }
   }
 
-  Future<List<Vehicle>> fetchVehiclesToRent() async {
-      List<Vehicle> results =
-      await DatabaseHelper().getVehicleToRent();
+  Future<List<Vehicle>> fetchVehiclesToRent(int? editVehicle) async {
+      List<Vehicle> results;
+      if (editVehicle != null) {
+        results = await DatabaseHelper().getVehicleToRent(editVehicle);
+      } else {
+        results = await DatabaseHelper().getVehicleRenovation();
+      }
       return results;
   }
 

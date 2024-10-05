@@ -251,7 +251,7 @@ class RentalScreenState extends State<RentalScreen> {
   }
 
   Future<void> renovateRental(BuildContext context, var rental) async {
-    final vehicles = await dbHandler.fetchVehiclesToRent();
+    final vehicles = await dbHandler.fetchVehiclesToRent(null);
     if (vehicles.any((vehicle) => vehicle.id == rental.vehicleId)) {
       await dbHandler.updateRentalStatus(context, rental.id,
           {"endDate": null}, 'rental', "Locação Renovada com Sucesso");

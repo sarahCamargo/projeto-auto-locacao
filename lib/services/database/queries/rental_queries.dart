@@ -52,7 +52,9 @@ class RentalQueries {
         v.imageUrl,
         np.name,
         np.cpf,
-        lp.companyName
+        lp.tradingName,
+        lp.companyName,
+        lp.cnpj
     FROM rental r
         INNER JOIN vehicle v ON r.vehicleId = v.id
         LEFT JOIN natural_person np ON r.naturalPersonId = np.id
@@ -61,6 +63,22 @@ class RentalQueries {
   ''';
 
   static const getVehicleToRent = '''
+    SELECT DISTINCT v.id, 
+        v.model, 
+        v.brand, 
+        v.licensePlate, 
+        v.imageUrl
+    FROM vehicle v
+    LEFT JOIN rental r ON v.id = r.vehicleId
+    WHERE v.id NOT IN (
+        SELECT r2.vehicleId
+        FROM rental r2
+        WHERE r2.endDate IS NULL
+        AND r2.vehicleId not in (?)
+    )
+  ''';
+
+  static const getVehicleToRenovate = '''
     SELECT DISTINCT v.id, 
         v.model, 
         v.brand, 

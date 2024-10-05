@@ -51,8 +51,8 @@ class RentalRegisterState extends State<RentalRegister> {
   @override
   void initState() {
     super.initState();
-    _loadData();
     _selectedVehicle = widget.rental.vehicleId;
+    _loadData();
     if (widget.rental.naturalPersonId != null) {
       _selectedPerson = widget.rental.naturalPersonId;
     }
@@ -88,7 +88,12 @@ class RentalRegisterState extends State<RentalRegister> {
   }
 
   Future<void> _loadData() async {
-    final vehicles = await dbHandler.fetchVehiclesToRent();
+    var vehicles;
+    if (_selectedVehicle != null) {
+      vehicles = await dbHandler.fetchVehiclesToRent(_selectedVehicle);
+  } else {
+      vehicles = await dbHandler.fetchVehiclesToRent(null);
+    }
     setState(() {
       _vehicles = vehicles;
     });
