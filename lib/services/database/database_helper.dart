@@ -1,4 +1,5 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
+import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/services/database/queries/legal_person_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/maintenance_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/natural_person_queries.dart';
@@ -98,5 +99,11 @@ class DatabaseHelper {
     if (oldVersion < 3) {
       await db.execute('ALTER TABLE vehicle ADD COLUMN owner TEXT;');
     }
+  }
+
+  Future<List<Vehicle>> getVehicleToRent() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getVehicleToRent);
+    return List.generate(maps.length, (i) => Vehicle.fromMap(maps[i]));
   }
 }

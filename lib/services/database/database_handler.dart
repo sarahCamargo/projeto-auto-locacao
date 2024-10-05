@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
+import 'package:projeto_auto_locacao/models/vehicle.dart';
 
 import '../../models/rental.dart';
 import 'database_helper.dart';
@@ -72,6 +73,12 @@ class DatabaseHandler {
       await DatabaseHelper().getRentalsHistory();
       _rentalController.add(results);
     }
+  }
+
+  Future<List<Vehicle>> fetchVehiclesToRent() async {
+      List<Vehicle> results =
+      await DatabaseHelper().getVehicleToRent();
+      return results;
   }
 
   Future<List<Map<String, dynamic>>> getData(String collection) async {

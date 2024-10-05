@@ -85,17 +85,9 @@ class RentalRegisterState extends State<RentalRegister> {
   }
 
   Future<void> _loadData() async {
-    final vehicles = await dbHandler.getData('vehicle');
+    final vehicles = await dbHandler.fetchVehiclesToRent();
     setState(() {
-      _vehicles = vehicles
-          .map((v) => Vehicle(
-                id: v['id'],
-                model: v['model'],
-                brand: v['brand'],
-                licensePlate: v['licensePlate'],
-                imageUrl: v['imageUrl'],
-              ))
-          .toList();
+      _vehicles = vehicles;
     });
 
     final naturalPersons = await dbHandler.getData('natural_person');

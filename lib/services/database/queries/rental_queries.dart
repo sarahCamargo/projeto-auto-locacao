@@ -58,4 +58,20 @@ class RentalQueries {
         LEFT JOIN legal_person lp ON r.legalPersonId = lp.id 
     WHERE r.endDate is not null;
   ''';
+
+  static const getVehicleToRent = '''
+    SELECT DISTINCT v.id, 
+        v.model, 
+        v.brand, 
+        v.licensePlate, 
+        v.imageUrl
+    FROM vehicle v
+    LEFT JOIN rental r ON v.id = r.vehicleId
+    WHERE v.id NOT IN (
+        SELECT r2.vehicleId
+        FROM rental r2
+        WHERE r2.endDate IS NULL
+    )
+    AND (r.endDate IS NOT NULL OR r.vehicleId IS NULL);
+  ''';
 }
