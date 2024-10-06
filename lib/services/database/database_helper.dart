@@ -46,6 +46,8 @@ class DatabaseHelper {
     await db.execute(VehicleQueries.createTableQuery);
     await db.execute(NaturalPersonQueries.createTableQuery);
     await db.execute(LegalPersonQueries.createTableQuery);
+    await db.execute(MaintenanceQueries.createTableQuery);
+    await db.execute(RentalQueries.createTableQuery);
   }
 
   Future<void> close() async {
@@ -94,7 +96,7 @@ class DatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
+    if (oldVersion < 3) {
       await db.execute(MaintenanceQueries.createTableQuery);
       await db.execute(RentalQueries.createTableQuery);
       await db.execute('ALTER TABLE vehicle ADD COLUMN owner TEXT;');
