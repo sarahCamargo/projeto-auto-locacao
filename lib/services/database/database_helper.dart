@@ -21,7 +21,7 @@ class DatabaseHelper {
 
   final String dbName = 'executivo.db';
 
-  final int dbVersion = 2;
+  final int dbVersion = 3;
 
   Future<Database> get database async {
     if (_database != null) {
@@ -46,8 +46,6 @@ class DatabaseHelper {
     await db.execute(VehicleQueries.createTableQuery);
     await db.execute(NaturalPersonQueries.createTableQuery);
     await db.execute(LegalPersonQueries.createTableQuery);
-    await db.execute(MaintenanceQueries.createTableQuery);
-    await db.execute(RentalQueries.createTableQuery);
   }
 
   Future<void> close() async {
@@ -96,7 +94,9 @@ class DatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
+    if (oldVersion < 2) {
+      await db.execute(MaintenanceQueries.createTableQuery);
+      await db.execute(RentalQueries.createTableQuery);
       await db.execute('ALTER TABLE vehicle ADD COLUMN owner TEXT;');
     }
   }
