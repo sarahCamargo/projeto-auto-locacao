@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
+import 'package:projeto_auto_locacao/screens/person_management/natural_person/natural_person_filters.dart';
 import 'package:projeto_auto_locacao/screens/person_management/natural_person/natural_person_register.dart';
 import 'package:projeto_auto_locacao/services/database/database_handler.dart';
 
@@ -10,6 +11,7 @@ import '../../../constants/general_constants.dart';
 import '../../../constants/person_management_constants.dart';
 import '../../../utils/confirmation_dialog.dart';
 import '../../../widgets/custom_card.dart';
+import '../../../widgets/custom_modal_filters.dart';
 import '../../../widgets/custom_text_label.dart';
 
 class NaturalPersonManagement extends StatefulWidget {
@@ -22,6 +24,20 @@ class NaturalPersonManagement extends StatefulWidget {
 class NaturalPersonManagementState extends State<NaturalPersonManagement> {
   String searchString = '';
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.naturalPerson);
+
+  Map<String, dynamic> filters = {};
+
+  void _clearFilters() {
+    setState(() {
+      filters.clear();
+    });
+  }
+
+  void _addFilter(String key, dynamic value) {
+    setState(() {
+      filters[key] = value;
+    });
+  }
 
   @override
   void initState() {
@@ -37,6 +53,7 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
+              /*
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -59,6 +76,7 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                   ),
                 ),
               ),
+              */
               const SizedBox(
                 width: 16,
               ),
@@ -82,6 +100,21 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                     }
                   }),
                 },
+              ),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.filter,
+                  color: ColorsConstants.iconColor,
+                  size: 40,
+                ),
+                onPressed: () => {
+                  showDialog(context: context, builder: (BuildContext context) {
+                    return CustomModalFilters(
+                      content: NaturalPersonFilters(filters: filters, addFilter: _addFilter),
+                      clearFilters: _clearFilters,
+                    );
+                  })
+                },
               )
             ],
           ),
@@ -104,10 +137,18 @@ class NaturalPersonManagementState extends State<NaturalPersonManagement> {
                   if (!snapshot.hasData) {
                     return const SizedBox.shrink();
                   }
-                  var items = snapshot.data!.where((element) => element['name']
+                  /* var items = snapshot.data!.where((element) => element['name']
                       .toString()
                       .toLowerCase()
                       .contains(searchString));
+                  */
+                  print("Pss psss psss psss, chamando gatinho psss psss pss pss");
+                  
+                  var items = snapshot.data!.where((element) =>
+                      (filters['name'] == null || filters['name'].toString().isEmpty || element['name'].toString().toLowerCase().contains(filters['name'].toString().toLowerCase())) &&
+                      (filters['cpf'] == null || filters['cpf'].toString().isEmpty || element['cpf'].toString().toLowerCase().contains(filters['cpf'].toString().toLowerCase()))
+                  );
+                  
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {

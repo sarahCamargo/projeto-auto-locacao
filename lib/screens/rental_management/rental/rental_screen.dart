@@ -114,6 +114,11 @@ class RentalScreenState extends State<RentalScreen> {
                           .toLowerCase()
                           .contains(searchString.toLowerCase()))
                       .toList();
+
+                  filteredRentals.where((element) =>
+                  (element.vehicle?.id == null)
+                  );
+
                   return ListView.builder(
                     itemCount: filteredRentals.length,
                     itemBuilder: (context, index) {

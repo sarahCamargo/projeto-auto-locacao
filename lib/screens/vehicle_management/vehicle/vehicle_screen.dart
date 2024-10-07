@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_filters.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 import 'package:projeto_auto_locacao/widgets/custom_card.dart';
+import 'package:projeto_auto_locacao/widgets/custom_modal_filters.dart';
 import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
 import '../../../constants/general_constants.dart';
@@ -21,6 +23,20 @@ class VehicleScreenState extends State<VehicleScreen> {
   String searchString = '';
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
 
+  Map<String, dynamic> filters = {};
+
+  void _clearFilters() {
+    setState(() {
+      filters.clear();
+    });
+  }
+
+  void _addFilter(String key, dynamic value) {
+    setState(() {
+      filters[key] = value;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +51,7 @@ class VehicleScreenState extends State<VehicleScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
+              /*
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -57,6 +74,7 @@ class VehicleScreenState extends State<VehicleScreen> {
                   ),
                 ),
               ),
+              */
               const SizedBox(
                 width: 16,
               ),
@@ -80,6 +98,21 @@ class VehicleScreenState extends State<VehicleScreen> {
                     }
                   }),
                 },
+              ),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.filter,
+                  color: ColorsConstants.iconColor,
+                  size: 40,
+                ),
+                onPressed: () => {
+                  showDialog(context: context, builder: (BuildContext context) {
+                    return CustomModalFilters(
+                        content: VehicleFilters(filters: filters, addFilter: _addFilter),
+                        clearFilters: _clearFilters,
+                    );
+                  })
+                },
               )
             ],
           ),
@@ -102,11 +135,23 @@ class VehicleScreenState extends State<VehicleScreen> {
                   if (!snapshot.hasData) {
                     return const SizedBox.shrink();
                   }
-                  var items = snapshot.data!.where((element) =>
+                  print("PASSSOUUUUU AAAAQQUUUIIII");
+                  /* var items = snapshot.data!.where((element) =>
                       element['licensePlate']
                           .toString()
                           .toLowerCase()
                           .contains(searchString));
+                  */
+
+                  var items = snapshot.data!.where((element) =>
+                      (filters['brand'] == null || filters['brand'].toString().isEmpty || element['brand'].toString().toLowerCase().contains(filters['brand'].toString().toLowerCase())) &&
+                      (filters['model'] == null || filters['model'].toString().isEmpty || element['model'].toString().toLowerCase().contains(filters['model'].toString().toLowerCase())) &&
+                      (filters['licensePlate'] == null || filters['licensePlate'].toString().isEmpty || element['licensePlate'].toString().toLowerCase().contains(filters['licensePlate'].toString().toLowerCase())) &&
+                      (filters['renavam'] == null || filters['renavam'].toString().isEmpty || element['renavam'].toString().toLowerCase().contains(filters['renavam'].toString().toLowerCase())) &&
+                      (filters['year'] == null || filters['year'].toString().isEmpty || element['year'].toString().toLowerCase().contains(filters['year'].toString().toLowerCase())) &&
+                      (filters['color'] == null || filters['color'].toString().isEmpty || element['color'].toString().toLowerCase().contains(filters['color'].toString().toLowerCase()))
+                  );
+
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {

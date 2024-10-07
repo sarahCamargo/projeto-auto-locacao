@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/legal_person_constants.dart';
 import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
+import 'package:projeto_auto_locacao/screens/person_management/legal_person/legal_person_filters.dart';
 import 'package:projeto_auto_locacao/screens/person_management/legal_person/legal_person_register.dart';
 
 import '../../../constants/collection_names.dart';
@@ -10,6 +11,7 @@ import '../../../constants/general_constants.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../utils/confirmation_dialog.dart';
 import '../../../widgets/custom_card.dart';
+import '../../../widgets/custom_modal_filters.dart';
 import '../../../widgets/custom_text_label.dart';
 
 class LegalPersonManagement extends StatefulWidget {
@@ -22,6 +24,20 @@ class LegalPersonManagement extends StatefulWidget {
 class LegalPersonManagementState extends State<LegalPersonManagement> {
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.legalPerson);
   String searchString = '';
+
+  Map<String, dynamic> filters = {};
+
+  void _clearFilters() {
+    setState(() {
+      filters.clear();
+    });
+  }
+
+  void _addFilter(String key, dynamic value) {
+    setState(() {
+      filters[key] = value;
+    });
+  }
 
   @override
   void initState() {
@@ -37,6 +53,7 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
+              /*
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -59,9 +76,7 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 16,
-              ),
+              */
               IconButton(
                 icon: const Icon(
                   FontAwesomeIcons.userPlus,
@@ -81,6 +96,21 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                       dbHandler.fetchDataFromDatabase();
                     }
                   }),
+                },
+              ),
+              IconButton(
+                icon: const Icon(
+                  FontAwesomeIcons.filter,
+                  color: ColorsConstants.iconColor,
+                  size: 40,
+                ),
+                onPressed: () => {
+                  showDialog(context: context, builder: (BuildContext context) {
+                    return CustomModalFilters(
+                      content: LegalPersonFilters(filters: filters, addFilter: _addFilter),
+                      clearFilters: _clearFilters,
+                    );
+                  })
                 },
               )
             ],
@@ -104,11 +134,25 @@ class LegalPersonManagementState extends State<LegalPersonManagement> {
                   if (!snapshot.hasData) {
                     return const SizedBox.shrink();
                   }
-                  var items = snapshot.data!.where((element) =>
+                  /* var items = snapshot.data!.where((element) =>
                       element['companyName']
                           .toString()
                           .toLowerCase()
                           .contains(searchString));
+                  */
+
+                  print("Batatinha batatinha, que vontade de ficar saradinha");
+
+                  var items = snapshot.data!.where((element) =>
+                  (filters['companyName'] == null || filters['companyName'].toString().isEmpty || element['companyName'].toString().toLowerCase().contains(filters['companyName'].toString().toLowerCase())) &&
+                  (filters['tradingName'] == null || filters['tradingName'].toString().isEmpty || element['tradingName'].toString().toLowerCase().contains(filters['tradingName'].toString().toLowerCase())) &&
+                  (filters['cnpj'] == null || filters['cnpj'].toString().isEmpty || element['cnpj'].toString().toLowerCase().contains(filters['cnpj'].toString().toLowerCase())) &&
+                  (filters['legalResponsible'] == null || filters['legalResponsible'].toString().isEmpty || element['legalResponsible'].toString().toLowerCase().contains(filters['legalResponsible'].toString().toLowerCase())) &&
+                  (filters['legalResponsibleCpf'] == null || filters['legalResponsibleCpf'].toString().isEmpty || element['legalResponsibleCpf'].toString().toLowerCase().contains(filters['legalResponsibleCpf'].toString().toLowerCase()))
+                  );
+
+                  print(items);
+
                   return ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
