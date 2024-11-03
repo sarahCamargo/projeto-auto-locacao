@@ -1,72 +1,70 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class CustomNotification {
   final int id;
   final String? title;
   final String? body;
-  final String? payload;
+  final DateTime? scheduleDate;
 
   CustomNotification({
     required this.id,
     required this.title,
     required this.body,
-    required this.payload,
+    required this.scheduleDate
   });
 }
 
 class NotificationService {
-  late FlutterLocalNotificationsPlugin localNotificationsPlugin;
-  late AndroidNotificationDetails androidNotificationDetails;
 
-  NotificationService() {
-    localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    _setupNotifications();
+  static final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  static AndroidNotificationDetails? _androidPlatformChannelSpecifics;
+  static NotificationDetails? _platformChannelSpecifics;
+
+  static Future<void> initializeNotifications() async {
+    tz.initializeTimeZones();
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    _androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+        'channelNotification',
+        'channelNotification',
+        importance: Importance.max,
+        priority: Priority.high
+        //showWhen: true
+    );
+    _platformChannelSpecifics = NotificationDetails(android: _androidPlatformChannelSpecifics);
   }
 
-  Future<void> _setupNotifications() async {
-    await _initializeNotifications();
-  }
+  static Future<void> scheduleNotification(CustomNotification customNotification) async {
+    DateTime today = DateTime.now().add(const Duration(seconds: 10));
 
-  Future<void> _initializeNotifications() async {
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    await localNotificationsPlugin.initialize(
-      InitializationSettings(android: android),
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        _onSelectNotification(response.payload);
-      },
+    final tz.TZDateTime scheduleDate = tz.TZDateTime(
+        tz.getLocation("America/Sao_Paulo"),
+        customNotification.scheduleDate!.year,
+        customNotification.scheduleDate!.month,
+        customNotification.scheduleDate!.day,
+        today.hour,
+        today.minute,
+        today.second
+    );
+
+    cancelNotification(customNotification.id);
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+        customNotification.id,
+        customNotification.title,
+        customNotification.body,
+        scheduleDate,
+        _platformChannelSpecifics!,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
     );
   }
 
-  Future<void> _onSelectNotification(String? payload) async {
-    if (payload != null) {
-      print("Notification Payload: $payload");
-    }
+  static Future<void> cancelNotification(int id) async {
+    _flutterLocalNotificationsPlugin.cancel(id);
   }
 
-  void showNotification(CustomNotification notification) {
-    androidNotificationDetails = const AndroidNotificationDetails(
-      'testes_notifications',
-      'Lembretes',
-      importance: Importance.max,
-      priority: Priority.max,
-      enableVibration: true,
-    );
-
-    localNotificationsPlugin.show(
-      notification.id,
-      notification.title,
-      notification.body,
-      NotificationDetails(android: androidNotificationDetails),
-      payload: notification.payload,
-    );
-
-    print("Notificação enviada: ${notification.title}");
-  }
-
-  Future<void> checkForNotifications() async {
-    final details = await localNotificationsPlugin.getNotificationAppLaunchDetails();
-    if (details != null && details.didNotificationLaunchApp) {
-      print("App launched from notification");
-    }
-  }
 }

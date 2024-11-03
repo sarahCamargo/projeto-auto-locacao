@@ -345,13 +345,31 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
       return;
     }
 
-    saveData().then((maintenance) {
-      dbHandler.save(context, widget.maintenance['id'], maintenance);
-    });
+    if (_proximaVerificacaoController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Informe a próxima verificação'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
 
-    /*Provider.of<NotificationService>(context, listen: false).showNotification(
-        CustomNotification(
-            id: 1, title: 'Teste', body: 'Acesse o app', payload: '/aa'));*/
+    saveData().then((maintenance) async {
+      dbHandler.save(context, widget.maintenance['id'], maintenance).then((value){
+        DateFormat formatter = DateFormat("dd/MM/yyyy");
+        DateTime parsedDate = formatter.parse(maintenance.nextCheck!);
+        DateTime scheduleDate = parsedDate.subtract(Duration(days: 1));
+
+        CustomNotification customNotification = CustomNotification(
+            id: maintenance.id!,
+            title: maintenance.type,
+            body: "Manutenção agendada para o dia ${maintenance.nextCheck}",
+            scheduleDate: scheduleDate
+        );
+        NotificationService.scheduleNotification(customNotification);
+      });
+    });
   }
 
   Future<Maintenance> saveData() async {

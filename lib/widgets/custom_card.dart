@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/services/database/database_handler.dart';
+import 'package:projeto_auto_locacao/services/notification_service.dart';
 
 import '../../constants/colors_constants.dart';
 import '../../constants/general_constants.dart';
 import '../../utils/confirmation_dialog.dart';
 import '../../widgets/custom_text_label.dart';
+import '../constants/collection_names.dart';
 import '../utils/show_snackbar.dart';
 
 typedef OnDelete = Future<void> Function(int id);
@@ -232,6 +234,9 @@ class CustomCardState extends State<CustomCard> {
     return TextButton(
       onPressed: () {
         widget.dbHandler.delete(widget.id).then((value) {
+          if(widget.dbHandler.collection == CollectionNames.maintenance) {
+            NotificationService.cancelNotification(widget.id);
+          }
           showCustomSnackBar(context, GeneralConstants.registerDeleted);
           Navigator.of(context).pop();
         }).catchError((error) {

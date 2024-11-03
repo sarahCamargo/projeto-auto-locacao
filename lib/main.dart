@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
@@ -11,18 +12,13 @@ import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
 import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
-  runApp(MultiProvider(
-      providers: [
-        Provider<NotificationService>(create: (context) => NotificationService())
-      ],
-    child: const MyApp(),
-  ));
+  NotificationService.initializeNotifications();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -23,8 +23,8 @@ class DatabaseHandler {
 
   DatabaseHandler(this.collection);
 
-  void save(BuildContext context, int? id, DaoInterface daoInterface) {
-    saveHandler(id, daoInterface).then((value) {
+  Future<void> save(BuildContext context, int? id, DaoInterface daoInterface) async {
+    await saveHandler(id, daoInterface).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Dados salvos com sucesso'),
@@ -47,7 +47,8 @@ class DatabaseHandler {
       daoInterface.setId(id);
       await databaseHelper.update(daoInterface.getId()!, daoInterface.toMap(), collection);
     } else {
-      await databaseHelper.insert(daoInterface, collection);
+      int idInsert = await databaseHelper.insert(daoInterface, collection);
+      daoInterface.setId(idInsert);
     }
   }
 
