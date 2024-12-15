@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/rental/generate_contract_screen.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_register.dart';
 import 'package:projeto_auto_locacao/utils/contract_file_manipulation.dart';
 import 'package:projeto_auto_locacao/widgets/custom_card.dart';
@@ -274,7 +275,7 @@ class RentalScreenState extends State<RentalScreen> {
   Widget generateContract(BuildContext context, var rental) {
     return TextButton(
         onPressed: () {
-          ContractFileManipulation().contractFileManipulation(rental);
+          GenerateContractScreen(rental).showFileSelectionDialog(context);
         },
         child: const CustomTextLabel(
           label: GeneralConstants.ok,

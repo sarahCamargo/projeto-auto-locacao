@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +7,10 @@ import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as p;
+import 'dart:convert';
+
+import '../../services/prefs_service.dart';
+import '../../utils/show_snackbar.dart';
 
 class ContractConf extends StatefulWidget {
   const ContractConf({super.key});
@@ -14,12 +20,12 @@ class ContractConf extends StatefulWidget {
 }
 
 class ContractConfState extends State<ContractConf> {
-  String? _filePath;
+  List<Map<String, String>> _files = [];
 
   @override
   void initState() {
     super.initState();
-    _loadFilePath();
+    _loadFiles();
   }
 
   @override
@@ -30,7 +36,14 @@ class ContractConfState extends State<ContractConf> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(16.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 8.0,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Center(
@@ -41,44 +54,22 @@ class ContractConfState extends State<ContractConf> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const CustomTextLabel(
-                    label: "Template Contrato para Pessoa Física:",
+                    label: "Templates Contrato",
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                   const SizedBox(height: 24),
-                  if (_filePath != null) ...[
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextFormField(
-                        initialValue: p.basename(_filePath!),
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: const Icon(
-                              FontAwesomeIcons.trash,
-                              color: ColorsConstants.iconColor,
-                              size: 18,
-                            ),
-                            onPressed: _clearFile,
-                          ),
-                          labelText: 'Arquivo Selecionado',
-                        ),
-                      ),
+                  ..._files.map((file) => _buildFileTile(file)).toList(),
+                  const SizedBox(height: 24),
+                  TextButton.icon(
+                    onPressed: _pickFile,
+                    icon: const Icon(FontAwesomeIcons.plusCircle, size: 18, color: ColorsConstants.iconColor),
+                    label: const Text('Adicionar arquivo', style: TextStyle(color: ColorsConstants.iconColor)),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                  ] else ...[
-                    IconButton(
-                      icon: const Icon(FontAwesomeIcons.squarePlus,
-                          size: 48, color: ColorsConstants.iconColor),
-                      onPressed: _pickFile,
-                    ),
-                    const SizedBox(height: 16),
-                    const CustomTextLabel(
-                      label: 'Escolher arquivo .odt',
-                      fontSize: 16,
-                    ),
-                  ],
+                  ),
                 ],
               ),
             ),
@@ -88,11 +79,54 @@ class ContractConfState extends State<ContractConf> {
     );
   }
 
-  Future<void> _loadFilePath() async {
+  Widget _buildFileTile(Map<String, String> file) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              initialValue: file['name'],
+              onChanged: (value) => _updateFileName(file['path']!, value),
+              decoration: InputDecoration(
+                labelText: 'Nome do Arquivo',
+                labelStyle: TextStyle(color: Colors.black54),
+                hintText: 'Insira o nome',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(color: Colors.black45, width: 1.5),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(color: Colors.blue, width: 2),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          IconButton(
+            icon: const Icon(
+              FontAwesomeIcons.trashAlt,
+              color: ColorsConstants.iconColor,
+              size: 20,
+            ),
+            onPressed: () => _removeFile(file['path']!),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _loadFiles() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _filePath = prefs.getString('docx_file_path');
-    });
+    final filesString = prefs.getString('files');
+    if (filesString != null) {
+      setState(() {
+        _files = (json.decode(filesString) as List)
+            .map((file) => Map<String, String>.from(file as Map))
+            .toList();
+      });
+    }
   }
 
   Future<void> _pickFile() async {
@@ -101,26 +135,50 @@ class ContractConfState extends State<ContractConf> {
       allowedExtensions: ['odt'],
     );
 
-    if (result != null) {
+    if (result != null && result.files.single.path != null) {
+      final filePath = result.files.single.path!;
+      final prefsService = PrefsService();
+
+      final internalPath = await prefsService.saveFileToInternalStorage(filePath);
+
+      final newFile = {
+        'path': internalPath,
+        'name': p.basename(filePath),
+      };
+
       setState(() {
-        _filePath = result.files.single.path;
-        _saveFilePath(_filePath);
+        _files.add(newFile);
+        _saveFiles();
+        showCustomSnackBar(context, 'Arquivo adicionado com sucesso!');
       });
+    } else {
+      showCustomSnackBar(context, 'Nenhum arquivo selecionado.');
     }
   }
 
-  Future<void> _saveFilePath(String? path) async {
+  Future<void> _saveFiles() async {
     final prefs = await SharedPreferences.getInstance();
-    if (path != null) {
-      await prefs.setString('docx_file_path', path);
-    }
+    await prefs.setString('files', json.encode(_files));
   }
 
-  Future<void> _clearFile() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('docx_file_path');
+  void _updateFileName(String path, String newName) {
     setState(() {
-      _filePath = null;
+      final file = _files.firstWhere((file) => file['path'] == path);
+      file['name'] = newName;
+      _saveFiles();
     });
+  }
+
+  Future<void> _removeFile(String path) async {
+    final file = File(path);
+    if (await file.exists()) {
+      await file.delete();
+    }
+
+    setState(() {
+      _files.removeWhere((file) => file['path'] == path);
+      _saveFiles();
+    });
+    showCustomSnackBar(context, 'Arquivo removido com sucesso!');
   }
 }

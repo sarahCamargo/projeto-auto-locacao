@@ -9,9 +9,8 @@ import '../models/rental.dart';
 import '../services/prefs_service.dart';
 
 class ContractFileManipulation {
-  Future<void> contractFileManipulation(Rental rental) async {
+  Future<void> contractFileManipulation(Rental rental, selectedFile) async {
     final prefsService = PrefsService();
-    final filePath = await prefsService.getFilePath();
     final tempDir = await prefsService.getTempDirectory();
     final defaultFile = await prefsService.getDefaultFilePath();
     final outputDir = Directory('$tempDir/unzipped_docx');
@@ -24,7 +23,7 @@ class ContractFileManipulation {
       await outputDir.create(recursive: true);
     }
 
-    final file = File(filePath!);
+    final file = File(selectedFile['path']!);
     final bytes = await file.readAsBytes();
 
     final archive = ZipDecoder().decodeBytes(bytes);
@@ -79,7 +78,6 @@ class ContractFileManipulation {
 
     try {
       await directory.delete(recursive: true);
-      print('Diretório $caminhoDoDiretorio limpo com sucesso.');
     } catch (e) {
       print('Erro ao limpar o diretório: $e');
     }
