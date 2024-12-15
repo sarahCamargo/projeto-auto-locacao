@@ -11,8 +11,7 @@ class ConfigurationScreen extends StatefulWidget {
 }
 
 class ConfigurationScreenState extends State<ConfigurationScreen> {
-  bool _notificationsEnabled = true;
-
+  String? _selectedOption;
   @override
   void initState() {
     super.initState();
@@ -22,24 +21,13 @@ class ConfigurationScreenState extends State<ConfigurationScreen> {
   Future<void> _loadNotificationSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
+      _selectedOption = prefs.getString('selected_notification_option') ?? "no_notification";
     });
   }
 
-  Future<void> _saveNotificationSettings(bool value) async {
+  Future<void> _saveSelectedOption(String? option) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('notifications_enabled', value);
-  }
-
-  void _toggleNotifications(bool value) {
-    setState(() {
-      _notificationsEnabled = value;
-    });
-    _saveNotificationSettings(value);
-
-    if (_notificationsEnabled) {
-     //implementar
-    }
+    await prefs.setString('selected_notification_option', option ?? '');
   }
 
   @override
@@ -77,14 +65,39 @@ class ConfigurationScreenState extends State<ConfigurationScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          ListTile(
-                            title: const Text("Notificações"),
-                            trailing: Switch(
-                              value: _notificationsEnabled,
-                              onChanged: (value) {
-                                _toggleNotifications(value);
-                              },
-                            ),
+                          Text("Notificações"),
+                          RadioListTile<String>(
+                            title: Text("Não notificar"),
+                            value: "no_notification",
+                            groupValue: _selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOption = value;
+                                _saveSelectedOption(_selectedOption);
+                              });
+                            },
+                          ),
+                          RadioListTile<String>(
+                            title: Text("1 dia antes"),
+                            value: "1_day_before",
+                            groupValue: _selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOption = value;
+                                _saveSelectedOption(_selectedOption);
+                              });
+                            },
+                          ),
+                          RadioListTile<String>(
+                            title: Text("1 semana antes"),
+                            value: "1_week_before",
+                            groupValue: _selectedOption,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedOption = value;
+                                _saveSelectedOption(_selectedOption);
+                              });
+                            },
                           ),
                         ],
                       ),

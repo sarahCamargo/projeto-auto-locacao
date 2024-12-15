@@ -359,13 +359,12 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
       dbHandler.save(context, widget.maintenance['id'], maintenance).then((value){
         DateFormat formatter = DateFormat("dd/MM/yyyy");
         DateTime parsedDate = formatter.parse(maintenance.nextCheck!);
-        DateTime scheduleDate = parsedDate.subtract(Duration(days: 1));
 
         CustomNotification customNotification = CustomNotification(
             id: maintenance.id!,
             title: maintenance.type,
             body: "Manutenção agendada para o dia ${maintenance.nextCheck}",
-            scheduleDate: scheduleDate
+            scheduleDate: parsedDate
         );
         NotificationService.scheduleNotification(customNotification);
       });
