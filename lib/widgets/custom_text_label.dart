@@ -9,9 +9,10 @@ class CustomTextLabel extends StatelessWidget {
   const CustomTextLabel(
       {super.key,
       required this.label,
-      this.fontSize = 16.0,
+      this.fontSize = 18.0,
       this.fontWeight = FontWeight.normal,
-      this.color = const Color(0xFF737373)});
+      this.color =  const Color(0xFF1A355B)
+      }); // const Color(0xFF737373)});
 
   @override
   Widget build(BuildContext context) {

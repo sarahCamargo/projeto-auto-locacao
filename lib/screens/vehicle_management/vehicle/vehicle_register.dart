@@ -9,6 +9,9 @@ import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
+import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/SaveOrAddButton.dart';
+import 'package:projeto_auto_locacao/widgets/form_fields/CustomInputField.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../services/database/database_handler.dart';
@@ -105,6 +108,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
                 fontSize: 18.0,
               ),
               const SizedBox(height: 16.0),
+              // Imagem
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -114,49 +118,32 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   const SizedBox(height: 20),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.brandLabel,
-                        ),
-                        CustomTextField(
-                          controller: _marcaController,
-                          keyboardType: TextInputType.name,
-                          onChange: (value) {
-                            _updateSaveButtonState(_marcaController);
-                          },
-                          isRequired: true,
-                        )
-                      ],
-                    )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.modelLabel,
-                        ),
-                        CustomTextField(
-                          controller: _modeloController,
-                          onChange: (value) {
-                            _updateSaveButtonState(_modeloController);
-                          },
-                          isRequired: true,
-                        ),
-                      ],
-                    ))
-                  ],
-                ),
+
+              // Marca
+              const CustomTextLabel(label: VehicleConstants.brandLabel),
+              CustomTextField(
+                controller: _marcaController,
+                keyboardType: TextInputType.name,
+                onChange: (value) {
+                  _updateSaveButtonState(_marcaController);
+                },
+                isRequired: true,
               ),
+
+              // Modelo
+              const SizedBox(height: 16.0),
+              const CustomTextLabel(
+                label: VehicleConstants.modelLabel,
+              ),
+              CustomTextField(
+                controller: _modeloController,
+                onChange: (value) {
+                  _updateSaveButtonState(_modeloController);
+                },
+                isRequired: true,
+              ),
+
+              const SizedBox(height: 16.0),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Row(
@@ -383,18 +370,20 @@ class VehicleRegisterState extends State<VehicleRegister> {
                 controller: _descricaoController,
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
-                  onPressed: _isSaveButtonEnabled
-                      ? () {
-                          save();
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorsConstants.backgroundColor),
-                  child: const CustomTextLabel(
-                    label: GeneralConstants.saveButton,
-                    fontWeight: FontWeight.bold,
-                  )),
+              SaveOrAddButton(text: GeneralConstants.saveButton, onPressed: save),
+
+              // ElevatedButton(
+              //     onPressed: _isSaveButtonEnabled
+              //         ? () {
+              //             save();
+              //           }
+              //         : null,
+              //     style: ElevatedButton.styleFrom(
+              //         backgroundColor: ColorsConstants.backgroundColor),
+              //     child: const CustomTextLabel(
+              //       label: GeneralConstants.saveButton,
+              //       fontWeight: FontWeight.bold,
+              //     )),
             ],
           ),
         ),
@@ -403,6 +392,36 @@ class VehicleRegisterState extends State<VehicleRegister> {
   }
 
   void save() {
+    if (_marcaController.text.isEmpty) {
+      showCustomSnackBar(context, "Informe a marca");
+      return;
+    }
+
+    if (_modeloController.text.isEmpty) {
+      showCustomSnackBar(context, "Informe o modelo");
+      return;
+    }
+
+    if (_placaController.text.isEmpty) {
+      showCustomSnackBar(context, "Informe a placa");
+      return;
+    }
+
+    if (_renavanController.text.isEmpty) {
+      showCustomSnackBar(context, "Informe o renavam");
+      return;
+    }
+
+    if (_anoFabricacaoController.text.isEmpty) {
+      showCustomSnackBar(context, "Informe o ano");
+      return;
+    }
+
+    if (_corController.text.isEmpty) {
+      showCustomSnackBar(context, "Informe a cor");
+      return;
+    }
+
     saveData().then((vehicle) {
       dbHandler.save(context, widget.vehicle['id'], vehicle);
     });
@@ -484,17 +503,36 @@ class VehicleRegisterState extends State<VehicleRegister> {
       width: double.infinity,
       height: 150,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.white, // Fundo branco
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: const Color(0xFF1A355B), // Azul escuro
+          width: 1,
+          style: BorderStyle.solid,
+        ),
       ),
       child: newImage == null
-          ? Center(
-              child: Icon(
-                FontAwesomeIcons.squarePlus,
-                size: 50,
-                color: Colors.grey[400],
+          ? const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.add_a_photo, // Ícone de adicionar foto
+              size: 50,
+              color: Color(0xFF1A355B), // Azul escuro
+            ),
+            SizedBox(height: 8), // Espaço entre ícone e texto
+            Text(
+              "Clique para adicionar foto",
+              style: TextStyle(
+                color: Color(0xFF1A355B), // Azul escuro
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-            )
+            ),
+          ],
+        ),
+      )
           : ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Image.file(
@@ -511,8 +549,8 @@ class VehicleRegisterState extends State<VehicleRegister> {
       top: 0,
       child: IconButton(
         icon: const Icon(
-          FontAwesomeIcons.xmark,
-          color: ColorsConstants.iconColor,
+          Icons.highlight_remove_outlined,
+          color: Color(0xFF1A355B),
         ),
         onPressed: _removeImage,
       ),

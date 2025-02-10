@@ -51,7 +51,7 @@ class CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
+        color: Colors.white,
         border: Border.all(color: _borderColor),
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -87,7 +87,7 @@ class CustomTextFieldState extends State<CustomTextField> {
               (widget.maskedController?.text.isEmpty ?? true))) {
         _borderColor = Colors.red;
       } else {
-        _borderColor = Colors.transparent;
+        _borderColor = Colors.grey;
       }
     });
   }
