@@ -5,9 +5,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental_management.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_screen.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/VehicleListScreen.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_maintenance_screen.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_screen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_management.dart';
 import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 import 'package:projeto_auto_locacao/services/notification_service.dart';
+import 'package:projeto_auto_locacao/widgets/TabBarTitle.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
@@ -44,45 +49,27 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const MenuNavigation(title: HomePageConstants.homePage,),
-      drawer: const DrawerNavigator(),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: const Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: CustomInitialButton(HomePageConstants.personFeature, PersonManagement(),
-                        FontAwesomeIcons.userGroup),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: CustomInitialButton(HomePageConstants.vehicleFeature,
-                        VehicleManagement(), FontAwesomeIcons.car),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: CustomInitialButton(HomePageConstants.rentalFeature, RentalManagement(),
-                        FontAwesomeIcons.handHoldingDollar),
-                  ),
-                ],
-              ),
-            ],
-          ),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: TabBarTitle(),
+          leading: IconButton(onPressed: () {  }, icon: const Icon(Icons.menu),),
+        ),
+        body: TabBarView(
+          children: [
+            VehicleListScreen(),
+            VehicleMaintenanceScreen()
+          ],),
+        bottomNavigationBar: Container(
+          color: Color(0xFF1A355B),
+          child: const TabBar(tabs: [
+            Tab(icon: Icon(Icons.directions_car_rounded), text: "Veículos"),
+            Tab(icon: Icon(Icons.car_repair), text: "Manutenção")
+          ],
+          indicatorColor: Color(0xFFED6E33),
+          unselectedLabelColor: Colors.white,
+          labelColor: Color(0xFFED6E33)),
         ),
       ),
     );
