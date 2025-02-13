@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_auto_locacao/screens/person_management/client_list_screen.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/home_page_constants.dart';
 import '../../../widgets/tab_bar_title.dart';
-import '../../person_management/person_management.dart';
 import '../../rental_management/rental_management.dart';
 import '../../vehicle_management/maintenance/maintenance_list_screen.dart';
 import '../../vehicle_management/vehicle/vehicle_list_screen.dart';
@@ -27,7 +27,7 @@ class MyHomePageState extends State<MyHomePage> {
         body: TabBarView(
           children: [
             const QuickActions(),
-            const PersonManagement(),
+            const ClientListScreen(),
             const RentalManagement(),
             const VehicleListScreen(),
             MaintenanceListScreen(),

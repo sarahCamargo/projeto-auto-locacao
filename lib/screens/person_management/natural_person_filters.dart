@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
-import '../../../constants/person_management_constants.dart';
-import '../../../widgets/custom_text_form_field.dart';
-import '../../../widgets/custom_text_label.dart';
+import '../../constants/client_constants.dart';
+import '../../widgets/custom_text_form_field.dart';
+import '../../widgets/custom_text_label.dart';
 
 class NaturalPersonFilters extends StatefulWidget {
   final Function addFilter;
@@ -17,7 +17,7 @@ class NaturalPersonFilters extends StatefulWidget {
 
 class NaturalPersonFiltersState extends State<NaturalPersonFilters> {
   final TextEditingController _nameController = TextEditingController();
-  final MaskedTextController _cpfController = MaskedTextController(mask: PersonConstants.cpfMask);
+  final MaskedTextController _cpfController = MaskedTextController(mask: ClientConstants.cpfMask);
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class NaturalPersonFiltersState extends State<NaturalPersonFilters> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CustomTextLabel(
-            label: PersonConstants.nameLabel,
+            label: ClientConstants.nameLabel,
           ),
           CustomTextField(
             controller: _nameController,
@@ -48,12 +48,12 @@ class NaturalPersonFiltersState extends State<NaturalPersonFilters> {
             height: 10,
           ),
           const CustomTextLabel(
-            label: PersonConstants.cpfLabel,
+            label: ClientConstants.cpfLabel,
           ),
           CustomTextField(
             maskedController: _cpfController,
             keyboardType: TextInputType.number,
-            hintText: PersonConstants.cpfMask,
+            hintText: ClientConstants.cpfMask,
             onChange: (texto) {
               widget.addFilter('cpf', texto.toString());
             },

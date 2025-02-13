@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/custom_text_label.dart';

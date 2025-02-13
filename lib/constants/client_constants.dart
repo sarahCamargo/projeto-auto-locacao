@@ -1,7 +1,6 @@
-class PersonConstants {
+class ClientConstants {
   static const String appBarTitle = 'Cadastro Pessoa Física';
 
-  static const String personManagementTitle = "Gerenciar Pessoas";
   static const String naturalPerson = 'Pessoa Física';
   static const String legalPerson = 'Pessoa Jurídica';
 
@@ -12,8 +11,6 @@ class PersonConstants {
     'Viúvo',
     null
   ];
-
-  static const String doNotInform = 'Não Informar';
 
   static const String birthDateHint = 'dd/mm/yyyy';
   static const String cellPhoneHint = '(XX) XXXXX - XXXXX';
@@ -45,9 +42,11 @@ class PersonConstants {
   static const String personalData = 'Dados Pessoais';
   static const String addressData = 'Endereço';
 
-  static const String saveButton = 'Salvar';
-
   static const String cpfErrorMessage = 'CPF inválido';
 
   static const String cpfAlreadyRegistered = 'CPF já cadastrado. Não é possível salvar.';
+
+  static const String noneClient = 'Nenhum cliente cadastrado.';
+
+  static const String newClient = 'Novo Cliente';
 }

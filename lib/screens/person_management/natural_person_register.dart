@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/constants/person_management_constants.dart';
+import 'package:projeto_auto_locacao/constants/client_constants.dart';
+import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/services/database/database_handler.dart';
@@ -13,7 +14,7 @@ import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
-import '../../../services/validation_service.dart';
+import '../../services/validation_service.dart';
 
 class NaturalPersonRegister extends StatefulWidget {
   @override
@@ -47,13 +48,13 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   final TextEditingController _careerController = TextEditingController();
 
   final MaskedTextController _cepController =
-      MaskedTextController(mask: PersonConstants.cepMask);
+      MaskedTextController(mask: ClientConstants.cepMask);
   final MaskedTextController _birthDateController =
-      MaskedTextController(mask: PersonConstants.birthDateMask);
+      MaskedTextController(mask: ClientConstants.birthDateMask);
   final MaskedTextController _cpfController =
-      MaskedTextController(mask: PersonConstants.cpfMask);
+      MaskedTextController(mask: ClientConstants.cpfMask);
   final MaskedTextController _cellPhoneController =
-      MaskedTextController(mask: PersonConstants.cellPhoneMask);
+      MaskedTextController(mask: ClientConstants.cellPhoneMask);
 
   @override
   void initState() {
@@ -106,7 +107,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: PersonConstants.appBarTitle),
+      appBar: const CustomAppBar(title: ClientConstants.appBarTitle),
       body: _buildForm(),
     );
   }
@@ -126,12 +127,12 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
             children: <Widget>[
               const SizedBox(height: 16.0),
               const CustomTextLabel(
-                label: PersonConstants.personalData,
+                label: ClientConstants.personalData,
                 fontWeight: FontWeight.bold,
                 fontSize: 18.0,
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.nameLabel),
+              const CustomTextLabel(label: ClientConstants.nameLabel),
               CustomTextField(
                 controller: _nameController,
                 keyboardType: TextInputType.name,
@@ -141,29 +142,29 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                 isRequired: true,
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.cpfLabel),
+              const CustomTextLabel(label: ClientConstants.cpfLabel),
               CustomTextField(
                   maskedController: _cpfController,
                   keyboardType: TextInputType.number,
-                  hintText: PersonConstants.cpfMask,
+                  hintText: ClientConstants.cpfMask,
                   errorText: _cpfError,
                   onChange: (value) {
                     _updateSaveButtonState(_cpfController);
                   },
                   isRequired: true),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.birthDateLabel),
+              const CustomTextLabel(label: ClientConstants.birthDateLabel),
               CustomTextField(
                   maskedController: _birthDateController,
                   keyboardType: TextInputType.datetime,
                   errorText: _birthDateError,
-                  hintText: PersonConstants.birthDateHint),
+                  hintText: ClientConstants.birthDateHint),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.sexLabel),
+              const CustomTextLabel(label: ClientConstants.sexLabel),
               Row(
                 children: [
                   Radio(
-                    value: PersonConstants.female,
+                    value: ClientConstants.female,
                     groupValue: _sexController,
                     onChanged: (value) {
                       setState(() {
@@ -171,10 +172,10 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                       });
                     },
                   ),
-                  const Text(PersonConstants.female),
+                  const Text(ClientConstants.female),
                   const SizedBox(width: 20.0),
                   Radio(
-                    value: PersonConstants.male,
+                    value: ClientConstants.male,
                     groupValue: _sexController,
                     onChanged: (value) {
                       setState(() {
@@ -182,17 +183,17 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                       });
                     },
                   ),
-                  const Text(PersonConstants.male),
+                  const Text(ClientConstants.male),
                 ],
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.emailLabel),
+              const CustomTextLabel(label: ClientConstants.emailLabel),
               CustomTextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.civilStatusLabel),
+              const CustomTextLabel(label: ClientConstants.civilStatusLabel),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.1),
@@ -204,11 +205,11 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),
-                  items: PersonConstants.civilStatus.map((status) {
+                  items: ClientConstants.civilStatus.map((status) {
                     return DropdownMenuItem<String>(
                       value: status,
                       child: status == null
-                          ? const Text(PersonConstants.doNotInform)
+                          ? const Text(GeneralConstants.doNotInform)
                           : Text(status),
                     );
                   }).toList(),
@@ -220,31 +221,31 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.careerLabel),
+              const CustomTextLabel(label: ClientConstants.careerLabel),
               CustomTextField(
                   controller: _careerController,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.cellPhoneLabel),
+              const CustomTextLabel(label: ClientConstants.cellPhoneLabel),
               CustomTextField(
                   maskedController: _cellPhoneController,
                   keyboardType: TextInputType.phone,
-                  hintText: PersonConstants.cellPhoneHint,
+                  hintText: ClientConstants.cellPhoneHint,
                   onChange: (value) {
                     _updateSaveButtonState(_cellPhoneController);
                   },
                   isRequired: true),
               const SizedBox(height: 20.0),
               const CustomTextLabel(
-                  label: PersonConstants.addressData,
+                  label: ClientConstants.addressData,
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.cepLabel),
+              const CustomTextLabel(label: ClientConstants.cepLabel),
               CustomTextField(
                 maskedController: _cepController,
                 keyboardType: TextInputType.number,
-                hintText: PersonConstants.cepMask,
+                hintText: ClientConstants.cepMask,
                 onChange: (value) {
                   _fetchAddress(value);
                 },
@@ -259,7 +260,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                       child: CustomTextField(
                         controller: _stateController,
                         readOnly: true,
-                        hintText: PersonConstants.stateLabel,
+                        hintText: ClientConstants.stateLabel,
                       ),
                     ),
                     const SizedBox(width: 20.0),
@@ -268,17 +269,17 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                         child: CustomTextField(
                           controller: _cityController,
                           readOnly: true,
-                          hintText: PersonConstants.cityLabel,
+                          hintText: ClientConstants.cityLabel,
                         )),
                   ],
                 ),
               ),
-              const CustomTextLabel(label: PersonConstants.streetLabel),
+              const CustomTextLabel(label: ClientConstants.streetLabel),
               CustomTextField(
                   controller: _streetController, readOnly: !_isAddressEditable),
               //readOnly,
               const SizedBox(height: 16.0),
-              const CustomTextLabel(label: PersonConstants.neighborhoodLabel),
+              const CustomTextLabel(label: ClientConstants.neighborhoodLabel),
               CustomTextField(
                   controller: _neighborhoodController,
                   readOnly: !_isAddressEditable),
@@ -292,7 +293,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                       child: CustomTextField(
                         controller: _addressNumberController,
                         readOnly: !_isAddressEditable,
-                        hintText: PersonConstants.addressNumber,
+                        hintText: ClientConstants.addressNumber,
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -302,7 +303,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                         child: CustomTextField(
                           controller: _addressComplementController,
                           readOnly: !_isAddressEditable,
-                          hintText: PersonConstants.addressComplement,
+                          hintText: ClientConstants.addressComplement,
                         )),
                   ],
                 ),
@@ -312,7 +313,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                       ? () {
                           isCPFRegistered().then((isRegistered) {
                             if (isRegistered) {
-                              showCustomSnackBar(context, PersonConstants.cpfAlreadyRegistered);
+                              showCustomSnackBar(context, ClientConstants.cpfAlreadyRegistered);
                             } else {
                               saveData();
                             }
@@ -322,7 +323,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: ColorsConstants.backgroundColor),
                   child: const CustomTextLabel(
-                    label: PersonConstants.saveButton,
+                    label: GeneralConstants.saveButton,
                     fontWeight: FontWeight.bold,
                   )),
               const SizedBox(height: 16.0),
@@ -429,7 +430,7 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     setState(() {
       if (_cpfController.text.isNotEmpty &&
           !CPFValidator.isValid(_cpfController.text)) {
-        _cpfError = PersonConstants.cpfErrorMessage;
+        _cpfError = ClientConstants.cpfErrorMessage;
         _isSaveButtonEnabled = false;
       } else {
         _cpfError = null;

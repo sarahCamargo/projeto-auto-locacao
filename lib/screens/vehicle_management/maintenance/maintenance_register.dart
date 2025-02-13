@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
-import 'package:projeto_auto_locacao/constants/maintenance_management_constants.dart';
+import 'package:projeto_auto_locacao/constants/maintenance_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/services/notification_service.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
 import '../../../constants/general_constants.dart';
-import '../../../constants/person_management_constants.dart';
+import '../../../constants/client_constants.dart';
 import '../../../models/maintenance.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../utils/show_snackbar.dart';
@@ -260,7 +260,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                         CustomTextField(
                           maskedController: _ultimaVerificacaoController,
                           keyboardType: TextInputType.datetime,
-                          hintText: PersonConstants.birthDateHint,
+                          hintText: ClientConstants.birthDateHint,
                           isRequired: false,
                           errorText: _dateError,
                           onChange: (value) {
@@ -286,7 +286,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                         CustomTextField(
                           maskedController: _proximaVerificacaoController,
                           keyboardType: TextInputType.datetime,
-                          hintText: PersonConstants.birthDateHint,
+                          hintText: ClientConstants.birthDateHint,
                           isRequired: false,
                           errorText: _dateError,
                           onChange: (value) {

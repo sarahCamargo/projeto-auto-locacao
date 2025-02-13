@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/rental_constants.dart';
-import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
+import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';

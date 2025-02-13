@@ -1,5 +1,4 @@
 class MaintenanceConstants {
-  static const String maintenanceManagementTitle = "Gerenciar manutenções";
   static const String appBarTitle = 'Cadastro Manutenção';
   static const String maintenanceData = 'Dados da Manutenção';
   static const String typeLabel = 'Tipo';

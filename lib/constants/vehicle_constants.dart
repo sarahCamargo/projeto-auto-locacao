@@ -1,8 +1,6 @@
 class VehicleConstants {
   static const String appBarTitle = 'Cadastro Veículo';
 
-  static const String vehicleManagementTitle = "Gerenciar Veículos";
-
   static const String vehicleData = 'Dados do Veículo';
 
   static const String brandLabel = 'Marca';

@@ -2,22 +2,25 @@ import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
+import 'package:projeto_auto_locacao/constants/client_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
+import 'package:projeto_auto_locacao/models/natural_person.dart';
+import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
 
-class VehicleListScreen extends StatefulWidget {
-  const VehicleListScreen({super.key});
+class ClientListScreen extends StatefulWidget {
+  const ClientListScreen({super.key});
 
   @override
-  VehicleScreenListState createState() => VehicleScreenListState();
+  ClientScreenListState createState() => ClientScreenListState();
 }
 
-class VehicleScreenListState extends State<VehicleListScreen> {
-  final DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
+class ClientScreenListState extends State<ClientListScreen> {
+  DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.naturalPerson);
 
   @override
   void initState() {
@@ -52,11 +55,8 @@ class VehicleScreenListState extends State<VehicleListScreen> {
               child: Row(
                 children: [
                   _buildFilterButton("Todos", isSelected: true),
-                  _buildFilterButton("Disponível"),
-                  _buildFilterButton("Locado"),
-                  _buildFilterButton("Em manutenção"),
-                  _buildFilterButton("Locação pendente"),
-                  _buildFilterButton("Manutenção pendente"),
+                  _buildFilterButton("Física"),
+                  _buildFilterButton("Jurídica"),
                 ],
               ),
             ),
@@ -70,11 +70,11 @@ class VehicleScreenListState extends State<VehicleListScreen> {
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                      child: Text(VehicleConstants.noneVehicle),
+                      child: Text(ClientConstants.noneClient),
                     );
                   }
 
-                  var vehicles = snapshot.data!;
+                  var client = snapshot.data!;
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -83,12 +83,12 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 70),
-                      itemCount: vehicles.length,
+                      itemCount: client.length,
                       itemBuilder: (context, index) {
-                        return _buildVehicleCard(vehicle: vehicles[index]);
+                        return _buildClientCard(client: client[index]);
                       },
                     ),
                   );
@@ -98,15 +98,15 @@ class VehicleScreenListState extends State<VehicleListScreen> {
           ],
         ),
         NewRegisterFloatingButton(
-          text: VehicleConstants.newVehicle,
+          text: ClientConstants.newClient,
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const VehicleRegister(vehicle: {}),
+                builder: (context) => const NaturalPersonRegister(person: {}),
               ),
             ).then(
-              (value) {
+                  (value) {
                 if (value == true) {
                   dbHandler.fetchDataFromDatabase();
                 }
@@ -135,7 +135,7 @@ class VehicleScreenListState extends State<VehicleListScreen> {
     );
   }
 
-  Widget _buildVehicleCard({required var vehicle}) {
+  Widget _buildClientCard({required var client}) {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -143,20 +143,9 @@ class VehicleScreenListState extends State<VehicleListScreen> {
         children: [
           Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 120,
-                child: vehicle['imageUrl'] != null &&
-                        vehicle['imageUrl'].isNotEmpty
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.file(
-                          io.File(vehicle['imageUrl']),
-                          width: 100,
-                          height: 70,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : const Icon(Icons.image_not_supported_outlined),
+                child: Icon(Icons.image_not_supported_outlined),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -164,14 +153,14 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      vehicle['model'],
+                      client['name'],
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1E1E1E),
                       ),
                     ),
                     Text(
-                      "${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}",
+                      "${ClientConstants.cpfLabel}: ${client['cpf']}",
                       style: const TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 10),
@@ -187,7 +176,7 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                               ),
                             ),
                             onPressed: () {
-                              dbHandler.delete(vehicle['id']);
+                              dbHandler.delete(client['id']);
                             },
                             child: const Text(
                               GeneralConstants.delete,
@@ -211,7 +200,7 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      VehicleRegister(vehicle: vehicle),
+                                      NaturalPersonRegister(person: client),
                                 ),
                               ).then((value) {
                                 if (value == true) {

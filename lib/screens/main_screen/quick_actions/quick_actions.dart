@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
+import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_list_screen.dart';
 
 import '../../../widgets/custom_initial_button.dart';
-import '../../person_management/person_management.dart';
 import '../../rental_management/rental_management.dart';
 import '../../../constants/app_icons.dart';
 
@@ -52,7 +52,7 @@ class QuickActionsState extends State<QuickActions> {
                   Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newClient,
-                        PersonManagement(), AppIcons.client),
+                        NaturalPersonRegister(person: {}), AppIcons.client),
                   ),
                   Expanded(
                     flex: 2,
