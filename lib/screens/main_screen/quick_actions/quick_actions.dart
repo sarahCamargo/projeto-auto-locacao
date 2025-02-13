@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_register.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_list_screen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_list_screen.dart';
 
+import '../../../models/rental.dart';
 import '../../../widgets/custom_initial_button.dart';
 import '../../rental_management/rental_management.dart';
 import '../../../constants/app_icons.dart';
@@ -31,10 +34,10 @@ class QuickActionsState extends State<QuickActions> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           padding: const EdgeInsets.all(16.0),
-          child: const Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   HomePageConstants.quickActions,
@@ -45,11 +48,11 @@ class QuickActionsState extends State<QuickActions> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
+                  const Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newClient,
                         NaturalPersonRegister(person: {}), AppIcons.client),
@@ -57,17 +60,17 @@ class QuickActionsState extends State<QuickActions> {
                   Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newRental,
-                        VehicleListScreen(), AppIcons.rental),
+                        RentalRegister(rental: Rental()), AppIcons.rental),
                   ),
                 ],
               ),
-              Row(
+              /*const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newMaintenance,
-                        RentalManagement(), AppIcons.maintenance),
+                        MaintenanceListScreen(), AppIcons.maintenance),
                   ),
                   Expanded(
                     flex: 2,
@@ -75,7 +78,7 @@ class QuickActionsState extends State<QuickActions> {
                         RentalManagement(), AppIcons.history),
                   ),
                 ],
-              ),
+              ),*/
             ],
           ),
         ),
