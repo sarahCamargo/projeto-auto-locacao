@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_register.dart';
+import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
-import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
+import '../../../widgets/buttons/filter_button.dart';
+import '../../../widgets/buttons/new_register_button.dart';
 import '../../../widgets/search_input.dart';
 
 class MaintenanceListScreen extends StatefulWidget {
@@ -33,17 +35,11 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
         Column(
           children: [
             const SearchInput(),
-            SingleChildScrollView(
+            const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  _buildFilterButton("Todas", isSelected: true),
-                  _buildFilterButton("Em manutenção"),
-                  _buildFilterButton("Pendente"),
-                  _buildFilterButton("Concluída"),
-                ],
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: FilterBar(
+                  filters: ["Todos", "Em manutenção", "Pendente", "Concluída"]),
             ),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/filter_button.dart';
+import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
-import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
+import '../../../widgets/buttons/new_register_button.dart';
 import '../../../widgets/search_input.dart';
 
 class VehicleListScreen extends StatefulWidget {
@@ -33,19 +35,17 @@ class VehicleScreenListState extends State<VehicleListScreen> {
         Column(
           children: [
             const SearchInput(),
-            SingleChildScrollView(
+            const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  _buildFilterButton("Todos", isSelected: true),
-                  _buildFilterButton("Disponível"),
-                  _buildFilterButton("Locado"),
-                  _buildFilterButton("Em manutenção"),
-                  _buildFilterButton("Locação pendente"),
-                  _buildFilterButton("Manutenção pendente"),
-                ],
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: FilterBar(filters: [
+                "Todos",
+                "Disponível",
+                "Locado",
+                "Em manutenção",
+                "Locação pendente",
+                "Manutenção pendente"
+              ]),
             ),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -102,23 +102,6 @@ class VehicleScreenListState extends State<VehicleListScreen> {
           },
         )
       ],
-    );
-  }
-
-  Widget _buildFilterButton(String label, {bool isSelected = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? const Color(0xFF363636) : Colors.white,
-          foregroundColor: isSelected ? Colors.white : const Color(0xFF363636),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        onPressed: () {},
-        child: Text(label),
-      ),
     );
   }
 

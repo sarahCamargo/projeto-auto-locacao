@@ -10,7 +10,7 @@ import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
-import 'package:projeto_auto_locacao/widgets/buttons/SaveOrAddButton.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/save_add_button.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../services/database/database_handler.dart';
