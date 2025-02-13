@@ -22,10 +22,6 @@ class RentalManagementState extends State<RentalManagement> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: const CustomAppBar(
-          title: RentalConstants.rentalManagementTitle,
-          hasReturnScreen: true,
-        ),
         body: const TabBarView(children: [RentalScreen(), RentalScreen(isHistory: true)]),
         bottomNavigationBar: Container(
           color: Colors.white,

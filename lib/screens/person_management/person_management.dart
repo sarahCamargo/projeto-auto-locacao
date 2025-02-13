@@ -22,10 +22,6 @@ class PersonManagementState extends State<PersonManagement> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: const CustomAppBar(
-          title: PersonConstants.personManagementTitle,
-          hasReturnScreen: true,
-        ),
         body: const TabBarView(children: [NaturalPersonManagement(), LegalPersonManagement()]),
         bottomNavigationBar: Container(
           color: Colors.white,
