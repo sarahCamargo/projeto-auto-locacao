@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_register.dart';
 
 import '../../../constants/collection_names.dart';
@@ -8,12 +6,14 @@ import '../../../services/database/database_handler.dart';
 import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
 
 class MaintenanceListScreen extends StatefulWidget {
+  const MaintenanceListScreen({super.key});
+
   @override
-  _MaintenanceListScreenState createState() => _MaintenanceListScreenState();
+  MaintenanceListScreenState createState() => MaintenanceListScreenState();
 }
 
-class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
-  TextEditingController _searchController = TextEditingController();
+class MaintenanceListScreenState extends State<MaintenanceListScreen> {
+  final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
   String _selectedFilter = "Todas";
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.maintenance);
@@ -25,6 +25,7 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
     dbHandler.fetchDataFromDatabase();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -45,8 +46,6 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
                 ),
               ),
             ),
-
-            // Filtros
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -59,8 +58,6 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
                 ],
               ),
             ),
-
-            // Lista de veículos dinâmica
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
                 stream: dbHandler.dataStream,
@@ -70,7 +67,8 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
                   }
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("Nenhuma manutenção encontrada"));
+                    return const Center(
+                        child: Text("Nenhuma manutenção encontrada"));
                   }
 
                   var maintenances = snapshot.data!;
@@ -82,8 +80,7 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
                     itemCount: maintenances.length,
                     itemBuilder: (context, index) {
                       return _buildMaintenanceCard(
-                          maintenance: maintenances[index]
-                      );
+                          maintenance: maintenances[index]);
                     },
                   );
                 },
@@ -91,19 +88,20 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
             ),
           ],
         ),
-
-        // Botão para adicionar nova manutenção
         NewRegisterFloatingButton(
           text: 'Nova manutenção',
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const MaintenanceRegister(maintenance: {}, idVehicle: 1,),
+                builder: (context) => const MaintenanceRegister(
+                  maintenance: {},
+                  idVehicle: 1,
+                ),
               ),
             ).then((value) {
               if (value == true) {
-                dbHandler.fetchDataFromDatabase(); // Atualiza a lista após o cadastro
+                dbHandler.fetchDataFromDatabase();
               }
             });
           },
@@ -112,7 +110,6 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
     );
   }
 
-// Botão de filtro estilizado
   Widget _buildFilterButton(String label, {bool isSelected = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -130,12 +127,9 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
     );
   }
 
-  Widget _buildMaintenanceCard({
-    required var maintenance
-    
-  }) {
+  Widget _buildMaintenanceCard({required var maintenance}) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -144,36 +138,39 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.yellow, //statusColor,
+                const CircleAvatar(
+                  backgroundColor: Colors.yellow,
                   child: Icon(Icons.build, color: Colors.white),
                 ),
-                SizedBox(width: 10),
-                Expanded(
+                const SizedBox(width: 10),
+                const Expanded(
                   child: Text(
                     'Modelo',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.yellow,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Pendente',
                     style: TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8),
-            Text("Placa: ", style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 4),
-            Text("Serviço: ${maintenance['type']}", style: TextStyle(color: Colors.grey)),
-            SizedBox(height: 4),
-            Text(maintenance['nextCheck'], style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 8),
+            const Text("Placa: ", style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 4),
+            Text("Serviço: ${maintenance['type']}",
+                style: const TextStyle(color: Colors.grey)),
+            const SizedBox(height: 4),
+            Text(maintenance['nextCheck'],
+                style: const TextStyle(color: Colors.grey)),
           ],
         ),
       ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_list_screen.dart';
 
 import '../../../widgets/custom_initial_button.dart';
 import '../../person_management/person_management.dart';
 import '../../rental_management/rental_management.dart';
-import '../../vehicle_management/vehicle_management.dart';
 import '../../../constants/app_icons.dart';
 
 class QuickActions extends StatefulWidget {
@@ -57,7 +57,7 @@ class QuickActionsState extends State<QuickActions> {
                   Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newRental,
-                        VehicleManagement(), AppIcons.rental),
+                        VehicleListScreen(), AppIcons.rental),
                   ),
                 ],
               ),

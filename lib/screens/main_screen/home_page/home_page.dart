@@ -4,7 +4,7 @@ import '../../../constants/home_page_constants.dart';
 import '../../../widgets/tab_bar_title.dart';
 import '../../person_management/person_management.dart';
 import '../../rental_management/rental_management.dart';
-import '../../vehicle_management/maintenance/MaintenanceListScreen.dart';
+import '../../vehicle_management/maintenance/maintenance_list_screen.dart';
 import '../../vehicle_management/vehicle/vehicle_list_screen.dart';
 import '../quick_actions/quick_actions.dart';
 

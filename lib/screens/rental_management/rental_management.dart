@@ -3,8 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/rental_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_screen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_screen.dart';
-import 'package:projeto_auto_locacao/widgets/custom_app_bar.dart';
 
 
 class RentalManagement extends StatefulWidget {
