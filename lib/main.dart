@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
+import 'package:projeto_auto_locacao/screens/main_screen/quick_actions/quick_actions.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental_management.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/MaintenanceListScreen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_screen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/VehicleListScreen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_maintenance_screen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_screen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle_management.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_list_screen.dart';
 import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 import 'package:projeto_auto_locacao/services/notification_service.dart';
-import 'package:projeto_auto_locacao/widgets/TabBarTitle.dart';
-import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
-import 'package:projeto_auto_locacao/widgets/menu_navigation.dart';
+import 'package:projeto_auto_locacao/widgets/tab_bar_title.dart';
 import 'package:projeto_auto_locacao/screens/person_management/person_management.dart';
-import 'package:projeto_auto_locacao/widgets/custom_initial_button.dart';
+
+import 'constants/app_icons.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
   NotificationService.initializeNotifications();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -35,9 +29,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: ColorsConstants.backgroundColor,
-        primarySwatch: Colors.blue,
         textTheme: GoogleFonts.montserratTextTheme(
           Theme.of(context).textTheme,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: ColorsConstants.backgroundColor,
+        ),
+        tabBarTheme: const TabBarTheme(
+          labelPadding: EdgeInsets.symmetric(horizontal: 0),
         ),
       ),
       home: const MyHomePage(),
@@ -51,26 +50,49 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: TabBarTitle(),
-          leading: IconButton(onPressed: () {  }, icon: const Icon(Icons.menu),),
+          title: const TabBarTitle(),
         ),
         body: TabBarView(
           children: [
-            VehicleListScreen(),
+            const QuickActions(),
+            const PersonManagement(),
+            const RentalManagement(),
+            const VehicleListScreen(),
             MaintenanceListScreen()
-          ],),
-        bottomNavigationBar: Container(
-          color: Color(0xFF1A355B),
-          child: const TabBar(tabs: [
-            Tab(icon: Icon(Icons.directions_car_rounded), text: "Veículos"),
-            Tab(icon: Icon(Icons.car_repair), text: "Manutenção")
           ],
-          indicatorColor: Color(0xFFED6E33),
-          unselectedLabelColor: Colors.white,
-          labelColor: Color(0xFFED6E33)),
+        ),
+        bottomNavigationBar: Container(
+          color: const Color(0xFF1A355B),
+          child: TabBar(
+              tabs: [
+                Tab(
+                    icon:
+                        SizedBox(width: 32, child: Image.asset(AppIcons.home)),
+                    text: HomePageConstants.homeTab),
+                Tab(
+                    icon: SizedBox(
+                        width: 32, child: Image.asset(AppIcons.client)),
+                    text: HomePageConstants.clientTab),
+                Tab(
+                    icon: SizedBox(
+                        width: 32, child: Image.asset(AppIcons.rental)),
+                    text: HomePageConstants.rentalTab),
+                Tab(
+                    icon: SizedBox(
+                        width: 32, child: Image.asset(AppIcons.vehicles)),
+                    text: HomePageConstants.vehicleTab),
+                Tab(
+                    icon: SizedBox(
+                        width: 32, child: Image.asset(AppIcons.maintaince)),
+                    text: HomePageConstants.maintainceTab)
+              ],
+              labelStyle: const TextStyle(fontSize: 12),
+              indicatorColor: const Color(0xFFED6E33),
+              unselectedLabelColor: Colors.white,
+              labelColor: const Color(0xFFED6E33)),
         ),
       ),
     );

@@ -5,9 +5,9 @@ import 'custom_text_label.dart';
 class CustomInitialButton extends StatelessWidget {
   final String text;
   final Widget widget;
-  final IconData icon;
+  final String asset;
 
-  const CustomInitialButton(this.text, this.widget, this.icon, {super.key});
+  const CustomInitialButton(this.text, this.widget, this.asset, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,24 +18,28 @@ class CustomInitialButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Container(
-          //width: double.infinity,
+          width: 150,
+          height: 150,
           decoration: BoxDecoration(
-            color: const Color(0xFFE8E8E8),
+            color: const Color(0xFFED6E33),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
-                Icon(
-                  icon,
-                  color: const Color(0xFFA6A6A6),
-                  size: 50,
-                ),
+                Image.asset(asset, width: 50, height: 50),
                 const SizedBox(
                   height: 16.0,
                 ),
-                CustomTextLabel(label: text, fontWeight: FontWeight.bold),
+                Center(
+                  child: CustomTextLabel(
+                    label: text,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                )
               ],
             ),
           ),

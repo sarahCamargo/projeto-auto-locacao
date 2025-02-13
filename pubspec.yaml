@@ -89,6 +89,10 @@ flutter:
   assets:
       - lib/assets/icons/home.png
       - lib/assets/icons/client.png
+      - lib/assets/icons/rental.png
+      - lib/assets/icons/vehicles.png
+      - lib/assets/icons/maintaince.png
+      - lib/assets/icons/history.png
 
 
   # To add assets to your application, add an assets section, like this:

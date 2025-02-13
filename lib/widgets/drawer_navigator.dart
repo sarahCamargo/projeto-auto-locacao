@@ -28,7 +28,7 @@ class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
             leading: const Icon(FontAwesomeIcons.house,
                 color: ColorsConstants.iconColor),
             title: const CustomTextLabel(
-              label: HomePageConstants.homePage,
+              label: HomePageConstants.homeTitle,
               fontWeight: FontWeight.bold,
             ),
             onTap: () {
