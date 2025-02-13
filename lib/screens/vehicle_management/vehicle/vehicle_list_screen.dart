@@ -8,6 +8,7 @@ import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
+import '../../../widgets/search_input.dart';
 
 class VehicleListScreen extends StatefulWidget {
   const VehicleListScreen({super.key});
@@ -31,21 +32,7 @@ class VehicleScreenListState extends State<VehicleListScreen> {
       children: [
         Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: GeneralConstants.search,
-                  filled: true,
-                  fillColor: const Color(0xFFE8E8E8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
+            const SearchInput(),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 10),

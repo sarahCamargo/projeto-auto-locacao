@@ -1,12 +1,8 @@
-import 'dart:io' as io;
-
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
-import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
-import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
+import 'package:projeto_auto_locacao/widgets/search_input.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
@@ -34,21 +30,7 @@ class ClientScreenListState extends State<ClientListScreen> {
       children: [
         Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: GeneralConstants.search,
-                  filled: true,
-                  fillColor: const Color(0xFFE8E8E8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
+            const SearchInput(),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 10),

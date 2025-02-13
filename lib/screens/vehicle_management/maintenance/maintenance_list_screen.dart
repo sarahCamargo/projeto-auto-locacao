@@ -4,6 +4,7 @@ import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/main
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
+import '../../../widgets/search_input.dart';
 
 class MaintenanceListScreen extends StatefulWidget {
   const MaintenanceListScreen({super.key});
@@ -31,21 +32,7 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
       children: [
         Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: "Pesquisar",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
+            const SearchInput(),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 10),
