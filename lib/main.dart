@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental_management.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/MaintenanceListScreen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_screen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/VehicleListScreen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_maintenance_screen.dart';
@@ -59,7 +60,7 @@ class MyHomePage extends StatelessWidget {
         body: TabBarView(
           children: [
             VehicleListScreen(),
-            VehicleMaintenanceScreen()
+            MaintenanceListScreen()
           ],),
         bottomNavigationBar: Container(
           color: Color(0xFF1A355B),

@@ -5,6 +5,7 @@ import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_
 
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
+import '../../../widgets/buttons/NewRegisterFloatingButton.dart';
 
 class VehicleListScreen extends StatefulWidget {
   const VehicleListScreen({super.key});
@@ -90,27 +91,21 @@ class VehicleScreenListState extends State<VehicleListScreen> {
         ),
 
         // Botão para adicionar novo veículo
-        Positioned(
-          bottom: 10,
-          right: 20,
-          child: FloatingActionButton.extended(
-            backgroundColor: const Color(0xFFED6E33),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const VehicleRegister(vehicle: {}),
-                ),
-              ).then((value) {
-                if (value == true) {
-                  dbHandler.fetchDataFromDatabase(); // Atualiza a lista após o cadastro
-                }
-              });
-            },
-            icon: const Icon(Icons.add, color: Colors.white),
-            label: const Text("Novo Veículo", style: TextStyle(color: Colors.white)),
-          ),
-        ),
+        NewRegisterFloatingButton(
+          text: 'Novo veículo',
+          onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VehicleRegister(vehicle: {}),
+                    ),
+                  ).then((value) {
+                    if (value == true) {
+                      dbHandler.fetchDataFromDatabase(); // Atualiza a lista após o cadastro
+                    }
+                  });
+          },
+        )
       ],
     );
   }
@@ -150,15 +145,16 @@ class VehicleScreenListState extends State<VehicleListScreen> {
           children: [
             Row(
               children: [
+                vehicle['imageUrl'] != null && vehicle['imageUrl'].isNotEmpty ?
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.file(
-                    vehicle['imageUrl'].isNotEmpty ? io.File(vehicle['imageUrl']) : io.File(''),
+                    io.File(vehicle['imageUrl']),
                     width: 100,
                     height: 70,
                     fit: BoxFit.cover,
                   ),
-                ),
+                ) : const Icon(Icons.image_not_supported_outlined) ,
                 const SizedBox(width: 10),
 
                 Expanded(

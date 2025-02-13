@@ -10,4 +10,12 @@ class MaintenanceQueries {
       nextCheck TEXT
     )
   ''';
+
+  static const getMaintenanceInfo = '''
+    SELECT m.*, 
+        v.model,  
+        v.licensePlate
+    FROM maintenance m
+        INNER JOIN vehicle v ON m.idVehicle = v.id
+  ''';
 }

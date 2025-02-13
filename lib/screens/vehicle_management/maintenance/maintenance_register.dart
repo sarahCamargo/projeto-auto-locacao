@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/maintenance_management_constants.dart';
+import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/services/notification_service.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,7 @@ import '../../../constants/general_constants.dart';
 import '../../../constants/person_management_constants.dart';
 import '../../../models/maintenance.dart';
 import '../../../services/database/database_handler.dart';
+import '../../../utils/show_snackbar.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/custom_text_label.dart';
@@ -30,6 +32,9 @@ class MaintenanceRegister extends StatefulWidget {
 
 class MaintenanceRegisterState extends State<MaintenanceRegister> {
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.maintenance);
+  DatabaseHandler dbVehicles = DatabaseHandler(CollectionNames.vehicle);
+  List<Vehicle> _vehicles = [];
+  Vehicle? _selectedVehicle; // Veículo escolhido
 
   final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
   String? _dateError;
@@ -56,6 +61,17 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
       _ultimaVerificacaoController.text = widget.maintenance['lastCheck'];
       _proximaVerificacaoController.text = widget.maintenance['nextCheck'];
     }
+
+
+    _loadVehicles();
+  }
+
+  Future<void> _loadVehicles() async {
+    var vehicles;
+    vehicles = await dbVehicles.fetchVehiclesToRent(null);
+    setState(() {
+      _vehicles = vehicles;
+    });
   }
 
   @override
@@ -86,6 +102,47 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                 fontSize: 18.0,
               ),
               const SizedBox(height: 16.0),
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const CustomTextLabel(
+                              label: 'Veículo',
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: DropdownButtonFormField<Vehicle>(
+                                value: _selectedVehicle,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: _vehicles.map((vehicle) {
+                                  return DropdownMenuItem(
+                                    value: vehicle,
+                                    child: Text('${vehicle.model} - ${vehicle.licensePlate}'),
+                                  );
+                                }).toList(),
+                                onChanged: (Vehicle? value) {
+                                  setState(() {
+                                    _selectedVehicle = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ))
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: Row(
@@ -315,45 +372,32 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
   }
 
   void save() {
+    if (_selectedVehicle == null) {
+      showCustomSnackBar(context, "Informe o veículo");
+      return;
+    }
+
     if (_selectedTipo == null || _selectedTipo!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Informe o tipo'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      showCustomSnackBar(context, "Informe o tipo");
       return;
     }
 
     if (_selectedTipo == 'Outro' && _outroController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Informe o campo Outro'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      showCustomSnackBar(context, "Informe o campo Outro");
       return;
     }
 
     if (_selectedTipo != 'Outro' && _outroController.text.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Não informe o campo Outro'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      showCustomSnackBar(context, "Não informe o campo Outro");
       return;
     }
 
     if (_proximaVerificacaoController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Informe a próxima verificação'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+      showCustomSnackBar(context, "Informe a próxima verificação");
       return;
     }
+
+
 
     saveData().then((maintenance) async {
       dbHandler.save(context, widget.maintenance['id'], maintenance).then((value){
@@ -373,7 +417,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
 
   Future<Maintenance> saveData() async {
     Maintenance maintenance = Maintenance();
-    maintenance.idVehicle = widget.idVehicle;
+    maintenance.idVehicle = _selectedVehicle?.id; //widget.idVehicle;
     maintenance.type = _selectedTipo;
     maintenance.other = _outroController.text;
     maintenance.frequency = _selectedFrequencia;
