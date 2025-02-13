@@ -24,14 +24,12 @@ class TabBarTitle extends StatelessWidget {
           default:
             title = HomePageConstants.homeTitle;
         }
-        return Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1A355B),
-            ),
+        return Text(
+          title,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A355B),
           ),
         );
       },

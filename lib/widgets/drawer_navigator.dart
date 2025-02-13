@@ -11,16 +11,19 @@ class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: ColorsConstants.backgroundColor,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           const SizedBox(
             height: 125,
             child: DrawerHeader(
+              decoration: BoxDecoration(color: Color(0xFF1A355B)),
               child: CustomTextLabel(
                 label: HomePageConstants.menu,
-                fontSize: 24,
+                fontSize: 21,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ),

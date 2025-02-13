@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
 import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
-import 'package:projeto_auto_locacao/widgets/buttons/filter_button.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 import 'package:projeto_auto_locacao/widgets/search_input.dart';
 

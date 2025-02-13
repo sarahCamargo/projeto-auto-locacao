@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/person_management/client_list_screen.dart';
+import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/home_page_constants.dart';
 import '../../../widgets/tab_bar_title.dart';
@@ -21,15 +22,17 @@ class MyHomePageState extends State<MyHomePage> {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
+        drawer: const DrawerNavigator(),
         appBar: AppBar(
+          centerTitle: true,
           title: const TabBarTitle(),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
-            const QuickActions(),
-            const ClientListScreen(),
-            const RentalManagement(),
-            const VehicleListScreen(),
+            QuickActions(),
+            ClientListScreen(),
+            RentalManagement(),
+            VehicleListScreen(),
             MaintenanceListScreen(),
           ],
         ),
