@@ -12,4 +12,6 @@ class GeneralConstants {
   static const String doNotInform = 'Não Informar';
   static const String search = 'Pesquisar';
   static const String errorInAction = 'Erro ao realizar ação';
+  static const String delete = 'Excluir';
+  static const String edit = 'Editar';
 }

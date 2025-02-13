@@ -19,6 +19,9 @@ class VehicleConstants {
   static const String numberOfSeatsLabel = 'N° assentos';
   static const String descriptionLabel = 'Descrição';
 
+  static const String noneVehicle = 'Nenhum Veículo Encontrado';
+  static const String newVehicle = 'Novo Veículo';
+
   static const List<String?> typeOfFuel = [
     'Flex',
     'Gasolina',

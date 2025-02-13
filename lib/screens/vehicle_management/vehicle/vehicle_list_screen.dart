@@ -1,6 +1,8 @@
 import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
+import 'package:projeto_auto_locacao/constants/general_constants.dart';
+import 'package:projeto_auto_locacao/constants/vehicle_management_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 
 import '../../../constants/collection_names.dart';
@@ -20,9 +22,10 @@ class VehicleScreenListState extends State<VehicleListScreen> {
   @override
   void initState() {
     super.initState();
-    dbHandler.fetchDataFromDatabase(); // Busca os dados iniciais
+    dbHandler.fetchDataFromDatabase();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -33,9 +36,9 @@ class VehicleScreenListState extends State<VehicleListScreen> {
               child: TextField(
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: "Pesquisar",
+                  hintText: GeneralConstants.search,
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: const Color(0xFFE8E8E8),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                     borderSide: BorderSide.none,
@@ -43,8 +46,6 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                 ),
               ),
             ),
-
-            // Filtros
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -59,8 +60,6 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                 ],
               ),
             ),
-
-            // Lista de veículos dinâmica
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
                 stream: dbHandler.dataStream,
@@ -70,54 +69,62 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                   }
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("Nenhum veículo encontrado"));
+                    return const Center(
+                      child: Text(VehicleConstants.noneVehicle),
+                    );
                   }
 
                   var vehicles = snapshot.data!;
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 70),
-                    itemCount: vehicles.length,
-                    itemBuilder: (context, index) {
-                      return _buildVehicleCard(
-                        vehicle: vehicles[index]
-                      );
-                    },
+                  return Card(
+                    color: Colors.white,
+                    surfaceTintColor: Colors.transparent,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 70),
+                      itemCount: vehicles.length,
+                      itemBuilder: (context, index) {
+                        return _buildVehicleCard(vehicle: vehicles[index]);
+                      },
+                    ),
                   );
                 },
               ),
             ),
           ],
         ),
-
-        // Botão para adicionar novo veículo
         NewRegisterFloatingButton(
-          text: 'Novo veículo',
+          text: VehicleConstants.newVehicle,
           onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const VehicleRegister(vehicle: {}),
-                    ),
-                  ).then((value) {
-                    if (value == true) {
-                      dbHandler.fetchDataFromDatabase(); // Atualiza a lista após o cadastro
-                    }
-                  });
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const VehicleRegister(vehicle: {}),
+              ),
+            ).then(
+              (value) {
+                if (value == true) {
+                  dbHandler.fetchDataFromDatabase();
+                }
+              },
+            );
           },
         )
       ],
     );
   }
 
-  // Botão de filtro estilizado
   Widget _buildFilterButton(String label, {bool isSelected = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.black87 : Colors.white,
-          foregroundColor: isSelected ? Colors.white : Colors.black87,
+          backgroundColor: isSelected ? const Color(0xFF363636) : Colors.white,
+          foregroundColor: isSelected ? Colors.white : const Color(0xFF363636),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -128,91 +135,110 @@ class VehicleScreenListState extends State<VehicleListScreen> {
     );
   }
 
-  // Card de veículo atualizado
-  Widget _buildVehicleCard({
-    required var vehicle
-  }) {
-    return Card(
-      color: Colors.white.withOpacity(1.0),
-      surfaceTintColor: Colors.transparent,
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                vehicle['imageUrl'] != null && vehicle['imageUrl'].isNotEmpty ?
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.file(
-                    io.File(vehicle['imageUrl']),
-                    width: 100,
-                    height: 70,
-                    fit: BoxFit.cover,
-                  ),
-                ) : const Icon(Icons.image_not_supported_outlined) ,
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(vehicle['model'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text("Placa: ${vehicle['licensePlate']}", style: const TextStyle(color: Colors.grey)),
-                      //Text(price, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 10),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[300],
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    onPressed: () {
-                      dbHandler.delete(vehicle['id']); // Exclui o veículo
-                    },
-                    child: const Text("Excluir", style: TextStyle(color: Colors.black)),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black87,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VehicleRegister(vehicle: vehicle),
+  Widget _buildVehicleCard({required var vehicle}) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: 120,
+                child: vehicle['imageUrl'] != null &&
+                        vehicle['imageUrl'].isNotEmpty
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          io.File(vehicle['imageUrl']),
+                          width: 100,
+                          height: 70,
+                          fit: BoxFit.cover,
                         ),
-                      ).then((value) {
-                        if (value == true) {
-                          dbHandler.fetchDataFromDatabase(); // Atualiza após edição
-                        }
-                      });
-                    },
-                    child: const Text("Editar", style: TextStyle(color: Colors.white)),
-                  ),
+                      )
+                    : const Icon(Icons.image_not_supported_outlined),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      vehicle['model'],
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E1E1E),
+                      ),
+                    ),
+                    Text(
+                      "${VehicleConstants.licensePlateLabel}: ${vehicle['licensePlate']}",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[300],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            onPressed: () {
+                              dbHandler.delete(vehicle['id']);
+                            },
+                            child: const Text(
+                              GeneralConstants.delete,
+                              style: TextStyle(
+                                color: Color(0xFF223B59),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF363636),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      VehicleRegister(vehicle: vehicle),
+                                ),
+                              ).then((value) {
+                                if (value == true) {
+                                  dbHandler.fetchDataFromDatabase();
+                                }
+                              });
+                            },
+                            child: const Text(
+                              GeneralConstants.edit,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const Divider(
+            color: Color(0xFFEEEEEE),
+            thickness: 1,
+            indent: 5,
+            endIndent: 5,
+          )
+        ],
       ),
     );
   }
