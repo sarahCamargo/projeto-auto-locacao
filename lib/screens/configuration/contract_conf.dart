@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
+import 'package:projeto_auto_locacao/constants/configuration_constants.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as p;
@@ -37,7 +38,7 @@ class ContractConfState extends State<ContractConf> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16.0),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
                 blurRadius: 8.0,
@@ -54,17 +55,18 @@ class ContractConfState extends State<ContractConf> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const CustomTextLabel(
-                    label: "Templates Contrato",
+                    label: ConfigurationConstants.contractTemplates,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                   const SizedBox(height: 24),
-                  ..._files.map((file) => _buildFileTile(file)).toList(),
-                  const SizedBox(height: 24),
+                  ..._files.map((file) => _buildFileTile(file)),
                   TextButton.icon(
                     onPressed: _pickFile,
-                    icon: const Icon(FontAwesomeIcons.plusCircle, size: 18, color: ColorsConstants.iconColor),
-                    label: const Text('Adicionar arquivo', style: TextStyle(color: ColorsConstants.iconColor)),
+                    icon: const Icon(FontAwesomeIcons.plus,
+                        size: 18, color: ColorsConstants.blueFields),
+                    label: const Text(ConfigurationConstants.addFile,
+                        style: TextStyle(color: ColorsConstants.blueFields)),
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -89,16 +91,17 @@ class ContractConfState extends State<ContractConf> {
               initialValue: file['name'],
               onChanged: (value) => _updateFileName(file['path']!, value),
               decoration: InputDecoration(
-                labelText: 'Nome do Arquivo',
-                labelStyle: TextStyle(color: Colors.black54),
-                hintText: 'Insira o nome',
+                labelText: ConfigurationConstants.fileName,
+                labelStyle: const TextStyle(color: Colors.black54),
+                hintText: ConfigurationConstants.insetFileName,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(color: Colors.black45, width: 1.5),
+                  borderSide:
+                      const BorderSide(color: Colors.black45, width: 1.5),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(color: Colors.blue, width: 2),
+                  borderSide: const BorderSide(color: Colors.blue, width: 2),
                 ),
               ),
             ),
@@ -106,7 +109,7 @@ class ContractConfState extends State<ContractConf> {
           const SizedBox(width: 16),
           IconButton(
             icon: const Icon(
-              FontAwesomeIcons.trashAlt,
+              FontAwesomeIcons.trash,
               color: ColorsConstants.iconColor,
               size: 20,
             ),
@@ -139,7 +142,8 @@ class ContractConfState extends State<ContractConf> {
       final filePath = result.files.single.path!;
       final prefsService = PrefsService();
 
-      final internalPath = await prefsService.saveFileToInternalStorage(filePath);
+      final internalPath =
+          await prefsService.saveFileToInternalStorage(filePath);
 
       final newFile = {
         'path': internalPath,
@@ -149,10 +153,10 @@ class ContractConfState extends State<ContractConf> {
       setState(() {
         _files.add(newFile);
         _saveFiles();
-        showCustomSnackBar(context, 'Arquivo adicionado com sucesso!');
+        showCustomSnackBar(context, ConfigurationConstants.fileAdded);
       });
     } else {
-      showCustomSnackBar(context, 'Nenhum arquivo selecionado.');
+      showCustomSnackBar(context, ConfigurationConstants.noFile);
     }
   }
 
@@ -174,11 +178,10 @@ class ContractConfState extends State<ContractConf> {
     if (await file.exists()) {
       await file.delete();
     }
-
     setState(() {
       _files.removeWhere((file) => file['path'] == path);
       _saveFiles();
     });
-    showCustomSnackBar(context, 'Arquivo removido com sucesso!');
+    showCustomSnackBar(context, ConfigurationConstants.fileRemoved);
   }
 }

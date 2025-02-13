@@ -5,4 +5,5 @@ class AppIcons {
   static const String vehicles = 'lib/assets/icons/vehicles.png';
   static const String maintenance = 'lib/assets/icons/maintenance.png';
   static const String history = 'lib/assets/icons/history.png';
+  static const String arrowLeft = 'lib/assets/icons/arrow-left.png';
 }

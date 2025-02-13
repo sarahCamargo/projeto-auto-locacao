@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/screens/person_management/client_list_screen.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import '../../../constants/app_icons.dart';
@@ -41,7 +42,7 @@ class MyHomePageState extends State<MyHomePage> {
             final TabController tabController =
                 DefaultTabController.of(context);
             return Container(
-              color: const Color(0xFF1A355B),
+              color: ColorsConstants.blueFields,
               child: TabBar(
                 controller: tabController,
                 onTap: (index) {
@@ -90,9 +91,9 @@ class MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
                 labelStyle: const TextStyle(fontSize: 12),
-                indicatorColor: const Color(0xFFED6E33),
+                indicatorColor: ColorsConstants.orangeFields,
                 unselectedLabelColor: Colors.white,
-                labelColor: const Color(0xFFED6E33),
+                labelColor: ColorsConstants.orangeFields,
               ),
             );
           },
@@ -103,7 +104,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   Color getIconColor(int tabSelected, int tabIndex) {
     if (tabSelected == tabIndex) {
-      return const Color(0xFFED6E33);
+      return ColorsConstants.orangeFields;
     }
     return Colors.white;
   }

@@ -505,7 +505,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
         color: Colors.white, // Fundo branco
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: const Color(0xFF1A355B), // Azul escuro
+          color: ColorsConstants.blueFields,
           width: 1,
           style: BorderStyle.solid,
         ),
@@ -518,13 +518,13 @@ class VehicleRegisterState extends State<VehicleRegister> {
             Icon(
               Icons.add_a_photo, // Ícone de adicionar foto
               size: 50,
-              color: Color(0xFF1A355B), // Azul escuro
+              color: ColorsConstants.blueFields,
             ),
             SizedBox(height: 8), // Espaço entre ícone e texto
             Text(
               "Clique para adicionar foto",
               style: TextStyle(
-                color: Color(0xFF1A355B), // Azul escuro
+                color: ColorsConstants.blueFields,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -549,7 +549,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
       child: IconButton(
         icon: const Icon(
           Icons.highlight_remove_outlined,
-          color: Color(0xFF1A355B),
+          color: ColorsConstants.blueFields,
         ),
         onPressed: _removeImage,
       ),

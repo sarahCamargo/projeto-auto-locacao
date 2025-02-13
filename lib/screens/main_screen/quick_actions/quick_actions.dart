@@ -5,6 +5,7 @@ import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_reg
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_list_screen.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_list_screen.dart';
 
+import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';
 import '../../../widgets/custom_initial_button.dart';
 import '../../rental_management/rental_management.dart';
@@ -44,7 +45,7 @@ class QuickActionsState extends State<QuickActions> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A355B),
+                    color: ColorsConstants.blueFields,
                   ),
                 ),
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 
+import '../constants/colors_constants.dart';
+
 class TabBarTitle extends StatelessWidget {
   const TabBarTitle({super.key});
 
@@ -29,7 +31,7 @@ class TabBarTitle extends StatelessWidget {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1A355B),
+            color: ColorsConstants.blueFields,
           ),
         );
       },

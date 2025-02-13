@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../constants/colors_constants.dart';
 import 'custom_text_label.dart';
 
 class CustomInitialButton extends StatelessWidget {
@@ -21,7 +22,7 @@ class CustomInitialButton extends StatelessWidget {
           width: 150,
           height: 150,
           decoration: BoxDecoration(
-            color: const Color(0xFFED6E33),
+            color: ColorsConstants.orangeFields,
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Padding(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/colors_constants.dart';
+
 class CustomTextLabel extends StatelessWidget {
   final String label;
   final double? fontSize;
@@ -11,7 +13,7 @@ class CustomTextLabel extends StatelessWidget {
       required this.label,
       this.fontSize = 18.0,
       this.fontWeight = FontWeight.normal,
-      this.color = const Color(0xFF1A355B)});
+      this.color = ColorsConstants.blueFields});
 
   @override
   Widget build(BuildContext context) {

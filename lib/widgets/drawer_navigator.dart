@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
-import 'package:projeto_auto_locacao/screens/configuration_management/configuration_screen.dart';
+import 'package:projeto_auto_locacao/screens/configuration/configuration_screen.dart';
 import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 
 class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
@@ -18,7 +18,7 @@ class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(
             height: 125,
             child: DrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFF1A355B)),
+              decoration: BoxDecoration(color: ColorsConstants.blueFields),
               child: CustomTextLabel(
                 label: HomePageConstants.menu,
                 fontSize: 21,

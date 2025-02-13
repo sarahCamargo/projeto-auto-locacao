@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:projeto_auto_locacao/constants/app_icons.dart';
+import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -12,18 +13,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      backgroundColor: const Color(0xFFE8E8E8),
+      backgroundColor: ColorsConstants.backgroundColor,
       title: Text(
         title,
         style: const TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF737373)),
+            color: ColorsConstants.blueFields),
       ),
       leading: hasReturnScreen
           ? IconButton(
-              icon: const Icon(FontAwesomeIcons.angleLeft,
-                  color: Color(0xFF737373)),
+              icon: Image.asset(AppIcons.arrowLeft,
+                  color: ColorsConstants.blueFields, width: 25),
               onPressed: () {
                 Navigator.pop(context);
               },

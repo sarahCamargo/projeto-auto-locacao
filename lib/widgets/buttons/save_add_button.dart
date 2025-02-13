@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants/colors_constants.dart';
+
 class SaveOrAddButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -18,7 +20,7 @@ class SaveOrAddButton extends StatelessWidget {
         text,
         style: const TextStyle(color: Colors.white, fontSize: 18.0),
       ),
-      backgroundColor: const Color(0xFFED6E33),
+      backgroundColor: ColorsConstants.orangeFields,
     );
   }
 }

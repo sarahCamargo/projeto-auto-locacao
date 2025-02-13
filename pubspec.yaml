@@ -93,6 +93,7 @@ flutter:
       - lib/assets/icons/vehicles.png
       - lib/assets/icons/maintenance.png
       - lib/assets/icons/history.png
+      - lib/assets/icons/arrow-left.png
 
 
   # To add assets to your application, add an assets section, like this:
