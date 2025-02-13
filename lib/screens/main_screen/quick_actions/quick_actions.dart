@@ -66,8 +66,8 @@ class QuickActionsState extends State<QuickActions> {
                 children: [
                   Expanded(
                     flex: 2,
-                    child: CustomInitialButton(HomePageConstants.newMaintaince,
-                        RentalManagement(), AppIcons.maintaince),
+                    child: CustomInitialButton(HomePageConstants.newMaintenance,
+                        RentalManagement(), AppIcons.maintenance),
                   ),
                   Expanded(
                     flex: 2,

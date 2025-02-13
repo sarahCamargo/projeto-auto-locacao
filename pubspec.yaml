@@ -91,7 +91,7 @@ flutter:
       - lib/assets/icons/client.png
       - lib/assets/icons/rental.png
       - lib/assets/icons/vehicles.png
-      - lib/assets/icons/maintaince.png
+      - lib/assets/icons/maintenance.png
       - lib/assets/icons/history.png
 
 

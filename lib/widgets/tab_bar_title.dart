@@ -20,7 +20,7 @@ class TabBarTitle extends StatelessWidget {
           case 3:
             title = HomePageConstants.vehicleTitle;
           case 4:
-            title = HomePageConstants.maintainceTitle;
+            title = HomePageConstants.maintenanceTitle;
           default:
             title = HomePageConstants.homeTitle;
         }
