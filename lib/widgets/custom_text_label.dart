@@ -7,13 +7,15 @@ class CustomTextLabel extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
   final Color? color;
+  final TextAlign textAlign;
 
   const CustomTextLabel(
       {super.key,
       required this.label,
       this.fontSize = 18.0,
       this.fontWeight = FontWeight.normal,
-      this.color = ColorsConstants.blueFields});
+      this.color = ColorsConstants.blueFields,
+      this.textAlign = TextAlign.center});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class CustomTextLabel extends StatelessWidget {
       label,
       style:
           TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color),
-      textAlign: TextAlign.center,
+      textAlign: textAlign,
     );
   }
 }

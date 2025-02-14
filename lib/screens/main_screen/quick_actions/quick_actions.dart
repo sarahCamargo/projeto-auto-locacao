@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
-import 'package:projeto_auto_locacao/screens/person_management/natural_person_register.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_register.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_list_screen.dart';
-import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_list_screen.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';
 import '../../../widgets/custom_initial_button.dart';
-import '../../rental_management/rental_management.dart';
+import '../../client_management/client_register.dart';
+import '../../client_management/natural_person_register.dart';
 import '../../../constants/app_icons.dart';
 
 class QuickActions extends StatefulWidget {
@@ -55,7 +53,7 @@ class QuickActionsState extends State<QuickActions> {
                   const Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newClient,
-                        NaturalPersonRegister(person: {}), AppIcons.client),
+                        ClientRegister(), AppIcons.client),
                   ),
                   Expanded(
                     flex: 2,
