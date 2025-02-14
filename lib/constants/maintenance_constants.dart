@@ -6,6 +6,8 @@ class MaintenanceConstants {
   static const String frequencyLabel = 'Frequência';
   static const String lastCheckLabel = 'Última verificação';
   static const String nextCheckLabel = 'Próxima verificação';
+  static const String newMaintenance = "Nova Manutenção";
+  static const String noneMaintenance = "Nenhuma Manutenção Encontrada";
 
 
   static const List<String?> type = [

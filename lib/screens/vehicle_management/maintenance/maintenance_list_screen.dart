@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_auto_locacao/constants/maintenance_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_register.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
+import '../../../constants/app_icons.dart';
 import '../../../constants/collection_names.dart';
+import '../../../constants/colors_constants.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../widgets/buttons/filter_button.dart';
 import '../../../widgets/buttons/new_register_button.dart';
@@ -16,16 +19,12 @@ class MaintenanceListScreen extends StatefulWidget {
 }
 
 class MaintenanceListScreenState extends State<MaintenanceListScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = "";
-  String _selectedFilter = "Todas";
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.maintenance);
-  DatabaseHandler dbVehicles = DatabaseHandler(CollectionNames.vehicle);
 
   @override
   void initState() {
     super.initState();
-    dbHandler.fetchDataFromDatabase();
+    dbHandler.fetchMaintenancesWithVehicles();
   }
 
   @override
@@ -38,8 +37,12 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
             const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: FilterBar(
-                  filters: ["Todos", "Em manutenção", "Pendente", "Concluída"]),
+              child: FilterBar(filters: [
+                "Todos",
+                "Em manutenção",
+                "Pendente",
+                "Concluída",
+              ]),
             ),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -51,20 +54,27 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(
-                        child: Text("Nenhuma manutenção encontrada"));
+                      child: Text(MaintenanceConstants.noneMaintenance),
+                    );
                   }
 
                   var maintenances = snapshot.data!;
-
-                  print(maintenances);
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 70),
-                    itemCount: maintenances.length,
-                    itemBuilder: (context, index) {
-                      return _buildMaintenanceCard(
-                          maintenance: maintenances[index]);
-                    },
+                  return Card(
+                    color: Colors.white,
+                    surfaceTintColor: Colors.transparent,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    margin:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    child: ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 70),
+                      itemCount: maintenances.length,
+                      itemBuilder: (context, index) {
+                        return _buildMaintenanceCard(maintenance: maintenances[index]);
+                      },
+                    ),
                   );
                 },
               ),
@@ -72,45 +82,76 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
           ],
         ),
         NewRegisterFloatingButton(
-          text: 'Nova manutenção',
+          text: MaintenanceConstants.newMaintenance,
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const MaintenanceRegister(
-                  maintenance: {},
-                  idVehicle: 1,
-                ),
+                builder: (context) => const MaintenanceRegister(idVehicle: 1, maintenance: {},),
               ),
-            ).then((value) {
-              if (value == true) {
-                dbHandler.fetchDataFromDatabase();
-              }
-            });
+            ).then(
+                  (value) {
+                if (value == true) {
+                  dbHandler.fetchMaintenancesWithVehicles();
+                }
+              },
+            );
           },
         )
       ],
     );
   }
 
-  Widget _buildFilterButton(String label, {bool isSelected = false}) {
+  Widget _buildMaintenanceCard({required var maintenance}) {
+    print(maintenance);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isSelected ? Colors.black87 : Colors.white,
-          foregroundColor: isSelected ? Colors.white : Colors.black87,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.yellow,
+                child: Image.asset(AppIcons.maintenance, color: Colors.white, width: 30, height: 30,),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "${maintenance['model']}",
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.yellow,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  'Pendente',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ],
           ),
-        ),
-        onPressed: () {},
-        child: Text(label),
+          const SizedBox(height: 8),
+          Text("Placa: ${maintenance['licensePlate']}", style: TextStyle(color: Colors.grey)),
+          const SizedBox(height: 4),
+          Text("Serviço: ${maintenance['type']}",
+              style: const TextStyle(color: Color(0xFF666666))),
+
+          const Divider(
+            color: ColorsConstants.dividerColor,
+            thickness: 1,
+            indent: 5,
+            endIndent: 5,
+          )
+        ],
       ),
     );
-  }
 
-  Widget _buildMaintenanceCard({required var maintenance}) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

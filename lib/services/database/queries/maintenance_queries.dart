@@ -11,7 +11,7 @@ class MaintenanceQueries {
     )
   ''';
 
-  static const getMaintenanceInfo = '''
+  static const String getMaintenanceInfo = '''
     SELECT m.*, 
         v.model,  
         v.licensePlate

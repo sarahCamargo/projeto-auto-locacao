@@ -114,4 +114,10 @@ class DatabaseHelper {
     List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getVehicleToRenovate);
     return List.generate(maps.length, (i) => Vehicle.fromMap(maps[i]));
   }
+
+  Future<List<Map<String, dynamic>>> getMaintenancesWithVehicles() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(MaintenanceQueries.getMaintenanceInfo);
+    return maps;
+  }
 }

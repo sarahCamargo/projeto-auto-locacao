@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/screens/person_management/client_list_screen.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/rental_list_screen.dart';
 import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/home_page_constants.dart';
@@ -32,7 +33,7 @@ class MyHomePageState extends State<MyHomePage> {
           children: [
             QuickActions(),
             ClientListScreen(),
-            RentalManagement(),
+            RentalListScreen(),
             VehicleListScreen(),
             MaintenanceListScreen(),
           ],
