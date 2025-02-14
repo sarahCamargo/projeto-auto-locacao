@@ -19,8 +19,6 @@ class CustomInitialButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Container(
-          width: 150,
-          height: 150,
           decoration: BoxDecoration(
             color: ColorsConstants.orangeFields,
             borderRadius: BorderRadius.circular(10.0),

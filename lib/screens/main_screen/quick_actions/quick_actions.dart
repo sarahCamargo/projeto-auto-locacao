@@ -51,7 +51,6 @@ class QuickActionsState extends State<QuickActions> {
               ),
               const SizedBox(height: 10),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Expanded(
                     flex: 2,

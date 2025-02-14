@@ -6,7 +6,6 @@ import 'package:projeto_auto_locacao/widgets/drawer_navigator.dart';
 import '../../../constants/app_icons.dart';
 import '../../../constants/home_page_constants.dart';
 import '../../../widgets/tab_bar_title.dart';
-import '../../rental_management/rental_management.dart';
 import '../../vehicle_management/maintenance/maintenance_list_screen.dart';
 import '../../vehicle_management/vehicle/vehicle_list_screen.dart';
 import '../quick_actions/quick_actions.dart';
@@ -45,56 +44,22 @@ class MyHomePageState extends State<MyHomePage> {
             return Container(
               color: ColorsConstants.blueFields,
               child: TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.center,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 10),
                 controller: tabController,
                 onTap: (index) {
                   setState(() {});
                 },
-                tabs: [
-                  Tab(
-                    icon: SizedBox(
-                      width: 32,
-                      child: Image.asset(AppIcons.home,
-                          color: getIconColor(tabController.index, 0)),
-                    ),
-                    text: HomePageConstants.homeTab,
-                  ),
-                  Tab(
-                    icon: SizedBox(
-                      width: 32,
-                      child: Image.asset(AppIcons.client,
-                          color: getIconColor(tabController.index, 1)),
-                    ),
-                    text: HomePageConstants.clientTab,
-                  ),
-                  Tab(
-                    icon: SizedBox(
-                      width: 32,
-                      child: Image.asset(AppIcons.rental,
-                          color: getIconColor(tabController.index, 2)),
-                    ),
-                    text: HomePageConstants.rentalTab,
-                  ),
-                  Tab(
-                    icon: SizedBox(
-                      width: 32,
-                      child: Image.asset(AppIcons.vehicles,
-                          color: getIconColor(tabController.index, 3)),
-                    ),
-                    text: HomePageConstants.vehicleTab,
-                  ),
-                  Tab(
-                    icon: SizedBox(
-                      width: 32,
-                      child: Image.asset(AppIcons.maintenance,
-                          color: getIconColor(tabController.index, 4)),
-                    ),
-                    text: HomePageConstants.maintenanceTab,
-                  ),
-                ],
+                tabs: List.generate(
+                  5,
+                  (index) => _buildTab(index, tabController.index),
+                ),
                 labelStyle: const TextStyle(fontSize: 12),
                 indicatorColor: ColorsConstants.orangeFields,
                 unselectedLabelColor: Colors.white,
                 labelColor: ColorsConstants.orangeFields,
+                dividerColor: Colors.transparent,
               ),
             );
           },
@@ -103,10 +68,35 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _buildTab(int index, int selectedIndex) {
+    final List<String> icons = [
+      AppIcons.home,
+      AppIcons.client,
+      AppIcons.rental,
+      AppIcons.vehicles,
+      AppIcons.maintenance
+    ];
+    final List<String> labels = [
+      HomePageConstants.homeTab,
+      HomePageConstants.clientTab,
+      HomePageConstants.rentalTab,
+      HomePageConstants.vehicleTab,
+      HomePageConstants.maintenanceTab
+    ];
+    return Tab(
+      icon: Image.asset(
+        icons[index],
+        width: 32,
+        height: 32,
+        color: getIconColor(selectedIndex, index),
+      ),
+      text: labels[index],
+    );
+  }
+
   Color getIconColor(int tabSelected, int tabIndex) {
-    if (tabSelected == tabIndex) {
-      return ColorsConstants.orangeFields;
-    }
-    return Colors.white;
+    return tabSelected == tabIndex
+        ? ColorsConstants.orangeFields
+        : Colors.white;
   }
 }
