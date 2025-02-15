@@ -14,6 +14,7 @@ import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
 import '../../services/validation_service.dart';
+import '../../widgets/buttons/register_save_button.dart';
 import '../../widgets/register_text_label.dart';
 
 class NaturalPersonRegister extends StatefulWidget {
@@ -286,28 +287,25 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
             ],
           ),
         ),
-        ElevatedButton(
-            onPressed: _isSaveButtonEnabled
-                ? () {
-                    isCPFRegistered().then((isRegistered) {
-                      if (isRegistered) {
-                        showCustomSnackBar(
-                            context, ClientConstants.cpfAlreadyRegistered);
-                      } else {
-                        saveData();
-                      }
-                    });
-                  }
-                : null,
-            style: ElevatedButton.styleFrom(
-                backgroundColor: ColorsConstants.orangeFields),
-            child: const RegisterTextLabel(
-              label: GeneralConstants.saveButton,
-              fontWeight: FontWeight.bold,
-            )),
+        RegisterSaveButton(onPressed: pressSave(context)),
         const SizedBox(height: 16.0),
       ],
     );
+  }
+
+  pressSave(BuildContext context) {
+    if (_isSaveButtonEnabled) {
+      return () {
+        isCPFRegistered().then((isRegistered) {
+          if (isRegistered) {
+            showCustomSnackBar(context, ClientConstants.cpfAlreadyRegistered);
+          } else {
+            saveData();
+          }
+        });
+      };
+    }
+    return () => {};
   }
 
   Future<bool> isCPFRegistered() async {
