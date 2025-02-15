@@ -5,10 +5,12 @@ import 'package:projeto_auto_locacao/screens/client_management/natural_person_re
 import '../../widgets/text/register_text_label.dart';
 
 class ClientType extends StatefulWidget {
+  final Map<String, dynamic> client;
+
   @override
   ClientTypeState createState() => ClientTypeState();
 
-  const ClientType({super.key});
+  const ClientType({super.key, required this.client});
 }
 
 class ClientTypeState extends State<ClientType> {
@@ -59,8 +61,8 @@ class ClientTypeState extends State<ClientType> {
                   const Text("Jurídica"),
                 ],
               ),
-              if (_typeController == 'F') const NaturalPersonRegister(person: {})
-              else const LegalPersonRegister(legalPerson: {})
+              if (_typeController == 'F') NaturalPersonRegister(person: widget.client)
+              else LegalPersonRegister(legalPerson: widget.client)
             ],
           ),
         ),

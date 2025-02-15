@@ -53,7 +53,7 @@ class QuickActionsState extends State<QuickActions> {
                   const Expanded(
                     flex: 2,
                     child: CustomInitialButton(HomePageConstants.newClient,
-                        ClientRegister(), AppIcons.client),
+                        ClientRegister(client: {},), AppIcons.client),
                   ),
                   Expanded(
                     flex: 2,

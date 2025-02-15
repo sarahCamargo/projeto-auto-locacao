@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/constants/general_constants.dart';
+
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
+import 'package:projeto_auto_locacao/screens/client_management/client_register.dart';
+import 'package:projeto_auto_locacao/screens/client_management/client_type.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/delete_button.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
 import 'package:projeto_auto_locacao/widgets/custom_divider.dart';
@@ -12,9 +12,10 @@ import 'package:projeto_auto_locacao/widgets/search_input.dart';
 import '../../../constants/collection_names.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../widgets/buttons/new_register_button.dart';
-import 'natural_person_register.dart';
+
 
 class ClientListScreen extends StatefulWidget {
+
   const ClientListScreen({super.key});
 
   @override
@@ -84,7 +85,7 @@ class ClientScreenListState extends State<ClientListScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const NaturalPersonRegister(person: {}),
+                builder: (context) => const ClientRegister(client: {}),
               ),
             ).then(
               (value) {
@@ -140,7 +141,7 @@ class ClientScreenListState extends State<ClientListScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  NaturalPersonRegister(person: client),
+                                  ClientRegister(client: client),
                             ),
                           ).then((value) {
                             if (value == true) {
