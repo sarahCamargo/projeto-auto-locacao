@@ -24,6 +24,7 @@ class RentalListScreen extends StatefulWidget {
 class RentalListScreenState extends State<RentalListScreen> {
   final DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.rental);
   Map<int, bool> expandedCards = {}; // Controla os cards expandidos
+  String _selectedFilter = "Todos";
 
   @override
   void initState() {
@@ -38,14 +39,19 @@ class RentalListScreenState extends State<RentalListScreen> {
         Column(
           children: [
             const SearchInput(),
-            const SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: FilterBar(filters: [
+              child: FilterBar(filters: const [
                 "Todos",
                 "Ativa",
                 "Concluída",
-              ]),
+              ], onFilterSelected: (filter) {
+                setState(() {
+                  _selectedFilter = filter;
+                });
+                print(_selectedFilter);
+              },),
             ),
             Expanded(
               child: StreamBuilder<List<Rental>>(
@@ -61,7 +67,8 @@ class RentalListScreenState extends State<RentalListScreen> {
                     );
                   }
 
-                  var rentals = snapshot.data!;
+                  //var rentals = snapshot.data!;
+                  var rentals = _filteredVehicles(snapshot.data!);
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -103,6 +110,18 @@ class RentalListScreenState extends State<RentalListScreen> {
         )
       ],
     );
+  }
+
+  List<Rental> _filteredVehicles(List<Rental> rentals) {
+    if (_selectedFilter == "Todos") {
+      return rentals;
+    }
+
+    if (_selectedFilter == "Ativa") {
+      return rentals.where((element) => element.endDate == null || element.endDate!.isEmpty).toList();
+    }
+
+    return rentals.where((element) => element.endDate != null && element.endDate!.isNotEmpty).toList();
   }
 
   Widget _buildRentalCard({required Rental rental, required int index}) {

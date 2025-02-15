@@ -6,7 +6,9 @@ class FilterBar extends StatefulWidget {
 
   final List<String> filters;
 
-  const FilterBar({super.key, required this.filters});
+  final Function(String) onFilterSelected;
+
+  const FilterBar({super.key, required this.filters, required this.onFilterSelected});
 
   @override
   FilterBarState createState() => FilterBarState();
@@ -19,6 +21,7 @@ class FilterBarState extends State<FilterBar> {
     setState(() {
       selectedLabel = label;
     });
+    widget.onFilterSelected(label); // Notifica a tela principal
   }
 
   @override

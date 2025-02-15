@@ -2,12 +2,10 @@ import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
-import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/delete_button.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
-import 'package:projeto_auto_locacao/widgets/buttons/filter_button.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/collection_names.dart';
@@ -24,6 +22,7 @@ class VehicleListScreen extends StatefulWidget {
 
 class VehicleScreenListState extends State<VehicleListScreen> {
   final DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
+  String _selectedFilter = "Todos";
 
   @override
   void initState() {
@@ -38,17 +37,24 @@ class VehicleScreenListState extends State<VehicleListScreen> {
         Column(
           children: [
             const SearchInput(),
-            const SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: FilterBar(filters: [
+              child: FilterBar(filters: const [
                 "Todos",
                 "Disponível",
                 "Locado",
                 "Em manutenção",
                 "Locação pendente",
                 "Manutenção pendente"
-              ]),
+              ],
+                onFilterSelected: (filter) {
+                setState(() {
+                  _selectedFilter = filter;
+                });
+                print(_selectedFilter);
+              },
+              ),
             ),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(

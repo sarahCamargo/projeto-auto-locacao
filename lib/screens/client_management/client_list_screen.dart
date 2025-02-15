@@ -41,10 +41,17 @@ class ClientScreenListState extends State<ClientListScreen> {
         Column(
           children: [
             const SearchInput(),
-            const SingleChildScrollView(
+            SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 10),
-                child: FilterBar(filters: ["Todos", "Física", "Jurídica"])),
+                child: FilterBar(filters: const [
+                  "Todos",
+                  "Física",
+                  "Jurídica"
+                ],
+                  onFilterSelected: (String ) {  },
+                )
+            ),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
                 stream: dbHandler.dataStream,

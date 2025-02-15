@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/maintenance_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/services/notification_service.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/save_add_button.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
@@ -12,6 +13,7 @@ import '../../../constants/client_constants.dart';
 import '../../../models/maintenance.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../utils/show_snackbar.dart';
+import '../../../widgets/buttons/register_save_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/text/custom_text_form_field.dart';
 import '../../../widgets/text/custom_text_label.dart';
@@ -58,8 +60,6 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
       _ultimaVerificacaoController.text = widget.maintenance['lastCheck'];
       _proximaVerificacaoController.text = widget.maintenance['nextCheck'];
     }
-
-
     _loadVehicles();
   }
 
@@ -296,18 +296,19 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
-                  onPressed: _isSaveButtonEnabled
-                      ? () {
-                          save();
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorsConstants.backgroundColor),
-                  child: const CustomTextLabel(
-                    label: GeneralConstants.saveButton,
-                    fontWeight: FontWeight.bold,
-                  )),
+              RegisterSaveButton(onPressed: save),
+              // ElevatedButton(
+              //     onPressed: _isSaveButtonEnabled
+              //         ? () {
+              //             save();
+              //           }
+              //         : null,
+              //     style: ElevatedButton.styleFrom(
+              //         backgroundColor: ColorsConstants.backgroundColor),
+              //     child: const CustomTextLabel(
+              //       label: GeneralConstants.saveButton,
+              //       fontWeight: FontWeight.bold,
+              //     )),
             ],
           ),
         ),

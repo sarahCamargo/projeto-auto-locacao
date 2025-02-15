@@ -37,12 +37,12 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
             const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: FilterBar(filters: [
-                "Todos",
-                "Em manutenção",
-                "Pendente",
-                "Concluída",
-              ]),
+              // child: FilterBar(filters: [
+              //   "Todos",
+              //   "Em manutenção",
+              //   "Pendente",
+              //   "Concluída",
+              // ]),
             ),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -112,7 +112,7 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: ColorsConstants.yellowFields,
+                backgroundColor: ColorsConstants.blueFields,
                 child: Image.asset(AppIcons.maintenance, color: Colors.white, width: 30, height: 30,),
               ),
               const SizedBox(width: 10),
@@ -120,18 +120,6 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
                 child: Text(
                   "${maintenance['model']}",
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: ColorsConstants.yellowFields,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  'Pendente',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
             ],
