@@ -94,6 +94,26 @@ cd projeto-auto-locacao
 - [Android Studio](https://developer.android.com/studio/install?hl=pt-br#windows)
 - [Flutter](https://docs.flutter.dev/get-started/install/windows/mobile)
 
+Necessário seguir o passo a passo da instalação de Flutter para iniciar o desenvolvimento.
+
+- No Android Studio, instale os plugins Dart e Flutter
+- Configure o SDK do Flutter conforme instalação anterior
+- Para configuração do SDK do Dart, utilize o caminho "bin/cache/dart-sd", dentro da instalação do flutter.
+
+### Realizar atualizações de depêndencias:
+
+```bash
+flutter pub get
+```
+
+### Subindo o ambiente local
+
+Necessário utilizar emulador local ou conectar um dispositivo móvel ao computador.
+
+```bash
+flutter run lib/main.dart
+```
+
 ### Criando um arquivo executável para o Projeto:
 
 ```bash
