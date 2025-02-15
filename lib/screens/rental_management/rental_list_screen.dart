@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/rental_constants.dart';
-import 'package:projeto_auto_locacao/screens/rental_management/rental/generate_contract_screen.dart';
-import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_register.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/generate_contract_screen.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/rental_register.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/collection_names.dart';

@@ -11,14 +11,14 @@ import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/register_save_button.dart';
 import 'package:projeto_auto_locacao/widgets/text/register_text_label.dart';
 
-import '../../../constants/colors_constants.dart';
-import '../../../models/rental.dart';
-import '../../../models/vehicle.dart';
-import '../../../services/database/database_handler.dart';
-import '../../../utils/currency_input_formatter.dart';
-import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/text/custom_text_form_field.dart';
-import '../../../widgets/text/custom_text_label.dart';
+import '../../constants/colors_constants.dart';
+import '../../models/rental.dart';
+import '../../models/vehicle.dart';
+import '../../services/database/database_handler.dart';
+import '../../utils/currency_input_formatter.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/text/custom_text_form_field.dart';
+import '../../widgets/text/custom_text_label.dart';
 
 class RentalRegister extends StatefulWidget {
   @override

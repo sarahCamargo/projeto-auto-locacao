@@ -64,18 +64,6 @@ class DatabaseHandler {
     });
   }
 
-  // Future<void> fetchRentals(bool isHistory) async {
-  //   if (!isHistory) {
-  //     List<Rental> results =
-  //     await DatabaseHelper().getRentalsWithVehicles();
-  //     _rentalController.add(results);
-  //   } else {
-  //     List<Rental> results =
-  //     await DatabaseHelper().getRentalsHistory();
-  //     _rentalController.add(results);
-  //   }
-  // }
-
   Future<void> fetchRentals() async {
     List<Rental> results = await DatabaseHelper().getRentalsWithVehicles();
     _rentalController.add(results);

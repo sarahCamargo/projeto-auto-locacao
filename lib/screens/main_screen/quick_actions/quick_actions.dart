@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
-import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_register.dart';
+import 'package:projeto_auto_locacao/screens/rental_management/rental_register.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';

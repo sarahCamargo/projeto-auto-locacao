@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
-import 'package:open_filex/open_filex.dart';
+import 'package:open_file/open_file.dart';
 import 'package:projeto_auto_locacao/utils/contract_data.dart';
 import 'package:xml/xml.dart';
 
@@ -56,8 +56,8 @@ class ContractFileManipulation {
     final file2 = File(newDocxPath);
 
     if (await file2.exists()) {
-      final result = await OpenFilex.open(file2.path);
-      if (result.type == ResultType.error) {
+      final result = await OpenFile.open(file2.path);
+     if (result.type == ResultType.error) {
         print('Erro ao abrir o arquivo: ${result.message}');
       }
     } else {
