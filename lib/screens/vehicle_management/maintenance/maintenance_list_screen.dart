@@ -151,53 +151,5 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
         ],
       ),
     );
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Colors.yellow,
-                  child: Icon(Icons.build, color: Colors.white),
-                ),
-                const SizedBox(width: 10),
-                const Expanded(
-                  child: Text(
-                    'Modelo',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.yellow,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    'Pendente',
-                    style: TextStyle(color: Colors.white, fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Text("Placa: ", style: TextStyle(color: Colors.grey)),
-            const SizedBox(height: 4),
-            Text("Serviço: ${maintenance['type']}",
-                style: const TextStyle(color: Colors.grey)),
-            const SizedBox(height: 4),
-            Text(maintenance['nextCheck'],
-                style: const TextStyle(color: Colors.grey)),
-          ],
-        ),
-      ),
-    );
   }
 }

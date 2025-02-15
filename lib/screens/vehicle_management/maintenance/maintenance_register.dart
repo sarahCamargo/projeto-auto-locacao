@@ -65,7 +65,7 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
 
   Future<void> _loadVehicles() async {
     var vehicles;
-    vehicles = await dbVehicles.fetchVehiclesToRent(null);
+    vehicles = await dbVehicles.fetchVehicles();
     setState(() {
       _vehicles = vehicles;
     });

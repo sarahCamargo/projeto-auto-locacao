@@ -16,4 +16,9 @@ class VehicleQueries {
       owner TEXT
     )
   ''';
+
+  static const String getVehicles = '''
+    SELECT v.*
+    FROM vehicle v
+  ''';
 }

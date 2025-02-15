@@ -109,6 +109,12 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => Vehicle.fromMap(maps[i]));
   }
 
+  Future<List<Vehicle>> getVehicles() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(VehicleQueries.getVehicles);
+    return List.generate(maps.length, (i) => Vehicle.fromMap(maps[i]));
+  }
+
   Future<List<Vehicle>> getVehicleRenovation() async {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.rawQuery(RentalQueries.getVehicleToRenovate);

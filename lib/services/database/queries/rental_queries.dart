@@ -41,7 +41,6 @@ class RentalQueries {
         INNER JOIN vehicle v ON r.vehicleId = v.id
         LEFT JOIN natural_person np ON r.naturalPersonId = np.id
         LEFT JOIN legal_person lp ON r.legalPersonId = lp.id 
-    WHERE r.endDate is null;
   ''';
 
   static const getRentalHistory = '''

@@ -64,16 +64,21 @@ class DatabaseHandler {
     });
   }
 
-  Future<void> fetchRentals(bool isHistory) async {
-    if (!isHistory) {
-      List<Rental> results =
-      await DatabaseHelper().getRentalsWithVehicles();
-      _rentalController.add(results);
-    } else {
-      List<Rental> results =
-      await DatabaseHelper().getRentalsHistory();
-      _rentalController.add(results);
-    }
+  // Future<void> fetchRentals(bool isHistory) async {
+  //   if (!isHistory) {
+  //     List<Rental> results =
+  //     await DatabaseHelper().getRentalsWithVehicles();
+  //     _rentalController.add(results);
+  //   } else {
+  //     List<Rental> results =
+  //     await DatabaseHelper().getRentalsHistory();
+  //     _rentalController.add(results);
+  //   }
+  // }
+
+  Future<void> fetchRentals() async {
+    List<Rental> results = await DatabaseHelper().getRentalsWithVehicles();
+    _rentalController.add(results);
   }
 
   Future<List<Vehicle>> fetchVehiclesToRent(int? editVehicle) async {
@@ -84,6 +89,11 @@ class DatabaseHandler {
         results = await DatabaseHelper().getVehicleRenovation();
       }
       return results;
+  }
+
+  Future<List<Vehicle>> fetchVehicles() async {
+    List<Vehicle> results = await DatabaseHelper().getVehicles();
+    return results;
   }
 
   Future<void> fetchMaintenancesWithVehicles() async {
@@ -106,7 +116,7 @@ class DatabaseHandler {
           duration: const Duration(seconds: 3),
         ),
       );
-      Navigator.pop(context, true);
+      //Navigator.pop(context, true);
     }).catchError((error){
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
