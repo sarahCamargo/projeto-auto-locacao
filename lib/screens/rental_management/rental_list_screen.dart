@@ -111,7 +111,7 @@ class RentalListScreenState extends State<RentalListScreen> {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: Colors.yellow,
+                backgroundColor: ColorsConstants.yellowFields,
                 child: Image.asset(AppIcons.vehicles, color: Colors.white, width: 30, height: 30,),
               ),
               const SizedBox(width: 10),
@@ -131,7 +131,7 @@ class RentalListScreenState extends State<RentalListScreen> {
                     padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: Colors.yellow,
+                      color: ColorsConstants.yellowFields,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Text(

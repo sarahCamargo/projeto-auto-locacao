@@ -7,5 +7,6 @@ class ColorsConstants {
   static const Color dividerColor = Color(0xFFEEEEEE);
   static const Color blueFields = Color(0xFF1A355B);
   static const Color orangeFields = Color(0xFFED6E33);
-
+  static const Color yellowFields = Color(0xFFFFB84D);
+  static const Color greenFields = Color(0xFF22C55E);
 }

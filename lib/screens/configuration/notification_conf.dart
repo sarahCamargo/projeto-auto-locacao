@@ -56,7 +56,7 @@ class NotificationConfState extends State<NotificationConf> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(ConfigurationConstants.notifications),
+                  const Text(ConfigurationConstants.notifications, style: TextStyle(fontWeight: FontWeight.bold),),
                   RadioListTile<String>(
                     title: const Text(ConfigurationConstants.noNotification),
                     value: "no_notification",
