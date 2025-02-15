@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../constants/colors_constants.dart';
+import '../../constants/colors_constants.dart';
+
 
 class CustomTextLabel extends StatelessWidget {
   final String label;

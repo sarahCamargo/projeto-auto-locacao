@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:projeto_auto_locacao/constants/collection_names.dart';
-import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/services/database/database_handler.dart';
 import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
+import 'package:projeto_auto_locacao/widgets/text/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 
 import '../../services/validation_service.dart';
 import '../../widgets/buttons/register_save_button.dart';
-import '../../widgets/register_text_label.dart';
+import '../../widgets/text/register_text_label.dart';
 
 class NaturalPersonRegister extends StatefulWidget {
   @override

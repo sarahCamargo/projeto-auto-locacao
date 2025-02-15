@@ -13,8 +13,8 @@ import '../../../models/maintenance.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../utils/show_snackbar.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/custom_text_form_field.dart';
-import '../../../widgets/custom_text_label.dart';
+import '../../../widgets/text/custom_text_form_field.dart';
+import '../../../widgets/text/custom_text_label.dart';
 
 class MaintenanceRegister extends StatefulWidget {
   @override

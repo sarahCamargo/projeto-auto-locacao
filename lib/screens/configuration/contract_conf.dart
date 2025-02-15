@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/configuration_constants.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as p;
 import 'dart:convert';
 
 import '../../services/prefs_service.dart';
 import '../../utils/show_snackbar.dart';
+import '../../widgets/text/custom_text_label.dart';
 
 class ContractConf extends StatefulWidget {
   const ContractConf({super.key});

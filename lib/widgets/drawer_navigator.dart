@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 import 'package:projeto_auto_locacao/screens/configuration/configuration_screen.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
+import 'package:projeto_auto_locacao/widgets/text/custom_text_label.dart';
 
 class DrawerNavigator extends StatelessWidget implements PreferredSizeWidget {
   const DrawerNavigator({super.key});

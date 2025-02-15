@@ -1,18 +1,15 @@
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
-import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/services/fetch_address_service.dart';
 import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
-import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_form_field.dart';
+import 'package:projeto_auto_locacao/widgets/text/custom_text_form_field.dart';
 import 'package:cpf_cnpj_validator/cnpj_validator.dart';
-import 'package:projeto_auto_locacao/widgets/register_text_label.dart';
+import 'package:projeto_auto_locacao/widgets/text/register_text_label.dart';
 
 import '../../../constants/collection_names.dart';
 import '../../../constants/legal_person_constants.dart';
-import '../../../constants/general_constants.dart';
 import '../../../models/legal_person.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../services/validation_service.dart';

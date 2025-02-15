@@ -11,7 +11,7 @@ import '../../../constants/general_constants.dart';
 import '../../../models/rental.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../utils/confirmation_dialog.dart';
-import '../../../widgets/custom_text_label.dart';
+import '../../../widgets/text/custom_text_label.dart';
 
 class RentalScreen extends StatefulWidget {
   final bool isHistory;

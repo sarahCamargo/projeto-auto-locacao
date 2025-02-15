@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../constants/colors_constants.dart';
-import 'custom_text_label.dart';
+import '../../constants/colors_constants.dart';
+import '../text/custom_text_label.dart';
 
 class CustomInitialButton extends StatelessWidget {
   final String text;

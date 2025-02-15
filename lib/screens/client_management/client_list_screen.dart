@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/delete_button.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
+import 'package:projeto_auto_locacao/widgets/custom_divider.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 import 'package:projeto_auto_locacao/widgets/search_input.dart';
 
@@ -127,53 +131,23 @@ class ClientScreenListState extends State<ClientListScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[300],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            onPressed: () {
-                              dbHandler.delete(client['id']);
-                            },
-                            child: const Text(
-                              GeneralConstants.delete,
-                              style: TextStyle(
-                                color: Color(0xFF223B59),
-                              ),
-                            ),
-                          ),
-                        ),
+                        DeleteButton(onPressed: () {
+                          dbHandler.delete(client['id']);
+                        }),
                         const SizedBox(width: 10),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF363636),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                        EditButton(onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  NaturalPersonRegister(person: client),
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      NaturalPersonRegister(person: client),
-                                ),
-                              ).then((value) {
-                                if (value == true) {
-                                  dbHandler.fetchDataFromDatabase();
-                                }
-                              });
-                            },
-                            child: const Text(
-                              GeneralConstants.edit,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
+                          ).then((value) {
+                            if (value == true) {
+                              dbHandler.fetchDataFromDatabase();
+                            }
+                          });
+                        }),
                       ],
                     ),
                   ],
@@ -181,12 +155,7 @@ class ClientScreenListState extends State<ClientListScreen> {
               ),
             ],
           ),
-          const Divider(
-            color: ColorsConstants.dividerColor,
-            thickness: 1,
-            indent: 5,
-            endIndent: 5,
-          )
+          const CustomDivider(),
         ],
       ),
     );

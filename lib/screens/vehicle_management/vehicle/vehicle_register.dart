@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
@@ -15,8 +14,8 @@ import 'package:projeto_auto_locacao/widgets/buttons/save_add_button.dart';
 import '../../../constants/colors_constants.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/custom_text_form_field.dart';
-import '../../../widgets/custom_text_label.dart';
+import '../../../widgets/text/custom_text_form_field.dart';
+import '../../../widgets/text/custom_text_label.dart';
 
 class VehicleRegister extends StatefulWidget {
   @override

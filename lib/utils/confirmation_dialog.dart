@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 
-import '../widgets/custom_text_label.dart';
+import '../widgets/text/custom_text_label.dart';
+
 
 class ConfirmationDialog extends StatefulWidget {
   final String content;

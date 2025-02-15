@@ -4,7 +4,7 @@ import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_reg
 
 import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';
-import '../../../widgets/custom_initial_button.dart';
+import '../../../widgets/buttons/custom_initial_button.dart';
 import '../../client_management/client_register.dart';
 import '../../client_management/natural_person_register.dart';
 import '../../../constants/app_icons.dart';

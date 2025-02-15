@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,8 +15,8 @@ import '../../../models/vehicle.dart';
 import '../../../services/database/database_handler.dart';
 import '../../../utils/currency_input_formatter.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/custom_text_form_field.dart';
-import '../../../widgets/custom_text_label.dart';
+import '../../../widgets/text/custom_text_form_field.dart';
+import '../../../widgets/text/custom_text_label.dart';
 
 class RentalRegister extends StatefulWidget {
   @override

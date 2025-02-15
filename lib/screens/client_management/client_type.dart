@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/screens/client_management/legal_person_register.dart';
 import 'package:projeto_auto_locacao/screens/client_management/natural_person_register.dart';
 
-import '../../widgets/register_text_label.dart';
+import '../../widgets/text/register_text_label.dart';
 
 class ClientType extends StatefulWidget {
   @override

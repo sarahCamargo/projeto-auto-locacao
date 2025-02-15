@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:projeto_auto_locacao/widgets/custom_text_label.dart';
+
+import 'custom_text_label.dart';
 
 class RegisterTextLabel extends StatelessWidget {
   final String label;

@@ -5,6 +5,8 @@ import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/delete_button.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/filter_button.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
@@ -149,53 +151,23 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey[300],
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                            onPressed: () {
-                              dbHandler.delete(vehicle['id']);
-                            },
-                            child: const Text(
-                              GeneralConstants.delete,
-                              style: TextStyle(
-                                color: Color(0xFF223B59),
-                              ),
-                            ),
-                          ),
-                        ),
+                        DeleteButton(onPressed: () {
+                          dbHandler.delete(vehicle['id']);
+                        }),
                         const SizedBox(width: 10),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF363636),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                        EditButton(onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  VehicleRegister(vehicle: vehicle),
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      VehicleRegister(vehicle: vehicle),
-                                ),
-                              ).then((value) {
-                                if (value == true) {
-                                  dbHandler.fetchDataFromDatabase();
-                                }
-                              });
-                            },
-                            child: const Text(
-                              GeneralConstants.edit,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
+                          ).then((value) {
+                            if (value == true) {
+                              dbHandler.fetchDataFromDatabase();
+                            }
+                          });
+                        }),
                       ],
                     ),
                   ],
