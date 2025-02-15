@@ -8,6 +8,8 @@ import 'package:projeto_auto_locacao/constants/collection_names.dart';
 import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/rental_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/register_save_button.dart';
+import 'package:projeto_auto_locacao/widgets/text/register_text_label.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';
@@ -90,7 +92,7 @@ class RentalRegisterState extends State<RentalRegister> {
     var vehicles;
     if (_selectedVehicle != null) {
       vehicles = await dbHandler.fetchVehiclesToRent(_selectedVehicle);
-  } else {
+    } else {
       vehicles = await dbHandler.fetchVehiclesToRent(null);
     }
     setState(() {
@@ -112,7 +114,8 @@ class RentalRegisterState extends State<RentalRegister> {
       _legalPerson = legalPersons.map((person) {
         return DropdownMenuItem<int>(
           value: person['id'],
-          child: Text('${person['tradingName']}/${person['companyName']} ${person['cnpj']}'),
+          child: Text(
+              '${person['tradingName']}/${person['companyName']} ${person['cnpj']}'),
         );
       }).toList();
     });
@@ -146,11 +149,9 @@ class RentalRegisterState extends State<RentalRegister> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const SizedBox(height: 16.0),
-              const CustomTextLabel(
-                label: VehicleConstants.vehicleData,
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
+              const RegisterTextLabel(
+                  label: VehicleConstants.vehicleData,
+                  fontWeight: FontWeight.bold),
               const SizedBox(height: 16.0),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -165,62 +166,66 @@ class RentalRegisterState extends State<RentalRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: 'Veículo',
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10.0),
-                            border: Border.all(
-                              color: _selectedVehicle == null
-                                  ? Colors.red
-                                  : Colors.transparent,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: 'Veículo',
                             ),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: DropdownButtonFormField<int>(
-                            isExpanded: true,
-                            value: _selectedVehicle,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                            items: _vehicles
-                                .map<DropdownMenuItem<int>>((Vehicle vehicle) {
-                              return DropdownMenuItem<int>(
-                                value: vehicle.id,
-                                child: Text(
-                                    '${vehicle.model} / ${vehicle.brand} - ${vehicle.licensePlate}'),
-                              );
-                            }).toList(),
-                            onChanged: (int? value) {
-                              setState(() {
-                                _selectedVehicle = value;
-                                _imageUrl = _vehicles
-                                    .firstWhere(
-                                      (vehicle) => vehicle.id == value,
-                                      orElse: () => Vehicle(
-                                        id: null,
-                                        model: '',
-                                        brand: '',
-                                        licensePlate: '',
-                                        imageUrl: '',
-                                      ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(
+                                  color: _selectedVehicle == null
+                                      ? Colors.red
+                                      : Colors.transparent,
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0),
+                              child: DropdownButtonFormField<int>(
+                                isExpanded: true,
+                                value: _selectedVehicle,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: _vehicles
+                                    .map<DropdownMenuItem<int>>((
+                                    Vehicle vehicle) {
+                                  return DropdownMenuItem<int>(
+                                    value: vehicle.id,
+                                    child: Text(
+                                        '${vehicle.model} / ${vehicle
+                                            .brand} - ${vehicle.licensePlate}'),
+                                  );
+                                }).toList(),
+                                onChanged: (int? value) {
+                                  setState(() {
+                                    _selectedVehicle = value;
+                                    _imageUrl = _vehicles
+                                        .firstWhere(
+                                          (vehicle) => vehicle.id == value,
+                                      orElse: () =>
+                                          Vehicle(
+                                            id: null,
+                                            model: '',
+                                            brand: '',
+                                            licensePlate: '',
+                                            imageUrl: '',
+                                          ),
                                     )
-                                    .imageUrl;
-                                _checkButtonStatus();
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ))
+                                        .imageUrl;
+                                    _checkButtonStatus();
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
-              const CustomTextLabel(
+              const RegisterTextLabel(
                 label: 'Tipo de Pessoa:',
               ),
               Padding(
@@ -262,7 +267,7 @@ class RentalRegisterState extends State<RentalRegister> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CustomTextLabel(
+                          const RegisterTextLabel(
                             label: 'Locador',
                           ),
                           Container(
@@ -276,7 +281,7 @@ class RentalRegisterState extends State<RentalRegister> {
                               ),
                             ),
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            const EdgeInsets.symmetric(horizontal: 10.0),
                             child: DropdownButtonFormField<int>(
                               isExpanded: true,
                               value: _selectedPerson,
@@ -308,7 +313,7 @@ class RentalRegisterState extends State<RentalRegister> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CustomTextLabel(
+                          const RegisterTextLabel(
                             label: 'Tipo de Pagamento',
                           ),
                           Container(
@@ -322,7 +327,7 @@ class RentalRegisterState extends State<RentalRegister> {
                               ),
                             ),
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            const EdgeInsets.symmetric(horizontal: 10.0),
                             child: DropdownButtonFormField<String>(
                               isExpanded: true,
                               value: _selectedPaymentType,
@@ -332,11 +337,11 @@ class RentalRegisterState extends State<RentalRegister> {
                               items: _paymentTypes
                                   .map<DropdownMenuItem<String>>(
                                       (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
                               onChanged: (value) {
                                 setState(() {
                                   _selectedPaymentType = value;
@@ -351,13 +356,13 @@ class RentalRegisterState extends State<RentalRegister> {
                   ],
                 ),
               ),
-              const CustomTextLabel(
+              const RegisterTextLabel(
                 label: 'Valor do Pagamento',
               ),
               CustomTextField(
                 controller: _paymentValueController,
                 keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   CurrencyInputFormatter(),
                 ],
@@ -365,7 +370,7 @@ class RentalRegisterState extends State<RentalRegister> {
                 isRequired: true,
               ),
               const SizedBox(height: 16.0),
-              const CustomTextLabel(
+              const RegisterTextLabel(
                 label: 'Data de Início',
               ),
               CustomTextField(
@@ -378,23 +383,21 @@ class RentalRegisterState extends State<RentalRegister> {
                 hintText: 'dd/mm/aaaa',
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
-                  onPressed: _isSaveButtonEnabled
-                      ? () {
-                          save();
-                        }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorsConstants.backgroundColor),
-                  child: const CustomTextLabel(
-                    label: GeneralConstants.saveButton,
-                    fontWeight: FontWeight.bold,
-                  )),
+              RegisterSaveButton(onPressed: pressSave()),
             ],
           ),
         ),
       ),
     );
+  }
+
+  pressSave() {
+    if (_isSaveButtonEnabled) {
+      return () {
+        save();
+      };
+    }
+    return () => {};
   }
 
   void save() {
@@ -428,19 +431,19 @@ class RentalRegisterState extends State<RentalRegister> {
       ),
       child: newImage == null
           ? Center(
-              child: Icon(
-                FontAwesomeIcons.image,
-                size: 50,
-                color: Colors.grey[400],
-              ),
-            )
+        child: Icon(
+          FontAwesomeIcons.image,
+          size: 50,
+          color: Colors.grey[400],
+        ),
+      )
           : ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.file(
-                File(newImage),
-                fit: BoxFit.contain,
-              ),
-            ),
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          File(newImage),
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 
