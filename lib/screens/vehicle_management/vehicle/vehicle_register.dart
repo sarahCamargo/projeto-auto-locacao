@@ -9,6 +9,7 @@ import 'package:projeto_auto_locacao/constants/general_constants.dart';
 import 'package:projeto_auto_locacao/constants/vehicle_constants.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/utils/show_snackbar.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/register_save_button.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/save_add_button.dart';
 
 import '../../../constants/colors_constants.dart';
@@ -16,6 +17,7 @@ import '../../../services/database/database_handler.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/text/custom_text_form_field.dart';
 import '../../../widgets/text/custom_text_label.dart';
+import '../../../widgets/text/register_text_label.dart';
 
 class VehicleRegister extends StatefulWidget {
   @override
@@ -36,7 +38,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
   bool _hasImage = false;
 
   final MaskedTextController _anoFabricacaoController =
-      MaskedTextController(mask: '0000/0000');
+  MaskedTextController(mask: '0000/0000');
   final TextEditingController _marcaController = TextEditingController();
   final TextEditingController _modeloController = TextEditingController();
   final TextEditingController _placaController = TextEditingController();
@@ -100,10 +102,9 @@ class VehicleRegisterState extends State<VehicleRegister> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const SizedBox(height: 16.0),
-              const CustomTextLabel(
-                label: VehicleConstants.vehicleData,
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+              const RegisterTextLabel(
+                  label: VehicleConstants.vehicleData,
+                  fontWeight: FontWeight.bold
               ),
               const SizedBox(height: 16.0),
               // Imagem
@@ -118,7 +119,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
               ),
 
               // Marca
-              const CustomTextLabel(label: VehicleConstants.brandLabel),
+              const RegisterTextLabel(label: VehicleConstants.brandLabel),
               CustomTextField(
                 controller: _marcaController,
                 keyboardType: TextInputType.name,
@@ -130,7 +131,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
 
               // Modelo
               const SizedBox(height: 16.0),
-              const CustomTextLabel(
+              const RegisterTextLabel(
                 label: VehicleConstants.modelLabel,
               ),
               CustomTextField(
@@ -148,41 +149,41 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.licensePlateLabel,
-                        ),
-                        CustomTextField(
-                          controller: _placaController,
-                          onChange: (value) {
-                            _updateSaveButtonState(_placaController);
-                          },
-                          isRequired: true,
-                          isCapitalized: true,
-                        )
-                      ],
-                    )),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.licensePlateLabel,
+                            ),
+                            CustomTextField(
+                              controller: _placaController,
+                              onChange: (value) {
+                                _updateSaveButtonState(_placaController);
+                              },
+                              isRequired: true,
+                              isCapitalized: true,
+                            )
+                          ],
+                        )),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.renavamLabel,
-                        ),
-                        CustomTextField(
-                          controller: _renavanController,
-                          keyboardType: TextInputType.number,
-                          onChange: (value) {
-                            _updateSaveButtonState(_renavanController);
-                          },
-                          isRequired: true,
-                        ),
-                      ],
-                    ))
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.renavamLabel,
+                            ),
+                            CustomTextField(
+                              controller: _renavanController,
+                              keyboardType: TextInputType.number,
+                              onChange: (value) {
+                                _updateSaveButtonState(_renavanController);
+                              },
+                              isRequired: true,
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
@@ -192,44 +193,45 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.yearLabel,
-                        ),
-                        CustomTextField(
-                          controller: _anoFabricacaoController,
-                          keyboardType: TextInputType.number,
-                          onChange: (value) {
-                            _updateSaveButtonState(_anoFabricacaoController);
-                          },
-                          isRequired: true,
-                        )
-                      ],
-                    )),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.yearLabel,
+                            ),
+                            CustomTextField(
+                              controller: _anoFabricacaoController,
+                              keyboardType: TextInputType.number,
+                              onChange: (value) {
+                                _updateSaveButtonState(
+                                    _anoFabricacaoController);
+                              },
+                              isRequired: true,
+                            )
+                          ],
+                        )),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.colorLabel,
-                        ),
-                        CustomTextField(
-                          controller: _corController,
-                          onChange: (value) {
-                            _updateSaveButtonState(_corController);
-                          },
-                          isRequired: true,
-                        ),
-                      ],
-                    ))
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.colorLabel,
+                            ),
+                            CustomTextField(
+                              controller: _corController,
+                              onChange: (value) {
+                                _updateSaveButtonState(_corController);
+                              },
+                              isRequired: true,
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
-              const CustomTextLabel(label: 'Proprietário'),
+              const RegisterTextLabel(label: 'Proprietário'),
               CustomTextField(
                 controller: _ownerController,
                 keyboardType: TextInputType.name,
@@ -241,39 +243,42 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.typeOfFuelLabel,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: DropdownButtonFormField<String>(
-                            value: _selectedTipoCombustivel,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.typeOfFuelLabel,
                             ),
-                            items: VehicleConstants.typeOfFuel.map((status) {
-                              return DropdownMenuItem<String>(
-                                value: status,
-                                child: status == null
-                                    ? const Text(GeneralConstants.doNotInform)
-                                    : Text(status),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedTipoCombustivel = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ))
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedTipoCombustivel,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: VehicleConstants.typeOfFuel.map((
+                                    status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: status == null
+                                        ? const Text(
+                                        GeneralConstants.doNotInform)
+                                        : Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedTipoCombustivel = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
@@ -283,39 +288,42 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.transmissionLabel,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: DropdownButtonFormField<String>(
-                            value: _selectedTipoTransmissao,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.transmissionLabel,
                             ),
-                            items: VehicleConstants.transmission.map((status) {
-                              return DropdownMenuItem<String>(
-                                value: status,
-                                child: status == null
-                                    ? const Text(GeneralConstants.doNotInform)
-                                    : Text(status),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedTipoTransmissao = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ))
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedTipoTransmissao,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: VehicleConstants.transmission.map((
+                                    status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: status == null
+                                        ? const Text(
+                                        GeneralConstants.doNotInform)
+                                        : Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedTipoTransmissao = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
@@ -325,68 +333,66 @@ class VehicleRegisterState extends State<VehicleRegister> {
                   children: [
                     Expanded(
                         child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const CustomTextLabel(
-                          label: VehicleConstants.conditionLabel,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: DropdownButtonFormField<String>(
-                            value: _selectedCondicao,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const RegisterTextLabel(
+                              label: VehicleConstants.conditionLabel,
                             ),
-                            items: VehicleConstants.condition.map((status) {
-                              return DropdownMenuItem<String>(
-                                value: status,
-                                child: status == null
-                                    ? const Text(GeneralConstants.doNotInform)
-                                    : Text(status),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedCondicao = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ))
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedCondicao,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                                items: VehicleConstants.condition.map((status) {
+                                  return DropdownMenuItem<String>(
+                                    value: status,
+                                    child: status == null
+                                        ? const Text(
+                                        GeneralConstants.doNotInform)
+                                        : Text(status),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedCondicao = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
-              const CustomTextLabel(
+              const RegisterTextLabel(
                 label: VehicleConstants.descriptionLabel,
               ),
               CustomTextField(
                 controller: _descricaoController,
               ),
               const SizedBox(height: 16.0),
-              SaveOrAddButton(text: GeneralConstants.saveButton, onPressed: save),
-
-              // ElevatedButton(
-              //     onPressed: _isSaveButtonEnabled
-              //         ? () {
-              //             save();
-              //           }
-              //         : null,
-              //     style: ElevatedButton.styleFrom(
-              //         backgroundColor: ColorsConstants.backgroundColor),
-              //     child: const CustomTextLabel(
-              //       label: GeneralConstants.saveButton,
-              //       fontWeight: FontWeight.bold,
-              //     )),
+              RegisterSaveButton(onPressed: pressSave())
             ],
           ),
         ),
       ),
     );
+  }
+
+  pressSave() {
+    if (_isSaveButtonEnabled) {
+      return () {
+        save();
+      };
+    }
+    return () => {};
   }
 
   void save() {
@@ -468,7 +474,7 @@ class VehicleRegisterState extends State<VehicleRegister> {
 
   Future<void> _getImageFromGallery() async {
     final XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _image = pickedFile;
@@ -532,12 +538,12 @@ class VehicleRegisterState extends State<VehicleRegister> {
         ),
       )
           : ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.file(
-                File(newImage),
-                fit: BoxFit.contain,
-              ),
-            ),
+        borderRadius: BorderRadius.circular(10),
+        child: Image.file(
+          File(newImage),
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 
