@@ -139,7 +139,7 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
           const SizedBox(height: 8),
           Text("Placa: ${maintenance['licensePlate']}", style: TextStyle(color: Colors.grey)),
           const SizedBox(height: 4),
-          Text("Serviço: ${maintenance['type']}",
+          Text("Serviço: ${maintenance['type']} • ${maintenance['nextCheck']}",
               style: const TextStyle(color: Color(0xFF666666))),
 
           const Divider(

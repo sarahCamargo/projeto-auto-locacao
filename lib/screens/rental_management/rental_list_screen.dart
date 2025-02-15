@@ -4,7 +4,6 @@ import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/rental_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental/generate_contract_screen.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental/rental_register.dart';
-import 'package:projeto_auto_locacao/widgets/buttons/save_add_button.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/collection_names.dart';
@@ -13,7 +12,7 @@ import '../../../widgets/buttons/new_register_button.dart';
 import '../../../widgets/search_input.dart';
 import '../../constants/app_icons.dart';
 import '../../models/rental.dart';
-import '../../widgets/buttons/action_button.dart';
+import '../../widgets/text/custom_text_label.dart';
 
 class RentalListScreen extends StatefulWidget {
   const RentalListScreen({super.key});
@@ -175,18 +174,18 @@ class RentalListScreenState extends State<RentalListScreen> {
             Center(
               child: Column(
                 children: [
-                  ActionButton(text: "Gerar contrato", onPressed: () {
+                  TextButton(onPressed: () {
                     print('Gerando contrato...');
                     GenerateContractScreen(rental).showFileSelectionDialog(context);
-                  }),
+                  }, child: const CustomTextLabel(label: "Gerar contrato"),),
                   const SizedBox(height: 8),
                   if (!isCompleted)
-                    ActionButton(text: "Finalizar locação", onPressed: (){
+                    TextButton(onPressed: (){
                       print('Finalizando locação...');
                       endRental(context, rental).then((value) {
                         dbHandler.fetchRentals();
                       });
-                    }),
+                    }, child: const CustomTextLabel(label: "Finalizar locação",),),
                 ],
               ),
             ),
