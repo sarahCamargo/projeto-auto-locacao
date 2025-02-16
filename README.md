@@ -77,6 +77,26 @@ Marcação	Descrição
 
 # Manual de Instalação do Aplicativo
 
+Siga o passo a passo abaixo para realizar a instação do aplicativo.
+
+- No repositório, acesse a aba de "Releases" e clique no arquivo .APK. Após a finalização do Download do arquivo clique em "Abrir".
+  
+  <img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/installation/1.jpg" width="250">
+  
+  <img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/installation/2.jpg" width="250">
+
+- Ao selecionar a opção, será necessário permitir no dispositivo a instalação de aplicativos de fontes desconhecidas. Clique em configurações e após isso, autorize a permissão.
+  
+  <img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/installation/3.jpg" width="250">
+  
+  <img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/installation/4.jpg" width="250">
+
+- Clique em abrir com o instalador de pacotes. Em seguida, o aplicativo será instalado e poderá ser utilizado.
+
+  <img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/installation/5.jpg" width="250">
+
+  <img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/installation/6.jpg" width="250">
+
 # Área de Desenvolvedor
 
 ## Clonando o Repositório
