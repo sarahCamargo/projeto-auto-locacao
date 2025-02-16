@@ -23,11 +23,12 @@ class VehicleListScreen extends StatefulWidget {
 class VehicleScreenListState extends State<VehicleListScreen> {
   final DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.vehicle);
   String _selectedFilter = "Todos";
+  String _searchQuery = "";
 
   @override
   void initState() {
     super.initState();
-    dbHandler.fetchDataFromDatabase();
+    dbHandler.fetchVehiclesListScreen();
   }
 
   @override
@@ -36,7 +37,11 @@ class VehicleScreenListState extends State<VehicleListScreen> {
       children: [
         Column(
           children: [
-            const SearchInput(),
+            SearchInput(onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            },),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -44,15 +49,11 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                 "Todos",
                 "Disponível",
                 "Locado",
-                "Em manutenção",
-                "Locação pendente",
-                "Manutenção pendente"
               ],
                 onFilterSelected: (filter) {
                 setState(() {
                   _selectedFilter = filter;
                 });
-                print(_selectedFilter);
               },
               ),
             ),
@@ -70,7 +71,7 @@ class VehicleScreenListState extends State<VehicleListScreen> {
                     );
                   }
 
-                  var vehicles = snapshot.data!;
+                  var vehicles = _filteredVehicles(snapshot.data!);
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -104,7 +105,7 @@ class VehicleScreenListState extends State<VehicleListScreen> {
             ).then(
               (value) {
                 if (value == true) {
-                  dbHandler.fetchDataFromDatabase();
+                  dbHandler.fetchVehiclesListScreen();
                 }
               },
             );
@@ -112,6 +113,26 @@ class VehicleScreenListState extends State<VehicleListScreen> {
         )
       ],
     );
+  }
+
+  List<Map<String, dynamic>> _filteredVehicles(List<Map<String, dynamic>> vehicles) {
+    var filteredVehicles = vehicles;
+
+    if (_selectedFilter == "Disponível") {
+      filteredVehicles = filteredVehicles.where((v) => v['hasOpenRental'] == 0).toList();
+    }
+
+    if (_selectedFilter == "Locado") {
+      filteredVehicles = filteredVehicles.where((v) => v['hasOpenRental'] == 1).toList();
+    }
+
+    if (_searchQuery.isNotEmpty) {
+      filteredVehicles = filteredVehicles
+          .where((v) => v['model'].toLowerCase().contains(_searchQuery))
+          .toList();
+    }
+
+    return filteredVehicles;
   }
 
   Widget _buildVehicleCard({required var vehicle}) {

@@ -21,4 +21,17 @@ class VehicleQueries {
     SELECT v.*
     FROM vehicle v
   ''';
+
+  static const String getVehiclesListScreen = '''
+    SELECT v.*,
+   CASE 
+        WHEN EXISTS (
+            SELECT 1 FROM rental r 
+            WHERE r.vehicleId = v.id 
+            AND r.startDate IS NOT NULL 
+            AND (r.endDate IS NULL OR r.endDate = '')
+        ) THEN 1 ELSE 0 
+    END AS hasOpenRental
+    FROM vehicle v
+  ''';
 }

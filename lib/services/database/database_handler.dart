@@ -84,6 +84,16 @@ class DatabaseHandler {
     return results;
   }
 
+  Future<void> fetchVehiclesListScreen() async {
+    List<Map<String, dynamic>> results = await DatabaseHelper().getVehiclesListScreen();
+    _dataController.add(results);
+  }
+
+  Future<void> fetchAllClients() async {
+    List<Map<String, dynamic>> results = await DatabaseHelper().getAllClients();
+    _dataController.add(results);
+  }
+
   Future<void> fetchMaintenancesWithVehicles() async {
     List<Map<String, dynamic>> results =
     await DatabaseHelper().getMaintenancesWithVehicles();

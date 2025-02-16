@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/maintenance_constants.dart';
 import 'package:projeto_auto_locacao/screens/vehicle_management/maintenance/maintenance_register.dart';
-import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/app_icons.dart';
 import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
 import '../../../services/database/database_handler.dart';
-import '../../../widgets/buttons/filter_button.dart';
 import '../../../widgets/buttons/new_register_button.dart';
 import '../../../widgets/search_input.dart';
 
@@ -20,6 +18,7 @@ class MaintenanceListScreen extends StatefulWidget {
 
 class MaintenanceListScreenState extends State<MaintenanceListScreen> {
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.maintenance);
+  String _searchQuery = "";
 
   @override
   void initState() {
@@ -33,7 +32,11 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
       children: [
         Column(
           children: [
-            const SearchInput(),
+            SearchInput(onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            }),
             const SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -58,7 +61,7 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
                     );
                   }
 
-                  var maintenances = snapshot.data!;
+                  var maintenances = _filteredMaintenances(snapshot.data!);
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -100,6 +103,16 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
         )
       ],
     );
+  }
+
+  List<Map<String, dynamic>> _filteredMaintenances(List<Map<String, dynamic>> maintenances) {
+    var filteredMaintenances = maintenances;
+
+    if (_searchQuery.isNotEmpty) {
+      filteredMaintenances = filteredMaintenances.where((m) => m['model'].toLowerCase().contains(_searchQuery)).toList();
+    }
+
+    return filteredMaintenances;
   }
 
   Widget _buildMaintenanceCard({required var maintenance}) {

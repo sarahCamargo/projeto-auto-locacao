@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
 import 'package:projeto_auto_locacao/screens/client_management/client_register.dart';
-import 'package:projeto_auto_locacao/screens/client_management/client_type.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/delete_button.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
 import 'package:projeto_auto_locacao/widgets/custom_divider.dart';
@@ -27,11 +26,14 @@ class ClientListScreen extends StatefulWidget {
 
 class ClientScreenListState extends State<ClientListScreen> {
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.naturalPerson);
+  DatabaseHandler dbHandlerLegalPerson = DatabaseHandler(CollectionNames.legalPerson);
+  String _selectedFilter = "Todos";
+  String _searchQuery = "";
 
   @override
   void initState() {
     super.initState();
-    dbHandler.fetchDataFromDatabase();
+    dbHandler.fetchAllClients();
   }
 
   @override
@@ -40,7 +42,11 @@ class ClientScreenListState extends State<ClientListScreen> {
       children: [
         Column(
           children: [
-            const SearchInput(),
+            SearchInput(onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            }),
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 10),
@@ -49,7 +55,11 @@ class ClientScreenListState extends State<ClientListScreen> {
                   "Física",
                   "Jurídica"
                 ],
-                  onFilterSelected: (String ) {  },
+                  onFilterSelected: (filter) {
+                  setState(() {
+                    _selectedFilter = filter;
+                  });
+                  },
                 )
             ),
             Expanded(
@@ -66,7 +76,8 @@ class ClientScreenListState extends State<ClientListScreen> {
                     );
                   }
 
-                  var client = snapshot.data!;
+                  var clients = _filteredClients(snapshot.data!);
+                  print("Clientes ${clients}");
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -78,9 +89,9 @@ class ClientScreenListState extends State<ClientListScreen> {
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 70),
-                      itemCount: client.length,
+                      itemCount: clients.length,
                       itemBuilder: (context, index) {
-                        return _buildClientCard(client: client[index]);
+                        return _buildClientCard(client: clients[index]);
                       },
                     ),
                   );
@@ -100,7 +111,7 @@ class ClientScreenListState extends State<ClientListScreen> {
             ).then(
               (value) {
                 if (value == true) {
-                  dbHandler.fetchDataFromDatabase();
+                  dbHandler.fetchAllClients();
                 }
               },
             );
@@ -109,7 +120,32 @@ class ClientScreenListState extends State<ClientListScreen> {
       ],
     );
   }
+
+  List<Map<String, dynamic>> _filteredClients(List<Map<String, dynamic>> clients) {
+    var filteredClients = clients;
+
+    if (_selectedFilter == "Física") {
+      filteredClients = filteredClients.where((v) => v['typeClient'] == 1).toList();
+    }
+
+    if (_selectedFilter == "Jurídica") {
+      filteredClients = filteredClients.where((v) => v['typeClient'] == 2).toList();
+    }
+
+    if (_searchQuery.isNotEmpty) {
+      filteredClients = filteredClients
+          .where((v) => v['name'].toLowerCase().contains(_searchQuery))
+          .toList();
+    }
+
+    return filteredClients;
+  }
+
   Widget _buildClientCard({required var client}) {
+    String documentName = "CPF";
+    if (client['typeClient'] == 2) {
+      documentName = "CNPJ";
+    }
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -132,7 +168,7 @@ class ClientScreenListState extends State<ClientListScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          Text("CPF: ${client['cpf']}", style: TextStyle(color: Colors.grey)),
+          Text("${documentName}: ${client['documentNumber']}", style: TextStyle(color: Colors.grey)),
           const SizedBox(height: 4),
           Text("Contato: ${client['cellPhone']}",
               style: const TextStyle(color: Color(0xFF666666))),
@@ -144,7 +180,10 @@ class ClientScreenListState extends State<ClientListScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               DeleteButton(onPressed: () {
-                dbHandler.delete(client['id']);
+                client['typeClient'] == 2 ?
+                dbHandlerLegalPerson.delete(client['id']).then((e) => {dbHandler.fetchAllClients()})
+                    :
+                dbHandler.delete(client['id']).then((e) => {dbHandler.fetchAllClients()});
               }),
               const SizedBox(width: 10),
               EditButton(onPressed: () {
@@ -156,7 +195,7 @@ class ClientScreenListState extends State<ClientListScreen> {
                   ),
                 ).then((value) {
                   if (value == true) {
-                    dbHandler.fetchDataFromDatabase();
+                    dbHandler.fetchAllClients();
                   }
                 });
               }),
@@ -218,7 +257,7 @@ class ClientScreenListState extends State<ClientListScreen> {
                             ),
                           ).then((value) {
                             if (value == true) {
-                              dbHandler.fetchDataFromDatabase();
+                              dbHandler.fetchAllClients();
                             }
                           });
                         }),

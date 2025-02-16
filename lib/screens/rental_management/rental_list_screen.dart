@@ -25,6 +25,7 @@ class RentalListScreenState extends State<RentalListScreen> {
   final DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.rental);
   Map<int, bool> expandedCards = {}; // Controla os cards expandidos
   String _selectedFilter = "Todos";
+  String _searchQuery = "";
 
   @override
   void initState() {
@@ -38,7 +39,11 @@ class RentalListScreenState extends State<RentalListScreen> {
       children: [
         Column(
           children: [
-            const SearchInput(),
+            SearchInput(onChanged: (value) {
+              setState(() {
+                _searchQuery = value.toLowerCase();
+              });
+            }),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -50,7 +55,6 @@ class RentalListScreenState extends State<RentalListScreen> {
                 setState(() {
                   _selectedFilter = filter;
                 });
-                print(_selectedFilter);
               },),
             ),
             Expanded(
@@ -67,8 +71,7 @@ class RentalListScreenState extends State<RentalListScreen> {
                     );
                   }
 
-                  //var rentals = snapshot.data!;
-                  var rentals = _filteredVehicles(snapshot.data!);
+                  var rentals = _filteredRentals(snapshot.data!);
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -102,7 +105,7 @@ class RentalListScreenState extends State<RentalListScreen> {
             ).then(
                   (value) {
                 if (value == true) {
-                  dbHandler.fetchDataFromDatabase();
+                  dbHandler.fetchRentals();
                 }
               },
             );
@@ -112,16 +115,22 @@ class RentalListScreenState extends State<RentalListScreen> {
     );
   }
 
-  List<Rental> _filteredVehicles(List<Rental> rentals) {
-    if (_selectedFilter == "Todos") {
-      return rentals;
-    }
+  List<Rental> _filteredRentals(List<Rental> rentals) {
+    var filteredRentals = rentals;
 
     if (_selectedFilter == "Ativa") {
-      return rentals.where((element) => element.endDate == null || element.endDate!.isEmpty).toList();
+      filteredRentals =  filteredRentals.where((r) => r.endDate == null || r.endDate!.isEmpty).toList();
     }
 
-    return rentals.where((element) => element.endDate != null && element.endDate!.isNotEmpty).toList();
+    if (_selectedFilter == "Concluída") {
+      filteredRentals = filteredRentals.where((r) => r.endDate != null && r.endDate!.isNotEmpty).toList();
+    }
+
+    if (_searchQuery.isNotEmpty) {
+      filteredRentals = filteredRentals.where((r) => r.vehicle!.model!.toLowerCase().contains(_searchQuery)).toList();
+    }
+
+    return filteredRentals;
   }
 
   Widget _buildRentalCard({required Rental rental, required int index}) {

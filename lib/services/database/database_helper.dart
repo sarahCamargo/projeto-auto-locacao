@@ -1,5 +1,6 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
+import 'package:projeto_auto_locacao/services/database/queries/client_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/legal_person_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/maintenance_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/natural_person_queries.dart';
@@ -113,6 +114,18 @@ class DatabaseHelper {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.rawQuery(VehicleQueries.getVehicles);
     return List.generate(maps.length, (i) => Vehicle.fromMap(maps[i]));
+  }
+
+  Future<List<Map<String, dynamic>>> getVehiclesListScreen() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(VehicleQueries.getVehiclesListScreen);
+    return maps;
+  }
+
+  Future<List<Map<String, dynamic>>> getAllClients() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.rawQuery(ClientQueries.getAllClientes);
+    return maps;
   }
 
   Future<List<Vehicle>> getVehicleRenovation() async {
