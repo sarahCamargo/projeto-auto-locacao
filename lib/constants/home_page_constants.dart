@@ -16,10 +16,8 @@ class HomePageConstants {
   static const String quickActions = "Ações Rápidas";
   static const String newClient = "Novo Cliente";
   static const String newRental = "Nova Locação";
-  static const String newMaintenance = "Nova Manutenção";
+  static const String newVehicle = "Novo Veículo";
   static const String history = "Histórico Consolidado";
-
-
 
   static const String settings = "Configurações";
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/constants/home_page_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental_register.dart';
+import 'package:projeto_auto_locacao/screens/vehicle_management/vehicle/vehicle_register.dart';
 
 import '../../../constants/colors_constants.dart';
 import '../../../models/rental.dart';
@@ -62,21 +63,16 @@ class QuickActionsState extends State<QuickActions> {
                   ),
                 ],
               ),
-              /*const Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
                     flex: 2,
-                    child: CustomInitialButton(HomePageConstants.newMaintenance,
-                        MaintenanceListScreen(), AppIcons.maintenance),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: CustomInitialButton(HomePageConstants.history,
-                        RentalManagement(), AppIcons.history),
+                    child: CustomInitialButton(HomePageConstants.newVehicle,
+                        VehicleRegister(vehicle: {}), AppIcons.vehicles),
                   ),
                 ],
-              ),*/
+              ),
             ],
           ),
         ),
