@@ -80,20 +80,26 @@ Na tela de configurações, clique em "Adicionar arquivo" e escolha um arquivo n
 ##### Configuração do Template do Contrato
 Para que as informações no template sejam aplicadas corretamente conforme os cadastros no sistema, utilize as marcações abaixo no documento, conforme imagem de exemplo.
 
-Pessoa Física:
+##### Pessoa Física:
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/contrato/clientes.png" width="600">
+
 | Marcação | Descrição |
 | ------ | ------ |
 |{nome}|Substitui pelo nome completo da pessoa física vinculada à locação.|
 |{cpf}|Substitui pelo CPF da pessoa física vinculada à locação.|
 
-Pessoa Jurídica:
+##### Pessoa Jurídica:
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/contrato/pessoa fisica.png" width="600">
+
 | Marcação | Descrição |
 | ------ | ------ |
 |{razaoSocial}|Substitui pela razão social da pessoa jurídica.|
 |{nomeFantasia}|Substitui pelo nome fantasia da pessoa jurídica.|
 |{cnpj}|Substitui pelo CNPJ da pessoa jurídica.|
 
-Endereço:
+##### Endereço:
 | Marcação | Descrição |
 | ------ | ------ |
 |{endereco}|	Substitui pelo nome da rua, bairro, complemento e número do endereço.|
@@ -101,7 +107,10 @@ Endereço:
 |{cep}|	Substitui pelo CEP da pessoa física vinculada à locação.|
 |{estado}|	Substitui pelo estado da pessoa física vinculada à locação.|
 
-Veículo:
+##### Veículo:
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/contrato/veiculo.png" width="600">
+
 | Marcação | Descrição |
 | ------ | ------ |
 |{modelo}|Substitui pelo modelo do veículo vinculado à locação.|
@@ -111,13 +120,19 @@ Veículo:
 |{renavam}|Substitui pelo RENAVAM do veículo vinculado à locação.|
 |{proprietario}|Substitui pelo proprietário do veículo vinculado à locação.|
 
-Locação:
+##### Locação:
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/contrato/locacao.png" width="600">
+
 | Marcação | Descrição |
 | ------ | ------ |
 |{valor}|Substitui pelo valor vinculado à locação.|
 |{frequencia}|Substitui pela frequência de pagamento vinculada à locação.|
 
-Outros:
+##### Outros:
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/contrato/assinatura.png" width="600">
+
 | Marcação | Descrição |
 | ------ | ------ |
 |{data}|Substitui pela data atual formatada como DD/MM/AAAA.|
