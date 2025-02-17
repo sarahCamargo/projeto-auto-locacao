@@ -22,11 +22,20 @@ Na tela inicial da aplicação, é possível utilizar o menu de Ações Rápidas
 - Nova Locação: Esta opção abre uma tela na qual é possível registrar uma nova locação de veículo.
 - Novo Veículo: Nesta opção, é possível realizar o registro de um novo veículo.
 
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/1.jpg" width="250">
+
 No canto superior esquerdo, podemos acessar a aba de Configurações.
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/2.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/3.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/4.jpg" width="250">
+
 Nela, é possível cadastrar a frequência de notificações do aplicativo.
 Também é possível configurar os templates para geração de contratos, explicado na seção de [Configuração do Template do Contrato](#configuração-do-template-do-contrato).
 
 Na parte inferior da aplicação, é possível acessar os menus de Início, Clientes, Locações, Veículos e Manutenções.
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/5.jpg" width="250">
 
 ### Clientes
 
@@ -38,8 +47,20 @@ Nesta tela, é apresentada uma listagem das clientes cadastrados no sistema.
 - Para pesquisar pelo nome do cliente, utilze o campo de pesquisa na parte superior da tela.
 - Também é possível filtrar por pessoas Físicas, Jurídicas, ou Todas, utilizando o filtro na parte superior da tela.
 
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/6.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/7.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/8.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/9.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/10.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/11.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/12.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/13.jpg" width="250">
+
 #### Cadastro de Pessoa Física e Jurídica
 Esta tela permite o cadastro e a edição dos dados da pessoa física e jurídica. Para escolher qual tipo de pessoa cadastrar, utilize as opções contidas em "Escolha o tipo de pessoa". Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/14.jpg" width="250">
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/16.jpg" width="250">
 
 ### Veículos
 Nesta tela, é apresentada uma listagem dos veículos cadastrados no sistema.
@@ -50,15 +71,23 @@ Nesta tela, é apresentada uma listagem dos veículos cadastrados no sistema.
 - Para pesquisar pelo modelo do veículo, utilze o campo de pesquisa na parte superior da tela.
 - Também é possível filtrar por veículos Disponíveis, Locados, ou Todos, utilizando o filtro na parte superior da tela.
 
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/18.jpg" width="250">
+
 #### Cadastrar Veículo
 Esta tela permite o cadastro e a edição dos dados do veículo. Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados. O botão "Selecionar Imagem" abre o explorador de arquivos para a seleção de uma imagem do veículo.
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/19.jpg" width="250">
 
 ### Manutenções
 Esta tela lista as manutenções de veículos cadastrados.
 - Para pesquisar pelo modelo do veículo, utilze o campo de pesquisa na parte superior da tela.
 
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/20.jpg" width="250">
+
 #### Cadastrar Manutenção de Veículo
 Esta tela permite o cadastro dos dados da manutenção. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/21.jpg" width="250">
 
 ### Locações
 Nesta tela, é apresentada uma listagem das locações cadastradas no sistema. 
@@ -68,8 +97,12 @@ Nesta tela, é apresentada uma listagem das locações cadastradas no sistema.
 - Para pesquisar pelo modelo do veículo, utilze o campo de pesquisa na parte superior da tela.
 - Também é possível filtrar por locações Ativas, Concluídas, ou Todas, utilizando o filtro na parte superior da tela.
 
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/22.jpg" width="250">
+
 #### Cadastrar Locação
 Esta tela permite o cadastro dados da locação. Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+
+<img src="https://github.com/sarahCamargo/projeto-auto-locacao/blob/master/img/manual-usuario/23.jpg" width="250">
 
 #### Gerar Contratos
 Para gerar contratos, é possível utilizar a opção "Gerar Contrato" na tela de locações.
