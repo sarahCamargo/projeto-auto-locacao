@@ -16,43 +16,66 @@
 
 ## Página Inicial
 
-Esta é a tela de menu principal do aplicativo. Abaixo, uma breve descrição de cada item:
+Na tela inicial da aplicação, é possível utilizar o menu de Ações Rápidas para utilizar as funções:
 
-- Pessoas: Ao clicar nesta opção, será aberta uma tela que lista as pessoas físicas e jurídicas cadastradas no sistema.
-- Veículos: Esta opção abre uma tela que lista os veículos cadastrados e as manutenções relacionadas a esses veículos.
-- Locações: Ao clicar nesta opção, é exibida a tela que lista as locações pendentes e o histórico de locações já finalizadas. Além disso, permite gerar os contratos referentes à locação.
+- Novo Cliente: Ao clicar nesta opção, será aberta uma tela na qual é possível cadastras pessoas físicas ou jurídicas.
+- Nova Locação: Esta opção abre uma tela na qual é possível registrar uma nova locação de veículo.
+- Novo Veículo: Nesta opção, é possível realizar o registro de um novo veículo.
 
-### Gerenciar Pessoas
-Nesta tela, é apresentada uma listagem das pessoas cadastradas no sistema. Na parte inferior da tela, há dois botões: um que lista as pessoas físicas e outro que lista as pessoas jurídicas. Para cadastrar uma nova pessoa, clique no botão correspondente para exibir o formulário de cadastro. Para editar os dados de uma pessoa já cadastrada, basta clicar no card da pessoa desejada.
+No canto superior esquerdo, podemos acessar a aba de Configurações.
+Nela, é possível cadastrar a frequência de notificações do aplicativo.
+Também é possível configurar os templates para geração de contratos, explicado na seção de [Configuração do Template do Contrato](#configuração-do-template-do-contrato).
 
-#### Cadastro de Pessoa Física
-Esta tela permite o cadastro e a edição dos dados da pessoa física. Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+Na parte inferior da aplicação, é possível acessar os menus de Início, Clientes, Locações, Veículos e Manutenções.
 
-### Gerenciar Veículos
-Nesta tela, é apresentada uma listagem dos veículos cadastrados no sistema. Na parte inferior da tela, há dois botões: um que lista os veículos e outro que permite o gerenciamento das manutenções. Para cadastrar um veículo, clique no botão correspondente para exibir o formulário de cadastro. Para editar os dados de um veículo já cadastrado, basta clicar no card do veículo desejado. Para excluir um veículo, clique no botão "Excluir".
+### Clientes
+
+Nesta tela, é apresentada uma listagem das clientes cadastrados no sistema.
+
+- Para cadastrar uma nova pessoa, clique no botão "Novo Cliente" para exibir o formulário de cadastro.
+- Para editar os dados de uma pessoa já cadastrada, clique no ícone de edição.
+- Para excluir, clique no ícone de remoção
+- Para pesquisar pelo nome do cliente, utilze o campo de pesquisa na parte superior da tela.
+- Também é possível filtrar por pessoas Físicas, Jurídicas, ou Todas, utilizando o filtro na parte superior da tela.
+
+#### Cadastro de Pessoa Física e Jurídica
+Esta tela permite o cadastro e a edição dos dados da pessoa física e jurídica. Para escolher qual tipo de pessoa cadastrar, utilize as opções contidas em "Escolha o tipo de pessoa". Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+
+### Veículos
+Nesta tela, é apresentada uma listagem dos veículos cadastrados no sistema.
+
+- Para cadastrar um novo veículo, clique no botão "Novo Veículo" para exibir o formulário de cadastro.
+- Para editar os dados de um veículo já cadastrado, clique no ícone de edição.
+- Para excluir, clique no ícone de remoção
+- Para pesquisar pelo modelo do veículo, utilze o campo de pesquisa na parte superior da tela.
+- Também é possível filtrar por veículos Disponíveis, Locados, ou Todos, utilizando o filtro na parte superior da tela.
 
 #### Cadastrar Veículo
 Esta tela permite o cadastro e a edição dos dados do veículo. Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados. O botão "Selecionar Imagem" abre o explorador de arquivos para a seleção de uma imagem do veículo.
 
-#### Gerenciar Manutenções
-Esta tela lista os veículos cadastrados. Para abrir a listagem de manutenções de um veículo, basta clicar no card do veículo desejado.
+### Manutenções
+Esta tela lista as manutenções de veículos cadastrados.
+- Para pesquisar pelo modelo do veículo, utilze o campo de pesquisa na parte superior da tela.
 
-##### Cadastrar Manutenção de Veículo
-Esta tela permite o cadastro e a edição dos dados da manutenção. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+#### Cadastrar Manutenção de Veículo
+Esta tela permite o cadastro dos dados da manutenção. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
 
-### Gerenciar Locações
-Nesta tela, é apresentada uma listagem das locações cadastradas no sistema. Na parte inferior da tela, há dois botões: um que lista as locações em aberto e outro que lista as locações finalizadas. Para cadastrar uma nova locação, clique no botão correspondente para exibir o formulário de cadastro. Para editar os dados de uma locação já cadastrada, clique no botão "Editar". Para finalizar uma locação, clique no botão "Finalizar".
+### Locações
+Nesta tela, é apresentada uma listagem das locações cadastradas no sistema. 
+
+- Para cadastrar uma nova locação, clique no botão "Nova Locação" para exibir o formulário de cadastro. 
+- Para finalizar a locação, clique em "Finalizar locação"
+- Para pesquisar pelo modelo do veículo, utilze o campo de pesquisa na parte superior da tela.
+- Também é possível filtrar por locações Ativas, Concluídas, ou Todas, utilizando o filtro na parte superior da tela.
 
 #### Cadastrar Locação
-Esta tela permite o cadastro e a edição dos dados da locação. Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
+Esta tela permite o cadastro dados da locação. Os campos obrigatórios estão circulados em vermelho. Após preencher os campos, o usuário deve clicar no botão "Salvar" para gravar os dados.
 
 #### Gerar Contratos
-Para gerar contratos, deve-se informar um template. Para isso:
-
-Acesse a página inicial.
-Clique no botão "Configurações".
-Em seguida, clique no botão "Selecionar Template" e escolha um arquivo no formato .ODT.
-Com o template definido, acesse a locação desejada e clique no botão "Gerar Contrato".
+Para gerar contratos, é possível utilizar a opção "Gerar Contrato" na tela de locações.
+É necessário ter um template cadastrado na tela de configurações.
+Na tela de configurações, clique em "Adicionar arquivo" e escolha um arquivo no formato ".ODT" configurado conforme descrito abaixo.
+É possível adicionar vários templates, os quais poderão ser selecionados ao clicar em "Gerar Contrato"
 
 ##### Configuração do Template do Contrato
 Para que as informações no template sejam aplicadas corretamente conforme os cadastros no sistema, utilize as seguintes marcações no documento:
