@@ -6,6 +6,8 @@ import '../../../constants/app_icons.dart';
 import '../../../constants/collection_names.dart';
 import '../../../constants/colors_constants.dart';
 import '../../../services/database/database_handler.dart';
+import '../../../widgets/buttons/delete_button.dart';
+import '../../../widgets/buttons/edit_button.dart';
 import '../../../widgets/buttons/new_register_button.dart';
 import '../../../widgets/search_input.dart';
 
@@ -90,7 +92,7 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const MaintenanceRegister(idVehicle: 1, maintenance: {},),
+                builder: (context) => const MaintenanceRegister(idVehicle: 0, maintenance: {},),
               ),
             ).then(
                   (value) {
@@ -142,7 +144,31 @@ class MaintenanceListScreenState extends State<MaintenanceListScreen> {
           const SizedBox(height: 4),
           Text("Serviço: ${maintenance['type']} • ${maintenance['nextCheck']}",
               style: const TextStyle(color: Color(0xFF666666))),
-
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DeleteButton(onPressed: () {
+                dbHandler.delete(maintenance['id']).then((e) => {
+                    dbHandler.fetchMaintenancesWithVehicles()
+                });
+              }),
+              const SizedBox(width: 10),
+              EditButton(onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MaintenanceRegister(idVehicle: maintenance['idVehicle'], maintenance: maintenance,),
+                  ),
+                ).then((value) {
+                  if (value == true) {
+                    dbHandler.fetchMaintenancesWithVehicles();
+                  }
+                });
+              }),
+            ],
+          ),
           const Divider(
             color: ColorsConstants.dividerColor,
             thickness: 1,

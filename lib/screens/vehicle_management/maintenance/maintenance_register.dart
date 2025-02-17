@@ -64,10 +64,18 @@ class MaintenanceRegisterState extends State<MaintenanceRegister> {
   }
 
   Future<void> _loadVehicles() async {
-    var vehicles;
-    vehicles = await dbVehicles.fetchVehicles();
+    var vehicles = await dbVehicles.fetchVehicles();
+
     setState(() {
       _vehicles = vehicles;
+
+
+      if (widget.idVehicle != null && widget.idVehicle != 0) {
+        _selectedVehicle = _vehicles.firstWhere(
+              (vehicle) => vehicle.id == widget.maintenance['idVehicle'],
+        );
+      }
+
     });
   }
 
