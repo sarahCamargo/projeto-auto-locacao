@@ -1,4 +1,6 @@
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
+import 'package:projeto_auto_locacao/models/legal_person.dart';
+import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 import 'package:projeto_auto_locacao/services/database/queries/client_queries.dart';
 import 'package:projeto_auto_locacao/services/database/queries/legal_person_queries.dart';
@@ -67,6 +69,26 @@ class DatabaseHelper {
     final db = await database;
     var result =  await db.query(collection);
     return result;
+  }
+
+  Future<NaturalPerson?> getNaturalPerson(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query("natural_person", where: 'id = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return NaturalPerson.fromMap(result.first);
+    } else {
+      return null;
+    }
+  }
+
+  Future<LegalPerson?> getLegalPerson(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query("legal_person", where: 'id = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return LegalPerson.fromMap(result.first);
+    } else {
+      return null;
+    }
   }
 
   Future<void> delete(int id, String collection) async {

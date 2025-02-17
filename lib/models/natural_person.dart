@@ -70,15 +70,22 @@ class NaturalPerson implements DaoInterface {
 
   factory NaturalPerson.fromMap(Map<String, dynamic> map) {
     return NaturalPerson(
-        id: map['id'],
-        name: map['name'],
-        cpf: map['cpf'],
-        street: map['street'],
-        city: map['city'],
-        addressNumber: map['addressNumber'],
-        neighborhood: map['neighborhood'],
-        addressComplement: map['addressComplement'],
-        state: map['state'],
-        cep: map['cep']);
+      id: map['id'],
+      name: map['name'],
+      cpf: map['cpf'],
+      email: map['email'],
+      cep: map['cep'],
+      civilState: map['civilState'],
+      career: map['career'],
+      sex: map['sex'],
+      cellPhone: map['cellPhone'],
+      birthDate: map['birthDate'],
+      street: map['street'],
+      state: map['state'],
+      city: map['city'],
+      neighborhood: map['neighborhood'],
+      addressNumber: map['addressNumber'],
+      addressComplement: map['addressComplement'],
+    );
   }
 }

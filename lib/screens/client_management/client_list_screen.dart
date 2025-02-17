@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:projeto_auto_locacao/constants/client_constants.dart';
 import 'package:projeto_auto_locacao/screens/client_management/client_register.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/delete_button.dart';
 import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
-import 'package:projeto_auto_locacao/widgets/custom_divider.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 import 'package:projeto_auto_locacao/widgets/search_input.dart';
 
@@ -15,9 +13,7 @@ import '../../../widgets/buttons/new_register_button.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/colors_constants.dart';
 
-
 class ClientListScreen extends StatefulWidget {
-
   const ClientListScreen({super.key});
 
   @override
@@ -26,7 +22,8 @@ class ClientListScreen extends StatefulWidget {
 
 class ClientScreenListState extends State<ClientListScreen> {
   DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.naturalPerson);
-  DatabaseHandler dbHandlerLegalPerson = DatabaseHandler(CollectionNames.legalPerson);
+  DatabaseHandler dbHandlerLegalPerson =
+      DatabaseHandler(CollectionNames.legalPerson);
   String _selectedFilter = "Todos";
   String _searchQuery = "";
 
@@ -49,19 +46,15 @@ class ClientScreenListState extends State<ClientListScreen> {
             }),
             SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: FilterBar(filters: const [
-                  "Todos",
-                  "Física",
-                  "Jurídica"
-                ],
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: FilterBar(
+                  filters: const ["Todos", "Física", "Jurídica"],
                   onFilterSelected: (filter) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
+                    setState(() {
+                      _selectedFilter = filter;
+                    });
                   },
-                )
-            ),
+                )),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
                 stream: dbHandler.dataStream,
@@ -77,7 +70,6 @@ class ClientScreenListState extends State<ClientListScreen> {
                   }
 
                   var clients = _filteredClients(snapshot.data!);
-                  print("Clientes ${clients}");
                   return Card(
                     color: Colors.white,
                     surfaceTintColor: Colors.transparent,
@@ -121,15 +113,18 @@ class ClientScreenListState extends State<ClientListScreen> {
     );
   }
 
-  List<Map<String, dynamic>> _filteredClients(List<Map<String, dynamic>> clients) {
+  List<Map<String, dynamic>> _filteredClients(
+      List<Map<String, dynamic>> clients) {
     var filteredClients = clients;
 
     if (_selectedFilter == "Física") {
-      filteredClients = filteredClients.where((v) => v['typeClient'] == 1).toList();
+      filteredClients =
+          filteredClients.where((v) => v['typeClient'] == 1).toList();
     }
 
     if (_selectedFilter == "Jurídica") {
-      filteredClients = filteredClients.where((v) => v['typeClient'] == 2).toList();
+      filteredClients =
+          filteredClients.where((v) => v['typeClient'] == 2).toList();
     }
 
     if (_searchQuery.isNotEmpty) {
@@ -155,45 +150,56 @@ class ClientScreenListState extends State<ClientListScreen> {
             children: [
               CircleAvatar(
                 backgroundColor: ColorsConstants.blueFields,
-                child: Image.asset(AppIcons.client, color: Colors.white, width: 30, height: 30,),
+                child: Image.asset(
+                  AppIcons.client,
+                  color: Colors.white,
+                  width: 30,
+                  height: 30,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   "${client['name']}",
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-
             ],
           ),
           const SizedBox(height: 8),
-          Text("${documentName}: ${client['documentNumber']}", style: TextStyle(color: Colors.grey)),
+          Text("$documentName: ${client['documentNumber']}",
+              style: const TextStyle(color: Colors.grey)),
           const SizedBox(height: 4),
           Text("Contato: ${client['cellPhone']}",
               style: const TextStyle(color: Color(0xFF666666))),
           if (client['email'] != null && client['email'].isNotEmpty)
             Text("Email: ${client['email']}",
                 style: const TextStyle(color: Color(0xFF666666))),
-          const SizedBox(height: 8,),
+          const SizedBox(
+            height: 8,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               DeleteButton(onPressed: () {
-                client['typeClient'] == 2 ?
-                dbHandlerLegalPerson.delete(client['id']).then((e) => {dbHandler.fetchAllClients()})
-                    :
-                dbHandler.delete(client['id']).then((e) => {dbHandler.fetchAllClients()});
+                client['typeClient'] == 2
+                    ? dbHandlerLegalPerson
+                        .delete(client['id'])
+                        .then((e) => {dbHandler.fetchAllClients()})
+                    : dbHandler
+                        .delete(client['id'])
+                        .then((e) => {dbHandler.fetchAllClients()});
               }),
               const SizedBox(width: 10),
               EditButton(onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ClientRegister(client: client),
+                    builder: (context) => ClientRegister(client: client),
                   ),
                 ).then((value) {
+                  setState(() {});
                   if (value == true) {
                     dbHandler.fetchAllClients();
                   }
@@ -207,68 +213,6 @@ class ClientScreenListState extends State<ClientListScreen> {
             indent: 5,
             endIndent: 5,
           )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildClientCard__({required var client}) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: ColorsConstants.yellowFields,
-                child: Image.asset(AppIcons.client, color: Colors.white, width: 30, height: 30,),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      client['name'],
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E1E1E),
-                      ),
-                    ),
-                    Text(
-                      "${ClientConstants.cpfLabel}: ${client['cpf']}",
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        DeleteButton(onPressed: () {
-                          dbHandler.delete(client['id']);
-                        }),
-                        const SizedBox(width: 10),
-                        EditButton(onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ClientRegister(client: client),
-                            ),
-                          ).then((value) {
-                            if (value == true) {
-                              dbHandler.fetchAllClients();
-                            }
-                          });
-                        }),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const CustomDivider(),
         ],
       ),
     );

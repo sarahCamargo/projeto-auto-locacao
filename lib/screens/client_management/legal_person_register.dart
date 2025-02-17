@@ -34,42 +34,43 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
   final TextEditingController _tradingNameController = TextEditingController();
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _legalResponsibleController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _legalResponsibleRoleController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _stateRegistrationController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _neighborhoodController = TextEditingController();
   final TextEditingController _addressNumberController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _addressComplementController =
-  TextEditingController();
+      TextEditingController();
 
   final MaskedTextController _cepController =
-  MaskedTextController(mask: ClientConstants.cepMask);
+      MaskedTextController(mask: ClientConstants.cepMask);
   final MaskedTextController _cnpjController =
-  MaskedTextController(mask: LegalPersonConstants.cnpjMask);
+      MaskedTextController(mask: LegalPersonConstants.cnpjMask);
   final MaskedTextController _cellPhoneController =
-  MaskedTextController(mask: ClientConstants.cellPhoneMask);
-  final MaskedTextController _legalResponsibleCPFController =
-  MaskedTextController(mask: ClientConstants.cpfMask);
+      MaskedTextController(mask: ClientConstants.cellPhoneMask);
+  final MaskedTextController _legalResponsibleCpfController =
+      MaskedTextController(mask: ClientConstants.cpfMask);
 
   @override
   void initState() {
     super.initState();
     _cnpjController.addListener(_validateCNPJ);
-    _legalResponsibleCPFController.addListener(_validateCPF);
+    _legalResponsibleCpfController.addListener(_validateCPF);
     if (widget.legalPerson["id"] != null) {
       _companyNameController.text = widget.legalPerson["companyName"];
       _tradingNameController.text = widget.legalPerson["tradingName"];
       _cnpjController.text = widget.legalPerson["cnpj"];
       _stateRegistrationController.text =
-      widget.legalPerson["stateRegistration"];
-      _emailController.text = widget.legalPerson["email"];
-      _cellPhoneController.text = widget.legalPerson["cellPhone"];
+          widget.legalPerson["stateRegistration"]?.toString() ?? '';
+      _emailController.text = widget.legalPerson["email"]?.toString() ?? '';
+      ;
+      _cellPhoneController.text = widget.legalPerson["cellPhone"] ?? '';
       if (widget.legalPerson["cep"] != null) {
         _isAddressEditable = true;
         _cepController.text = widget.legalPerson["cep"];
@@ -82,13 +83,14 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
               widget.legalPerson["addressNumber"].toString();
         }
         _addressComplementController.text =
-        widget.legalPerson["addressComplement"];
+            widget.legalPerson["addressComplement"];
       }
-      _legalResponsibleController.text = widget.legalPerson["legalResponsible"];
-      _legalResponsibleCPFController.text =
-      widget.legalPerson["legalResponsibleCpf"];
+      _legalResponsibleController.text =
+          widget.legalPerson["legalResponsible"]?.toString() ?? '';
+      _legalResponsibleCpfController.text =
+          widget.legalPerson["legalResponsibleCpf"]?.toString() ?? '';
       _legalResponsibleRoleController.text =
-      widget.legalPerson["legalResponsibleRole"];
+          widget.legalPerson["legalResponsibleRole"]?.toString() ?? '';
     }
 
     _companyNameController.addListener(_checkButtonStatus);
@@ -96,7 +98,7 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
     _cnpjController.addListener(_checkButtonStatus);
     _cellPhoneController.addListener(_checkButtonStatus);
     _legalResponsibleController.addListener(_checkButtonStatus);
-    _legalResponsibleCPFController.addListener(_checkButtonStatus);
+    _legalResponsibleCpfController.addListener(_checkButtonStatus);
     _checkButtonStatus();
   }
 
@@ -256,13 +258,13 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
         const SizedBox(height: 16.0),
         const RegisterTextLabel(label: LegalPersonConstants.legalResposibleCPF),
         CustomTextField(
-          controller: _legalResponsibleCPFController,
+          controller: _legalResponsibleCpfController,
           hintText: ClientConstants.cpfMask,
           errorText: _cpfError,
           isRequired: true,
           keyboardType: TextInputType.number,
           onChange: (value) {
-            _updateSaveButtonState(_legalResponsibleCPFController);
+            _updateSaveButtonState(_legalResponsibleCpfController);
           },
         ),
         const SizedBox(height: 16.0),
@@ -310,7 +312,7 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
     legalPerson.companyName = _companyNameController.text;
     legalPerson.stateRegistration = _stateRegistrationController.text;
     legalPerson.legalResponsible = _legalResponsibleController.text;
-    legalPerson.legalResponsibleCPF = _legalResponsibleCPFController.text;
+    legalPerson.legalResponsibleCpf = _legalResponsibleCpfController.text;
     legalPerson.legalResponsibleRole = _legalResponsibleRoleController.text;
     legalPerson.cellPhone = _cellPhoneController.text;
     legalPerson.cep = _cepController.text;
@@ -392,8 +394,8 @@ class LegalPersonRegisterState extends State<LegalPersonRegister> {
 
   void _validateCPF() {
     setState(() {
-      if (_legalResponsibleCPFController.text.isNotEmpty &&
-          !CPFValidator.isValid(_legalResponsibleCPFController.text)) {
+      if (_legalResponsibleCpfController.text.isNotEmpty &&
+          !CPFValidator.isValid(_legalResponsibleCpfController.text)) {
         _cpfError = ClientConstants.cpfErrorMessage;
         _isSaveButtonEnabled = false;
       } else {

@@ -2,20 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:projeto_auto_locacao/models/dao_interface.dart';
+import 'package:projeto_auto_locacao/models/legal_person.dart';
+import 'package:projeto_auto_locacao/models/natural_person.dart';
 import 'package:projeto_auto_locacao/models/vehicle.dart';
 
+import '../../main.dart';
 import '../../models/rental.dart';
 import 'database_helper.dart';
 
 class DatabaseHandler {
-
   final String collection;
 
   final _dataController = StreamController<List<Map<String, dynamic>>>();
 
   Stream<List<Map<String, dynamic>>> get dataStream => _dataController.stream;
 
-  final StreamController<List<Rental>> _rentalController = StreamController.broadcast();
+  final StreamController<List<Rental>> _rentalController =
+      StreamController.broadcast();
 
   Stream<List<Rental>> get rentalStream => _rentalController.stream;
 
@@ -23,17 +26,18 @@ class DatabaseHandler {
 
   DatabaseHandler(this.collection);
 
-  Future<void> save(BuildContext context, int? id, DaoInterface daoInterface) async {
+  Future<void> save(
+      BuildContext context, int? id, DaoInterface daoInterface) async {
     await saveHandler(id, daoInterface).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessengerKey.currentState?.showSnackBar(
         const SnackBar(
           content: Text('Dados salvos com sucesso'),
           duration: Duration(seconds: 3),
         ),
       );
       Navigator.pop(context, true);
-    }).catchError((error){
-      ScaffoldMessenger.of(context).showSnackBar(
+    }).catchError((error) {
+      scaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(
           content: Text('Erro ao salvar dados: $error'),
           duration: const Duration(seconds: 3),
@@ -45,7 +49,8 @@ class DatabaseHandler {
   Future<void> saveHandler(int? id, DaoInterface daoInterface) async {
     if (id != null) {
       daoInterface.setId(id);
-      await databaseHelper.update(daoInterface.getId()!, daoInterface.toMap(), collection);
+      await databaseHelper.update(
+          daoInterface.getId()!, daoInterface.toMap(), collection);
     } else {
       int idInsert = await databaseHelper.insert(daoInterface, collection);
       daoInterface.setId(idInsert);
@@ -54,7 +59,7 @@ class DatabaseHandler {
 
   Future<void> fetchDataFromDatabase() async {
     List<Map<String, dynamic>> results =
-    await DatabaseHelper().fetchData(collection);
+        await DatabaseHelper().fetchData(collection);
     _dataController.add(results);
   }
 
@@ -70,13 +75,13 @@ class DatabaseHandler {
   }
 
   Future<List<Vehicle>> fetchVehiclesToRent(int? editVehicle) async {
-      List<Vehicle> results;
-      if (editVehicle != null) {
-        results = await DatabaseHelper().getVehicleToRent(editVehicle);
-      } else {
-        results = await DatabaseHelper().getVehicleRenovation();
-      }
-      return results;
+    List<Vehicle> results;
+    if (editVehicle != null) {
+      results = await DatabaseHelper().getVehicleToRent(editVehicle);
+    } else {
+      results = await DatabaseHelper().getVehicleRenovation();
+    }
+    return results;
   }
 
   Future<List<Vehicle>> fetchVehicles() async {
@@ -85,7 +90,8 @@ class DatabaseHandler {
   }
 
   Future<void> fetchVehiclesListScreen() async {
-    List<Map<String, dynamic>> results = await DatabaseHelper().getVehiclesListScreen();
+    List<Map<String, dynamic>> results =
+        await DatabaseHelper().getVehiclesListScreen();
     _dataController.add(results);
   }
 
@@ -96,26 +102,41 @@ class DatabaseHandler {
 
   Future<void> fetchMaintenancesWithVehicles() async {
     List<Map<String, dynamic>> results =
-    await DatabaseHelper().getMaintenancesWithVehicles();
+        await DatabaseHelper().getMaintenancesWithVehicles();
     _dataController.add(results);
   }
 
   Future<List<Map<String, dynamic>>> getData(String collection) async {
     List<Map<String, dynamic>> results =
-    await DatabaseHelper().fetchData(collection);
+        await DatabaseHelper().fetchData(collection);
     return results;
   }
 
-  Future<void> updateRentalStatus(BuildContext context, int id, Map<String, dynamic> newData,String collection, String successMessage) async {
+  Future<NaturalPerson?> getNaturalPerson(int id) async {
+    NaturalPerson? results = await DatabaseHelper().getNaturalPerson(id);
+    return results;
+  }
+
+  Future<LegalPerson?> getLegalPerson(int id) async {
+    LegalPerson? results = await DatabaseHelper().getLegalPerson(id);
+    return results;
+  }
+
+  Future<void> updateRentalStatus(
+      BuildContext context,
+      int id,
+      Map<String, dynamic> newData,
+      String collection,
+      String successMessage) async {
     await databaseHelper.update(id, newData, collection).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(
           content: Text(successMessage),
           duration: const Duration(seconds: 3),
         ),
       );
       //Navigator.pop(context, true);
-    }).catchError((error){
+    }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erro ao finalizar locação: $error'),

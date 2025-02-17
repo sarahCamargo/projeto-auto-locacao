@@ -7,7 +7,7 @@ class LegalPerson implements DaoInterface{
   String? tradingName;
   String? companyName;
   String? legalResponsible;
-  String? legalResponsibleCPF;
+  String? legalResponsibleCpf;
   String? legalResponsibleRole;
   String? stateRegistration;
   String? cellPhone;
@@ -26,7 +26,7 @@ class LegalPerson implements DaoInterface{
         this.tradingName,
         this.companyName,
         this.legalResponsible,
-        this.legalResponsibleCPF,
+        this.legalResponsibleCpf,
         this.legalResponsibleRole,
         this.stateRegistration,
         this.cellPhone,
@@ -57,7 +57,7 @@ class LegalPerson implements DaoInterface{
       "tradingName": tradingName,
       "companyName": companyName,
       "legalResponsible": legalResponsible,
-      "legalResponsibleCpf": legalResponsibleCPF,
+      "legalResponsibleCpf": legalResponsibleCpf,
       "legalResponsibleRole": legalResponsibleRole,
       "stateRegistration": stateRegistration,
       "cellPhone": cellPhone,
@@ -74,9 +74,22 @@ class LegalPerson implements DaoInterface{
   factory LegalPerson.fromMap(Map<String, dynamic> map) {
     return LegalPerson(
       id: map['id'],
+      cnpj: map['cnpj'],
+      email: map['email'],
       tradingName: map['tradingName'],
       companyName: map['companyName'],
-      cnpj: map['cnpj'],
+      legalResponsible: map['legalResponsible'],
+      legalResponsibleCpf: map['legalResponsibleCpf'],
+      legalResponsibleRole: map['legalResponsibleRole'],
+      stateRegistration: map['stateRegistration'],
+      cellPhone: map['cellPhone'],
+      cep: map['cep'],
+      street: map['street'],
+      state: map['state'],
+      city: map['city'],
+      neighborhood: map['neighborhood'],
+      addressNumber: map['addressNumber'],
+      addressComplement: map['addressComplement']
     );
   }
 }

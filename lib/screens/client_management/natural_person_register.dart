@@ -63,12 +63,12 @@ class NaturalPersonRegisterState extends State<NaturalPersonRegister> {
     if (widget.person["id"] != null) {
       _nameController.text = widget.person["name"];
       _cpfController.text = widget.person["cpf"].toString();
-      _emailController.text = widget.person["email"];
+      _emailController.text = widget.person["email"]?.toString() ?? '';
       _selectedCivilStatus = widget.person["civilState"];
-      _careerController.text = widget.person["career"];
-      _sexController = widget.person["sex"];
+      _careerController.text = widget.person["career"]?.toString() ?? '';
+      _sexController = widget.person["sex"]?.toString() ?? '';
       _cellPhoneController.text = widget.person["cellPhone"].toString();
-      _birthDateController.text = widget.person["birthDate"];
+      _birthDateController.text = widget.person["birthDate"]?.toString() ?? '';
       if (widget.person["cep"] != null) {
         _isAddressEditable = true;
         _cepController.text = widget.person["cep"];

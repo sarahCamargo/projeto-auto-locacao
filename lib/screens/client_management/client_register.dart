@@ -17,9 +17,9 @@ class ClientRegisterState extends State<ClientRegister> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: CustomAppBar(title: "Cadastro Cliente"),
-      body: ClientType(client: {}),
+    return Scaffold(
+      appBar: const CustomAppBar(title: "Cadastro Cliente"),
+      body: ClientType(client: widget.client),
     );
   }
 }

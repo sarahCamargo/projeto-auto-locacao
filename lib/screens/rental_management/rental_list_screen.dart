@@ -23,7 +23,7 @@ class RentalListScreen extends StatefulWidget {
 
 class RentalListScreenState extends State<RentalListScreen> {
   final DatabaseHandler dbHandler = DatabaseHandler(CollectionNames.rental);
-  Map<int, bool> expandedCards = {}; // Controla os cards expandidos
+  Map<int, bool> expandedCards = {};
   String _selectedFilter = "Todos";
   String _searchQuery = "";
 
@@ -46,16 +46,19 @@ class RentalListScreenState extends State<RentalListScreen> {
             }),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: FilterBar(filters: const [
-                "Todos",
-                "Ativa",
-                "Concluída",
-              ], onFilterSelected: (filter) {
-                setState(() {
-                  _selectedFilter = filter;
-                });
-              },),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: FilterBar(
+                filters: const [
+                  "Todos",
+                  "Ativa",
+                  "Concluída",
+                ],
+                onFilterSelected: (filter) {
+                  setState(() {
+                    _selectedFilter = filter;
+                  });
+                },
+              ),
             ),
             Expanded(
               child: StreamBuilder<List<Rental>>(
@@ -80,12 +83,13 @@ class RentalListScreenState extends State<RentalListScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     margin:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 70),
                       itemCount: rentals.length,
                       itemBuilder: (context, index) {
-                        return _buildRentalCard(rental: rentals[index], index: index);
+                        return _buildRentalCard(
+                            rental: rentals[index], index: index);
                       },
                     ),
                   );
@@ -103,7 +107,7 @@ class RentalListScreenState extends State<RentalListScreen> {
                 builder: (context) => RentalRegister(rental: Rental()),
               ),
             ).then(
-                  (value) {
+              (value) {
                 if (value == true) {
                   dbHandler.fetchRentals();
                 }
@@ -119,22 +123,29 @@ class RentalListScreenState extends State<RentalListScreen> {
     var filteredRentals = rentals;
 
     if (_selectedFilter == "Ativa") {
-      filteredRentals =  filteredRentals.where((r) => r.endDate == null || r.endDate!.isEmpty).toList();
+      filteredRentals = filteredRentals
+          .where((r) => r.endDate == null || r.endDate!.isEmpty)
+          .toList();
     }
 
     if (_selectedFilter == "Concluída") {
-      filteredRentals = filteredRentals.where((r) => r.endDate != null && r.endDate!.isNotEmpty).toList();
+      filteredRentals = filteredRentals
+          .where((r) => r.endDate != null && r.endDate!.isNotEmpty)
+          .toList();
     }
 
     if (_searchQuery.isNotEmpty) {
-      filteredRentals = filteredRentals.where((r) => r.vehicle!.model!.toLowerCase().contains(_searchQuery)).toList();
+      filteredRentals = filteredRentals
+          .where((r) => r.vehicle!.model!.toLowerCase().contains(_searchQuery))
+          .toList();
     }
 
     return filteredRentals;
   }
 
   Widget _buildRentalCard({required Rental rental, required int index}) {
-    bool isExpanded = expandedCards[index] ?? false; // Verifica se o card está expandido
+    bool isExpanded =
+        expandedCards[index] ?? false;
     bool isCompleted = rental.endDate != null && rental.endDate!.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -144,27 +155,40 @@ class RentalListScreenState extends State<RentalListScreen> {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: isCompleted ? ColorsConstants.blueFields : ColorsConstants.greenFields,
-                child: Image.asset(AppIcons.vehicles, color: Colors.white, width: 30, height: 30,),
+                backgroundColor: isCompleted
+                    ? ColorsConstants.blueFields
+                    : ColorsConstants.greenFields,
+                child: Image.asset(
+                  AppIcons.vehicles,
+                  color: Colors.white,
+                  width: 30,
+                  height: 30,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   "${rental.vehicle?.model}",
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
               Column(
                 children: [
                   Text(
                     "${rental.paymentValue}",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: ColorsConstants.blueFields),
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: ColorsConstants.blueFields),
                   ),
                   Container(
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: isCompleted ? ColorsConstants.blueFields : ColorsConstants.greenFields,
+                      color: isCompleted
+                          ? ColorsConstants.blueFields
+                          : ColorsConstants.greenFields,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -177,16 +201,24 @@ class RentalListScreenState extends State<RentalListScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          Text("Placa: ${rental.vehicle?.licensePlate}", style: TextStyle(color: Colors.grey)),
+          Text("Placa: ${rental.vehicle?.licensePlate}",
+              style: const TextStyle(color: Colors.grey)),
           const SizedBox(height: 4),
-          Text("Cliente: ${rental.naturalPerson?.name} • ${rental.startDate} ${rental.endDate != null && rental.endDate!.isNotEmpty ? " à ${rental.endDate}" : ''}",
+          if (rental.naturalPerson?.name != null)
+            Text("Cliente: ${rental.naturalPerson?.name}",
+                style: const TextStyle(color: Color(0xFF666666)))
+          else
+            Text("Cliente: ${rental.legalPerson?.companyName}",
+                style: const TextStyle(color: Color(0xFF666666))),
+          Text(
+              "${rental.startDate} ${rental.endDate != null && rental.endDate!.isNotEmpty ? " à ${rental.endDate}" : ''}",
               style: const TextStyle(color: Color(0xFF666666))),
-
-          // **Botão para expandir/opções**
           Center(
             child: IconButton(
               icon: Icon(
-                isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                isExpanded
+                    ? Icons.keyboard_arrow_up
+                    : Icons.keyboard_arrow_down,
                 color: Colors.grey[400],
                 size: 24,
               ),
@@ -197,23 +229,31 @@ class RentalListScreenState extends State<RentalListScreen> {
               },
             ),
           ),
-
           if (isExpanded)
             Center(
               child: Column(
                 children: [
-                  TextButton(onPressed: () {
-                    print('Gerando contrato...');
-                    GenerateContractScreen(rental).showFileSelectionDialog(context);
-                  }, child: const CustomTextLabel(label: "Gerar contrato"),),
+                  TextButton(
+                    onPressed: () {
+                      print('Gerando contrato...');
+                      GenerateContractScreen(rental)
+                          .showFileSelectionDialog(context);
+                    },
+                    child: const CustomTextLabel(label: "Gerar contrato"),
+                  ),
                   const SizedBox(height: 8),
                   if (!isCompleted)
-                    TextButton(onPressed: (){
-                      print('Finalizando locação...');
-                      endRental(context, rental).then((value) {
-                        dbHandler.fetchRentals();
-                      });
-                    }, child: const CustomTextLabel(label: "Finalizar locação",),),
+                    TextButton(
+                      onPressed: () {
+                        print('Finalizando locação...');
+                        endRental(context, rental).then((value) {
+                          dbHandler.fetchRentals();
+                        });
+                      },
+                      child: const CustomTextLabel(
+                        label: "Finalizar locação",
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -229,7 +269,11 @@ class RentalListScreenState extends State<RentalListScreen> {
   }
 
   Future<void> endRental(BuildContext context, var rental) async {
-    await dbHandler.updateRentalStatus(context, rental.id,
-        {"endDate": DateFormat('dd/MM/yyyy').format(DateTime.now())}, 'rental', "Locação Finalizada com Sucesso");
+    await dbHandler.updateRentalStatus(
+        context,
+        rental.id,
+        {"endDate": DateFormat('dd/MM/yyyy').format(DateTime.now())},
+        'rental',
+        "Locação Finalizada com Sucesso");
   }
 }

@@ -5,6 +5,8 @@ import 'package:projeto_auto_locacao/screens/main_screen/home_page/home_page.dar
 import 'package:projeto_auto_locacao/services/database/database_helper.dart';
 import 'package:projeto_auto_locacao/services/notification_service.dart';
 
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -19,6 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeData(
         scaffoldBackgroundColor: ColorsConstants.backgroundColor,
         textTheme: GoogleFonts.montserratTextTheme(
