@@ -4,6 +4,7 @@ import 'package:projeto_auto_locacao/constants/colors_constants.dart';
 import 'package:projeto_auto_locacao/constants/rental_constants.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/generate_contract_screen.dart';
 import 'package:projeto_auto_locacao/screens/rental_management/rental_register.dart';
+import 'package:projeto_auto_locacao/widgets/buttons/edit_button.dart';
 import 'package:projeto_auto_locacao/widgets/filter_bar.dart';
 
 import '../../../constants/collection_names.dart';
@@ -83,7 +84,7 @@ class RentalListScreenState extends State<RentalListScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 70),
                       itemCount: rentals.length,
@@ -107,7 +108,7 @@ class RentalListScreenState extends State<RentalListScreen> {
                 builder: (context) => RentalRegister(rental: Rental()),
               ),
             ).then(
-              (value) {
+                  (value) {
                 if (value == true) {
                   dbHandler.fetchRentals();
                 }
@@ -144,8 +145,7 @@ class RentalListScreenState extends State<RentalListScreen> {
   }
 
   Widget _buildRentalCard({required Rental rental, required int index}) {
-    bool isExpanded =
-        expandedCards[index] ?? false;
+    bool isExpanded = expandedCards[index] ?? false;
     bool isCompleted = rental.endDate != null && rental.endDate!.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -184,7 +184,7 @@ class RentalListScreenState extends State<RentalListScreen> {
                   ),
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: isCompleted
                           ? ColorsConstants.blueFields
@@ -211,52 +211,67 @@ class RentalListScreenState extends State<RentalListScreen> {
             Text("Cliente: ${rental.legalPerson?.companyName}",
                 style: const TextStyle(color: Color(0xFF666666))),
           Text(
-              "${rental.startDate} ${rental.endDate != null && rental.endDate!.isNotEmpty ? " à ${rental.endDate}" : ''}",
+              "${rental.startDate} ${rental.endDate != null &&
+                  rental.endDate!.isNotEmpty ? " à ${rental.endDate}" : ''}",
               style: const TextStyle(color: Color(0xFF666666))),
-          Center(
-            child: IconButton(
-              icon: Icon(
-                isExpanded
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down,
-                color: Colors.grey[400],
-                size: 24,
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            EditButton(onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RentalRegister(rental: rental),
+                ),
+              ).then((value) {
+                if (value == true) {
+                  dbHandler.fetchMaintenancesWithVehicles();
+                }
+              });
+            }),
+          ],
+              Center(
+                child: IconButton(
+                  icon: Icon(
+                    isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.grey[400],
+                    size: 24,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      expandedCards[index] = !isExpanded;
+                    });
+                  },
+                ),
               ),
-              onPressed: () {
-                setState(() {
-                  expandedCards[index] = !isExpanded;
-                });
-              },
-            ),
-          ),
-          if (isExpanded)
-            Center(
-              child: Column(
-                children: [
+              if (isExpanded)
+          Center(
+            child: Column(
+              children: [
+                TextButton(
+                  onPressed: () {
+                    print('Gerando contrato...');
+                    GenerateContractScreen(rental)
+                        .showFileSelectionDialog(context);
+                  },
+                  child: const CustomTextLabel(label: "Gerar contrato"),
+                ),
+                const SizedBox(height: 8),
+                if (!isCompleted)
                   TextButton(
                     onPressed: () {
-                      print('Gerando contrato...');
-                      GenerateContractScreen(rental)
-                          .showFileSelectionDialog(context);
+                      print('Finalizando locação...');
+                      endRental(context, rental).then((value) {
+                        dbHandler.fetchRentals();
+                      });
                     },
-                    child: const CustomTextLabel(label: "Gerar contrato"),
-                  ),
-                  const SizedBox(height: 8),
-                  if (!isCompleted)
-                    TextButton(
-                      onPressed: () {
-                        print('Finalizando locação...');
-                        endRental(context, rental).then((value) {
-                          dbHandler.fetchRentals();
-                        });
-                      },
-                      child: const CustomTextLabel(
-                        label: "Finalizar locação",
-                      ),
+                    child: const CustomTextLabel(
+                      label: "Finalizar locação",
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
+          ),
           const Divider(
             color: ColorsConstants.dividerColor,
             thickness: 1,
