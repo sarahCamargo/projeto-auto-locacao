@@ -78,25 +78,51 @@ Na tela de configurações, clique em "Adicionar arquivo" e escolha um arquivo n
 É possível adicionar vários templates, os quais poderão ser selecionados ao clicar em "Gerar Contrato"
 
 ##### Configuração do Template do Contrato
-Para que as informações no template sejam aplicadas corretamente conforme os cadastros no sistema, utilize as seguintes marcações no documento:
+Para que as informações no template sejam aplicadas corretamente conforme os cadastros no sistema, utilize as marcações abaixo no documento, conforme imagem de exemplo.
 
-Marcação	Descrição
-- {nome}	Substitui pelo nome da pessoa física vinculada à locação.
-- {cpf}	Substitui pelo CPF da pessoa física vinculada à locação.
-- {endereco}	Substitui pelo nome da rua, bairro, complemento e número do endereço.
-- {cidade}	Substitui pela cidade da pessoa física vinculada à locação.
-- {cep}	Substitui pelo CEP da pessoa física vinculada à locação.
-- {estado}	Substitui pelo estado da pessoa física vinculada à locação.
-- {modelo}	Substitui pelo modelo do veículo vinculado à locação.
-- {ano}	Substitui pelo ano do veículo vinculado à locação.
-- {cor}	Substitui pela cor do veículo vinculado à locação.
-- {placa}	Substitui pela placa do veículo vinculado à locação.
-- {renavam}	Substitui pelo RENAVAM do veículo vinculado à locação.
-- {proprietario}	Substitui pelo proprietário do veículo vinculado à locação.
-- {data}	Substitui pela data atual formatada como DD/MM/AAAA.
-- {nomeAssinatura}	Substitui pelo nome da pessoa física vinculada à locação em caixa alta.
-- {valor}	Substitui pelo valor vinculado à locação.
-- {frequencia}	Substitui pela frequência de pagamento vinculada à locação.
+Pessoa Física:
+| Marcação | Descrição |
+| ------ | ------ |
+|{nome}|Substitui pelo nome completo da pessoa física vinculada à locação.|
+|{cpf}|Substitui pelo CPF da pessoa física vinculada à locação.|
+
+Pessoa Jurídica:
+| Marcação | Descrição |
+| ------ | ------ |
+|{razaoSocial}|Substitui pela razão social da pessoa jurídica.|
+|{nomeFantasia}|Substitui pelo nome fantasia da pessoa jurídica.|
+|{cnpj}|Substitui pelo CNPJ da pessoa jurídica.|
+
+Endereço:
+| Marcação | Descrição |
+| ------ | ------ |
+|{endereco}|	Substitui pelo nome da rua, bairro, complemento e número do endereço.|
+|{cidade}|	Substitui pela cidade da pessoa física vinculada à locação.|
+|{cep}|	Substitui pelo CEP da pessoa física vinculada à locação.|
+|{estado}|	Substitui pelo estado da pessoa física vinculada à locação.|
+
+Veículo:
+| Marcação | Descrição |
+| ------ | ------ |
+|{modelo}|Substitui pelo modelo do veículo vinculado à locação.|
+|{ano}|Substitui pelo ano do veículo vinculado à locação.|
+|{cor}|Substitui pela cor do veículo vinculado à locação.|
+|{placa}|Substitui pela placa do veículo vinculado à locação.|
+|{renavam}|Substitui pelo RENAVAM do veículo vinculado à locação.|
+|{proprietario}|Substitui pelo proprietário do veículo vinculado à locação.|
+
+Locação:
+| Marcação | Descrição |
+| ------ | ------ |
+|{valor}|Substitui pelo valor vinculado à locação.|
+|{frequencia}|Substitui pela frequência de pagamento vinculada à locação.|
+
+Outros:
+| Marcação | Descrição |
+| ------ | ------ |
+|{data}|Substitui pela data atual formatada como DD/MM/AAAA.|
+|{nomeAssinatura}|Substitui pelo nome da pessoa vinculada à locação em caixa alta.|
+
 
 # Manual de Instalação do Aplicativo
 
